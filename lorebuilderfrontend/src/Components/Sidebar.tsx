@@ -7,14 +7,12 @@ import { Link } from 'react-router-dom';
 export function Sidebar () {
     const [open, setOpen] = useState(false);
     const [key, setKey] = useState('')
+    const hoverBgColor = '#4A5C4D';
 
-    const hoverBgColor = '#F0F0F0';
-
-    
     return (
         <>
             <div className='absolute ml-10 mt-10 font-normal text-blue'>
-                <Button variant='soft' onMouseOver={() => setOpen(true)}>
+                <Button variant='soft' onClick ={() => setOpen(true)} sx = {{ outline: 'none !important'}}>
                      Menu 
                 </Button>
             </div>
@@ -23,6 +21,7 @@ export function Sidebar () {
         size='sm'
         variant='soft' 
         anchor='left' 
+        onMouseOver={() => console.log('hi')}
         onMouseLeave={() => setOpen(false)}
         onClose={() => setOpen(false)}
         >
@@ -33,7 +32,7 @@ export function Sidebar () {
                     <ListItem key={text} 
                     onMouseOver={() => setKey(text)}
                     onMouseLeave={() => setKey('')}
-                    sx = {{backgroundColor: key === text ? '#5C6C60' : '#4A5C4D'}}>
+                    sx = {{backgroundColor: key === text ? '#5C6C60' : hoverBgColor}}>
                         <Typography variant='plain' level='body-md'>
                             <p className='text-gray-50'>
                             {text}
