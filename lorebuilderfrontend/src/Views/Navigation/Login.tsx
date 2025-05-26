@@ -6,7 +6,7 @@ import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
 import Button from '@mui/joy/Button';
 import { useState } from 'react';
-import { authentication } from '../Controllers/Authentication';
+import { authentication } from '../../Controllers/Authentication';
 
 
 
