@@ -9,14 +9,14 @@ export function Footer () {
                 <Grid container spacing = {3} sx={{ flexGrow: 1 }}  className='bg-[#454E5A] rounded-md'> 
                     <Grid className='w-80'>
                         <Typography variant='plain' level="body-sm"> 
-                            <p className='text-gray-50'>Lore Builder</p>
+                            <span className='text-gray-50'>Lore Builder</span>
                         </Typography>
                     </Grid>
 
                     <Grid className='w-80'>
                         <Link to='https://github.com/Decoretum/' target='_blank' onMouseLeave={() => setColor('text-cyan-200')} onMouseOver={() => {setColor('text-sky-300')}}>
                             <Typography variant='plain' level="body-sm">
-                                <p className={color}>Gael's Github</p>
+                                <span className={color}>Gael's Github</span>
                             </Typography>
                         </Link>
                     </Grid>

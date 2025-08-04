@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,  createContext } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -11,16 +11,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Login } from './Views/Navigation/Login.tsx'
 import { Home } from './Views/Navigation/Home.tsx'
 import { Characters } from './Views/Navigation/Characters.tsx'
-// import { Sidebar } from './Components/Sidebar.tsx'
 import { Layout } from './Views/Recurring/Layout.tsx'
-import { ThemeProvider } from '@mui/material/styles'
-import theme from './theme/theme.ts'
-import { CssVarsProvider } from '@mui/joy/styles'
+import store from './Redux/store.tsx'
 
 const client = new QueryClient();
 
 function App() {
-  const [count, setCount] = useState(0)
+  // User Authentication
+
+
+  // Character Building Sections
+
 
   return (
     <>
@@ -29,7 +30,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path='/login' element={<Login />} />
-            <Route path='/home'  element={<Home />}  />
+            <Route path='/'  element={<Home />}  />
             <Route path='/characters' element={<Characters />} />
             <Route path='/characters/creations/origins' element={<Characters />} />
             <Route path='/characters/creations/origins-images' element={<Characters />} />

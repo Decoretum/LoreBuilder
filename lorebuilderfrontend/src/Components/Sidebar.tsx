@@ -21,22 +21,22 @@ export function Sidebar () {
         size='sm'
         variant='soft' 
         anchor='left' 
-        onMouseOver={() => console.log('hi')}
+        onMouseOver={() => {}}
         onMouseLeave={() => setOpen(false)}
         onClose={() => setOpen(false)}
         >
             <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
                 <List>
                     {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
-                    <Link to='/' className='font-normal'>
+                    <Link to={text === 'Send email' ? 'SendEmail' : text} className='font-normal'>
                     <ListItem key={text} 
                     onMouseOver={() => setKey(text)}
                     onMouseLeave={() => setKey('')}
                     sx = {{backgroundColor: key === text ? '#5C6C60' : hoverBgColor}}>
                         <Typography variant='plain' level='body-md'>
-                            <p className='text-gray-50'>
+                            <span className='text-gray-50'>
                             {text}
-                            </p>
+                            </span>
                         </Typography>
                     </ListItem>
                     </Link>
