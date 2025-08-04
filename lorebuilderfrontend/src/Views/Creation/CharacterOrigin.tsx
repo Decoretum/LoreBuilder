@@ -10,7 +10,7 @@ export function CharacterOrigin () {
 
     useEffect(() => {
         // If Store has value
-        
+
 
         // Else
         setPersonality('');
@@ -42,8 +42,7 @@ export function CharacterOrigin () {
                     onChange={(event) => setPersonality(event.target.value)}
                     minRows={2}
                     maxRows={4}
-                    startDecorator= 
-                    {
+                    startDecorator = {
                         <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
                             <IconButton variant="outlined" color="neutral">
                                 👍
@@ -59,26 +58,26 @@ export function CharacterOrigin () {
                             </Button>
                         </Box>
                     }
-                endDecorator={
-                    <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                    {personality.length} character(s)
-                    </Typography>
-                }
-                sx={{ minWidth: 300, minHeight: 400 }}
-                />
-                </Box>
+                    endDecorator = {
+                        <Typography level="body-xs" sx={{ ml: 'auto' }}>
+                        {personality.length} character(s)
+                        </Typography>
+                    }
+                    sx={{ minWidth: 300, minHeight: 400 }}
+                    />
+                    </Box>
 
-                <Box sx={{
-                    width: '50%',
-                    height: '57%',
-                    maxWidth: 300,
-                    maxheight: 300,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    marginRight: '2vw',
-                    marginTop: '-10vh'
-                }}>
+                    <Box sx={{
+                        width: '50%',
+                        height: '57%',
+                        maxWidth: 300,
+                        maxheight: 300,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2,
+                        marginRight: '2vw',
+                        marginTop: '-10vh'
+                    }}>
                     <Typography level='h3' className=''> Describe your physical self </Typography>
 
                     <Textarea
