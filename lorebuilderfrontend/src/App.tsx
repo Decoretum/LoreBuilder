@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Login } from './Views/Navigation/Login.tsx'
 import { Home } from './Views/Navigation/Home.tsx'
 import { Characters } from './Views/Navigation/Characters.tsx'
+import { CharacterOrigin } from './Views/Creation/CharacterOrigin.tsx'
 import { Layout } from './Views/Recurring/Layout.tsx'
 import store from './Redux/store.tsx'
 
@@ -32,12 +33,12 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/'  element={<Home />}  />
             <Route path='/characters' element={<Characters />} />
-            <Route path='/characters/creations/origins' element={<Characters />} />
-            <Route path='/characters/creations/origins-images' element={<Characters />} />
-            <Route path='/characters/creations/personal-attributes' element={<Characters />} />
-            <Route path='/characters/creations/personal-attributes-images' element={<Characters />} />
-            <Route path='/characters/creations/present-goals' element={<Characters />} />
-            <Route path='/characters/creations/present-goals-images' element={<Characters />} />
+            <Route path='/characters/creation/origins' element={<CharacterOrigin />} />
+            <Route path='/characters/creation/origins-images' element={<Characters />} />
+            <Route path='/characters/creation/personal-attributes' element={<Characters />} />
+            <Route path='/characters/creation/personal-attributes-images' element={<Characters />} />
+            <Route path='/characters/creation/present-goals' element={<Characters />} />
+            <Route path='/characters/creation/present-goals-images' element={<Characters />} />
           </Routes>
         </Layout>
       </Router>
