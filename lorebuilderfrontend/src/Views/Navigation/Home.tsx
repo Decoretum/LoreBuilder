@@ -5,35 +5,6 @@ import store from '../../Redux/store'
 
 export function Home () {
     // From DB, if user is not "logout", then login this user
-    store.dispatch(
-        {
-            type: 'char/editOrigins',
-            payload: {
-                origins: {
-                    past: "hi",
-                    present: "im present",
-                    dreams: "big dream",
-                    images: ['filepath0000'] // Filepath
-                }
-            }
-      }
-    )
-
-    store.dispatch(
-        {
-            type: 'char/editOrigins',
-            payload: {
-                origins: {
-                    past: "holo",
-                    present: "im present HERE",
-                    dreams: "big dream",
-                    images: ['Haha.jpeg', 'Bulalo.png'] // Filepath
-                }
-            }
-      }
-    )
-
-    console.log(store.getState())
 
     return (
         <>

@@ -58,6 +58,7 @@ export default function charReducer(
     switch (action.type) {
         case 'char/editOrigins': {
             let payload : any = action.payload.origins;
+            console.log(action.payload.origins)
             let { past, present, dreams, images } = payload;
             let newImageArr = state.origins.images;
             for (let i = 0; i <= images.length - 1; i++) {
@@ -79,7 +80,8 @@ export default function charReducer(
         }
 
         case 'char/editAttributes': {
-            let payload : any = action.payload.origins;
+            let payload : any = action.payload.attributes;
+            console.log(action.payload.attributes)
             let { 
                 magic,
                 skills,

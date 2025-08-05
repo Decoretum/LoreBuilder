@@ -27,8 +27,9 @@ export function Sidebar () {
         >
             <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
-                    <Link to={text === 'Send email' ? 'SendEmail' : text} className='font-normal'>
+                    {['Home', 'Create Character', 'Send email', 'Drafts'].map((text) => (
+                        
+                    <Link to={text === 'Create Character' ? 'characters/creation/origins' : text === 'Home' ? '/' : text} className='font-normal'>
                     <ListItem key={text} 
                     onMouseOver={() => setKey(text)}
                     onMouseLeave={() => setKey('')}

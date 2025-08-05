@@ -1,22 +1,30 @@
-import { Box, Button, Card, Grid, IconButton, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Card, Grid, IconButton, Textarea, Typography, Tooltip } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { Character } from '../../Controllers/Character'
 import { Link } from "react-router-dom";
-import store from './Redux/store.tsx'
+import store from '../../Redux/store.tsx'
+import Hint from '../../Components/Hint.tsx'
+import StoreCharText from '../../Controllers/StoreCharText.tsx'
 
 export function CharacterOrigin () {
-    const [past, setPast] = useState('');
-    const [personality, setPersonality] = useState('');
+    const [present, setPresent] = useState('');
+    const [physical, setPhysical] = useState('');
+
 
     useEffect(() => {
         // If Store has value
+        let storePresent = store.getState().char.origins.present;
+        let storePhysical = store.getState().char.attributes.physicalInfo;
+        if (storePresent !== '')
+        setPresent(storePresent);
 
-
-        // Else
-        setPersonality('');
-        setPast('');
+        if (storePhysical !== '')
+        setPhysical(storePhysical);
+        console.log(storePresent)
+        console.log(storePhysical)
 
     }, [])
+
 
 
     return (
@@ -38,29 +46,22 @@ export function CharacterOrigin () {
 
                     <Textarea
                     placeholder="Type in here…"
-                    value={personality}
-                    onChange={(event) => setPersonality(event.target.value)}
+                    value={present}
+                    onChange={(event) => {
+                        setPresent(event.target.value);
+                        StoreCharText('/origins/present', event.target.value);
+                       
+                    }}
                     minRows={2}
                     maxRows={4}
                     startDecorator = {
                         <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <IconButton variant="outlined" color="neutral">
-                                👍
-                            </IconButton>
-                            <IconButton variant="outlined" color="neutral">
-                                🏖
-                            </IconButton>
-                            <IconButton variant="outlined" color="neutral">
-                                😍
-                            </IconButton>
-                            <Button variant="outlined" color="neutral" sx={{ ml: 'auto' }}>
-                                See all
-                            </Button>
+                            <Hint props = 'present' />
                         </Box>
                     }
                     endDecorator = {
                         <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                        {personality.length} character(s)
+                        {present.length} character(s)
                         </Typography>
                     }
                     sx={{ minWidth: 300, minHeight: 400 }}
@@ -82,30 +83,23 @@ export function CharacterOrigin () {
 
                     <Textarea
                     placeholder="Type in here…"
-                    value={past}
-                    onChange={(event) => setPast(event.target.value)}
+                    value={physical}
+                    onChange={(event) => {
+                        setPhysical(event.target.value);
+                        StoreCharText('/attributes/physicalInfo', event.target.value);
+                        
+                    }}
                     minRows={2}
                     maxRows={4}
                     startDecorator= 
                     {
                         <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <IconButton variant="outlined" color="neutral">
-                                👍
-                            </IconButton>
-                            <IconButton variant="outlined" color="neutral">
-                                🏖
-                            </IconButton>
-                            <IconButton variant="outlined" color="neutral">
-                                😍
-                            </IconButton>
-                            <Button variant="outlined" color="neutral" sx={{ ml: 'auto' }}>
-                                See all
-                            </Button>
+                            <Hint props = 'physical' />
                         </Box>
                     }
                 endDecorator={
                     <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                    {past.length} character(s)
+                    {physical.length} character(s)
                     </Typography>
                 }
                 sx={{ minWidth: 300, minHeight: 400 }}
