@@ -1,27 +1,23 @@
 type stateTypeOrigins = {
-    origins: {
-        past: string,
-        present: string,
-        dreams: string,
-        images: Array<string> // Filepath
-        },
+    past: string,
+    present: string,
+    dreams: string,
+    images: Array<string> // Filepath
     }
 
 
 type stateTypeAttributes = {
-    attributes: {
-        magic: string,
-        skills: string,
-        power: string,
-        personality: string,
-        equipment: string,
-        physicalInfo: string,
+    magic: string,
+    skills: string,
+    power: string,
+    personality: string,
+    equipment: string,
+    physicalInfo: string,
 
-        hobbies: string,
-        interests: string,
-        occupation: string,
-        images: Array<string> // Filepath
-    }
+    hobbies: string,
+    interests: string,
+    occupation: string,
+    images: Array<string> // Filepath
 }
 
 let initialState = {
@@ -46,7 +42,7 @@ let initialState = {
     }
 }
 
-type stateType = stateTypeOrigins & stateTypeAttributes
+// type stateType = stateTypeOrigins & stateTypeAttributes
 
 export default function charReducer(
     state = initialState, 
@@ -59,7 +55,7 @@ export default function charReducer(
         case 'char/editOrigins': {
             let payload : any = action.payload.origins;
             console.log(action.payload.origins)
-            let { past, present, dreams, images } = payload;
+            let { past, present, dreams, images } : stateTypeOrigins = payload;
             let newImageArr = state.origins.images;
             for (let i = 0; i <= images.length - 1; i++) {
                 let image = images[i];
@@ -94,7 +90,7 @@ export default function charReducer(
                 interests,
                 occupation,
                 images 
-            } = payload;
+            } : stateTypeAttributes = payload;
             let newImageArr = state.attributes.images;
             for (let i = 0; i <= images.length - 1; i++) {
                 let image = images[i];

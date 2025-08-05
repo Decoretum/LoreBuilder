@@ -20,9 +20,6 @@ export function CharacterOrigin () {
 
         if (storePhysical !== '')
         setPhysical(storePhysical);
-        console.log(storePresent)
-        console.log(storePhysical)
-
     }, [])
 
 
