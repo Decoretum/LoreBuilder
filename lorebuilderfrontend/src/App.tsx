@@ -14,6 +14,7 @@ import { Characters } from './Views/Navigation/Characters.tsx'
 import { CharacterOrigin } from './Views/Creation/CharacterOrigin.tsx'
 import { Layout } from './Views/Recurring/Layout.tsx'
 import store from './Redux/store.tsx'
+import CharacterOriginPast from './Views/Creation/CharacterOriginPast.tsx'
 
 const client = new QueryClient();
 
@@ -34,6 +35,7 @@ function App() {
             <Route path='/'  element={<Home />}  />
             <Route path='/characters' element={<Characters />} />
             <Route path='/characters/creation/origins' element={<CharacterOrigin />} />
+            <Route path='/characters/creation/origins/past' element={<CharacterOriginPast />} />
             <Route path='/characters/creation/origins-images' element={<Characters />} />
             <Route path='/characters/creation/personal-attributes' element={<Characters />} />
             <Route path='/characters/creation/personal-attributes-images' element={<Characters />} />

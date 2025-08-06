@@ -8,7 +8,7 @@ import StoreCharText from '../../Controllers/StoreCharText.tsx'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export function CharacterOrigin () {
+export default function CharacterOriginPast () {
     const [present, setPresent] = useState('');
     const [physical, setPhysical] = useState('');
 
@@ -29,13 +29,13 @@ export function CharacterOrigin () {
     return (
         <>
             <div className='container-div-characters'>
-                <Link to = '/' >
+                <Link to = '/characters/creation/origins' >
                     <Button className='absolute -bottom-80 -right-10' sx={{ outline: 'none !important'}} variant='soft'>
                         <ArrowBackIcon />
                     </Button>
                 </Link>
 
-                <img src='/characterorigin.gif' width={350} height={350} className='m-auto mr-11 grid rounded-md' />                
+                <img src='/past2gif.gif' width={400} height={200} className='m-auto mr-8 grid rounded-md' />                
                 <Box sx={{
                     width: '50%',
                     height: '57%',
@@ -47,7 +47,7 @@ export function CharacterOrigin () {
                     marginRight: '2vw',
                     marginTop: '-10vh'
                 }}>
-                    <Typography level='h3' className=''> What are you at the present? </Typography>
+                    <Typography level='h3' className=''> What is your story? </Typography>
 
                     <Textarea
                     placeholder="Type in here…"
@@ -61,7 +61,7 @@ export function CharacterOrigin () {
                     maxRows={4}
                     startDecorator = {
                         <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'present' />
+                            <Hint props = 'past' />
                         </Box>
                     }
                     endDecorator = {
@@ -84,7 +84,7 @@ export function CharacterOrigin () {
                     marginRight: '2vw',
                     marginTop: '-10vh'
                 }}>
-                    <Typography level='h3' className=''> Describe your physical self </Typography>
+                    <Typography level='h3' className=''> What makes you, You? </Typography>
 
                     <Textarea
                     placeholder="Type in here…"
@@ -99,7 +99,7 @@ export function CharacterOrigin () {
                     startDecorator =  
                     {
                         <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'physical' />
+                            <Hint props = 'personality' />
                         </Box>
                     }
                     endDecorator = {
@@ -110,12 +110,9 @@ export function CharacterOrigin () {
                     sx={{ minWidth: 300, minHeight: 400 }}
                     />
                 </Box>
-
-                <Link to = '/characters/creation/origins/past'>
-                    <Button className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowForwardIcon />
-                    </Button>
-                </Link>
+                <Button className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
+                    <ArrowForwardIcon />
+                </Button>
             </div>            
         </>
     )

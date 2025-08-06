@@ -11,7 +11,7 @@ export function Sidebar () {
 
     return (
         <>
-            <div className='absolute ml-10 mt-10 font-normal text-blue'>
+            <div className='z-10 absolute ml-10 mt-10 font-normal text-blue'>
                 <Button variant='soft' onClick ={() => setOpen(true)} sx = {{ outline: 'none !important'}}>
                      Menu 
                 </Button>
@@ -29,7 +29,8 @@ export function Sidebar () {
                 <List>
                     {['Home', 'Create Character', 'Send email', 'Drafts'].map((text) => (
                         
-                    <Link to={text === 'Create Character' ? 'characters/creation/origins' : text === 'Home' ? '/' : text} className='font-normal'>
+                    <Link to={text === 'Create Character' ? 'characters/creation/origins' : 
+                    text === 'Home' ? '/' : text} className='font-normal'>
                     <ListItem key={text} 
                     onMouseOver={() => setKey(text)}
                     onMouseLeave={() => setKey('')}

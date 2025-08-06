@@ -13,6 +13,8 @@ export default function Hint (props = {props}) {
         case 'past':
             val = 'Narrate the events and phenomena which\n made the current you, You';
             break;
+        case 'personality':
+            val = 'Describe your restrained and unhinged self, unbeknownst to the concept of akwardness'
     }
 
     return (
