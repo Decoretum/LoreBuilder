@@ -1,30 +1,47 @@
 import { Box, Button, Card, Grid, IconButton, Textarea, Typography, Tooltip } from "@mui/joy";
 import { useEffect, useState } from "react";
-import { Character } from '../../Controllers/Character'
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import NavigationValidator from '../../Components/NavigationValidator.tsx'  
 
 export function CharacterOrigin () {
     const [present, setPresent] = useState('');
     const [physical, setPhysical] = useState('');
+    const [binary, setBinary] = useState(0);
+    const nav = useNavigate();
 
+    function stateValidator() {
+        let bad = ' ' || null || '';
+        let physInf = store.getState().char.attributes.physicalInfo.trim();
+        let present = store.getState().char.origins.present.trim();
+        if ((physInf === bad || physInf.length === 0) || (present === bad || present.length === 0)) {
+            setBinary(1);
+        }
+        else {
+            setBinary(0);
+            nav('/characters/creation/origins/past');
+        }  
+    }
+
+    function resetBinary() {
+        setBinary(0);
+    }
 
     useEffect(() => {
         // If Store has value
         let storePresent = store.getState().char.origins.present;
         let storePhysical = store.getState().char.attributes.physicalInfo;
-        if (storePresent !== '')
+        if (storePresent !== '' || null)
         setPresent(storePresent);
 
-        if (storePhysical !== '')
+        if (storePhysical !== '' || null)
         setPhysical(storePhysical);
     }, [])
-
-
 
     return (
         <>
@@ -111,11 +128,11 @@ export function CharacterOrigin () {
                     />
                 </Box>
 
-                <Link to = '/characters/creation/origins/past'>
-                    <Button className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
+                    <Button onClick={() => stateValidator()} className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
                         <ArrowForwardIcon />
                     </Button>
-                </Link>
+
+                { NavigationValidator(binary, resetBinary) }
             </div>            
         </>
     )

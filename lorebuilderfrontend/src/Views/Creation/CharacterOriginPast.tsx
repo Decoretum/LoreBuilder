@@ -1,27 +1,48 @@
 import { Box, Button, Card, Grid, IconButton, Textarea, Typography, Tooltip } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { Character } from '../../Controllers/Character'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import NavigationValidator from "../../Components/NavigationValidator.tsx";
 
 export default function CharacterOriginPast () {
-    const [present, setPresent] = useState('');
-    const [physical, setPhysical] = useState('');
+    const [past, setPast] = useState('');
+    const [personality, setPersonality] = useState('');
+    const [binary, setBinary] = useState(0);
+    const nav = useNavigate();
+
+    function stateValidator() {
+        let bad = ' ' || null || '';
+        let pastInf = store.getState().char.origins.past.trim();
+        let personInf = store.getState().char.attributes.personality.trim();
+        if ((pastInf === bad || pastInf.length === 0) || (personInf === bad || personInf.length === 0)) {
+            setBinary(1);
+        }
+        else {
+            setBinary(0);
+            // nav('/characters/creation/origins/past');
+            nav('/')
+        }  
+    }
+
+    function resetBinary() {
+        setBinary(0);
+    }
 
 
     useEffect(() => {
         // If Store has value
-        let storePresent = store.getState().char.origins.present;
-        let storePhysical = store.getState().char.attributes.physicalInfo;
-        if (storePresent !== '')
-        setPresent(storePresent);
+        let storePast = store.getState().char.origins.past;
+        let storePersonality = store.getState().char.attributes.personality;
+        if (storePast !== '' || null)
+        setPast(storePast);
 
-        if (storePhysical !== '')
-        setPhysical(storePhysical);
+        if (storePersonality !== '' || null)
+        setPersonality(storePersonality);
     }, [])
 
 
@@ -51,10 +72,10 @@ export default function CharacterOriginPast () {
 
                     <Textarea
                     placeholder="Type in here…"
-                    value={present}
+                    value={past}
                     onChange={(event) => {
-                        setPresent(event.target.value);
-                        StoreCharText('/origins/present', event.target.value);
+                        setPast(event.target.value);
+                        StoreCharText('/origins/past', event.target.value);
                        
                     }}
                     minRows={2}
@@ -66,7 +87,7 @@ export default function CharacterOriginPast () {
                     }
                     endDecorator = {
                         <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                        {present.length} character(s)
+                        {past.length} character(s)
                         </Typography>
                     }
                     sx={{ minWidth: 300, minHeight: 400 }}
@@ -88,10 +109,10 @@ export default function CharacterOriginPast () {
 
                     <Textarea
                     placeholder="Type in here…"
-                    value={physical}
+                    value={personality}
                     onChange={(event) => {
-                        setPhysical(event.target.value);
-                        StoreCharText('/attributes/physicalInfo', event.target.value);
+                        setPersonality(event.target.value);
+                        StoreCharText('/attributes/personality', event.target.value);
                         
                     }}
                     minRows={2}
@@ -104,15 +125,17 @@ export default function CharacterOriginPast () {
                     }
                     endDecorator = {
                     <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                        {physical.length} character(s)
+                        {personality.length} character(s)
                     </Typography>
                     }
                     sx={{ minWidth: 300, minHeight: 400 }}
                     />
                 </Box>
-                <Button className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
+                <Button onClick={() => stateValidator()} className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
                     <ArrowForwardIcon />
                 </Button>
+
+                { NavigationValidator(binary, resetBinary) }
             </div>            
         </>
     )

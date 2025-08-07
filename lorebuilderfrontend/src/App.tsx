@@ -20,7 +20,27 @@ const client = new QueryClient();
 
 function App() {
   // User Authentication
+  
+  // store.dispatch({
+  //   type: 'char/editAttributes',
+  //   payload: {
+  //     attributes: {
+  //       ...store.getState().char.attributes,
+  //       images: ['Hala', 'Bira']
+  //     }
+      
+  //   }
+  // })
 
+  // store.dispatch({
+  //   type: 'char/editOrigins',
+  //   payload: {
+  //     origins: {
+  //       ...store.getState().char.origins,
+  //       images: ['Hola', 'Noster']
+  //     }
+  //   }
+  // })
 
   // Character Building Sections
 

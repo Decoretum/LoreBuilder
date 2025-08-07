@@ -1,6 +1,6 @@
 type stateTypeOrigins = {
-    past: string,
-    present: string,
+    past: string, //
+    present: string, //
     dreams: string,
     images: Array<string> // Filepath
     }
@@ -10,9 +10,9 @@ type stateTypeAttributes = {
     magic: string,
     skills: string,
     power: string,
-    personality: string,
+    personality: string, //
     equipment: string,
-    physicalInfo: string,
+    physicalInfo: string, //
 
     hobbies: string,
     interests: string,
@@ -55,7 +55,7 @@ export default function charReducer(
         case 'char/editOrigins': {
             let payload : any = action.payload.origins;
             console.log(action.payload.origins)
-            let { past, present, dreams, images } : stateTypeOrigins = payload;
+            let { images } : stateTypeOrigins = payload;
             let newImageArr = state.origins.images;
             for (let i = 0; i <= images.length - 1; i++) {
                 let image = images[i];
@@ -67,9 +67,7 @@ export default function charReducer(
             return {
                 ...state,
                 origins: {
-                    past: past,
-                    present: present,
-                    dreams: dreams,
+                    ...action.payload.origins,
                     images: newImageArr
                 }
             }
@@ -78,19 +76,7 @@ export default function charReducer(
         case 'char/editAttributes': {
             let payload : any = action.payload.attributes;
             console.log(action.payload.attributes)
-            let { 
-                magic,
-                skills,
-                power,
-                personality,
-                equipment,
-                physicalInfo,
-        
-                hobbies,
-                interests,
-                occupation,
-                images 
-            } : stateTypeAttributes = payload;
+            let { images } : stateTypeAttributes = payload;
             let newImageArr = state.attributes.images;
             for (let i = 0; i <= images.length - 1; i++) {
                 let image = images[i];
@@ -102,16 +88,7 @@ export default function charReducer(
             return {
                 ...state,
                 attributes: {
-                    magic: magic,
-                    skills: skills,
-                    power: power,
-                    personality: personality,
-                    equipment: equipment,
-                    physicalInfo: physicalInfo,
-
-                    hobbies: hobbies,
-                    interests: interests,
-                    occupation: occupation,
+                    ...action.payload.attributes,
                     images: newImageArr
                 }
             }
