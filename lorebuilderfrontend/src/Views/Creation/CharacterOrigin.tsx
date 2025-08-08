@@ -7,9 +7,11 @@ import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import NavigationValidator from '../../Components/NavigationValidator.tsx'  
+import NavigationValidator from '../../Components/NavigationValidator.tsx'
+import GoBack from '../../Controllers/GoBack.tsx'
 
-export function CharacterOrigin () {
+
+export default function CharacterOrigin () {
     const [present, setPresent] = useState('');
     const [physical, setPhysical] = useState('');
     const [binary, setBinary] = useState(0);
@@ -46,11 +48,11 @@ export function CharacterOrigin () {
     return (
         <>
             <div className='container-div-characters'>
-                <Link to = '/' >
-                    <Button className='absolute -bottom-80 -right-10' sx={{ outline: 'none !important'}} variant='soft'>
+                
+                    <Button onClick = {() => GoBack('/', nav)} className='absolute -bottom-80 -right-10' sx={{ outline: 'none !important'}} variant='soft'>
                         <ArrowBackIcon />
                     </Button>
-                </Link>
+                
 
                 <img src='/characterorigin.gif' width={350} height={350} className='m-auto mr-11 grid rounded-md' />                
                 <Box sx={{

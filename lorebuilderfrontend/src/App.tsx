@@ -11,10 +11,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Login } from './Views/Navigation/Login.tsx'
 import { Home } from './Views/Navigation/Home.tsx'
 import { Characters } from './Views/Navigation/Characters.tsx'
-import { CharacterOrigin } from './Views/Creation/CharacterOrigin.tsx'
 import { Layout } from './Views/Recurring/Layout.tsx'
 import store from './Redux/store.tsx'
+
+// Pages
+import CharacterOrigin  from './Views/Creation/CharacterOrigin.tsx'
 import CharacterOriginPast from './Views/Creation/CharacterOriginPast.tsx'
+import CharacterOriginFeatures from './Views/Creation/CharacterOriginFeatures.tsx'
 
 const client = new QueryClient();
 
@@ -56,7 +59,7 @@ function App() {
             <Route path='/characters' element={<Characters />} />
             <Route path='/characters/creation/origins' element={<CharacterOrigin />} />
             <Route path='/characters/creation/origins/past' element={<CharacterOriginPast />} />
-            <Route path='/characters/creation/origins-images' element={<Characters />} />
+            <Route path='/characters/creation/origins/features' element={<CharacterOriginFeatures />} />
             <Route path='/characters/creation/personal-attributes' element={<Characters />} />
             <Route path='/characters/creation/personal-attributes-images' element={<Characters />} />
             <Route path='/characters/creation/present-goals' element={<Characters />} />

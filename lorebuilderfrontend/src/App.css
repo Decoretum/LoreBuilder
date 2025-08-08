@@ -77,3 +77,18 @@ justify-content: center;
     background-position: center;
     z-index: 2;
     }
+
+    .container-div-features{ 
+      position: relative;
+      display: flex;
+      height: 110vh;
+      width: 90vw; 
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      background-image: url('/forestbackground_upscaled.png');
+      background-size: 100% 150%;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 2;
+      }

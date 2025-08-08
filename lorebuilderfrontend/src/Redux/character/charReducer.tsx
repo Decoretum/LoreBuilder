@@ -7,9 +7,9 @@ type stateTypeOrigins = {
 
 
 type stateTypeAttributes = {
-    magic: string,
-    skills: string,
-    power: string,
+    magic: string, //
+    skills: string, //
+    strength: string, //
     personality: string, //
     equipment: string,
     physicalInfo: string, //
@@ -30,7 +30,7 @@ let initialState = {
     attributes: {
         magic: '',
         skills: '',
-        power: '',
+        strength: '',
         personality: '',
         equipment: '',
         physicalInfo: '',

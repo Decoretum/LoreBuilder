@@ -8,6 +8,7 @@ import StoreCharText from '../../Controllers/StoreCharText.tsx'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
+import GoBack from "../../Controllers/GoBack.tsx";
 
 export default function CharacterOriginPast () {
     const [past, setPast] = useState('');
@@ -24,8 +25,8 @@ export default function CharacterOriginPast () {
         }
         else {
             setBinary(0);
-            // nav('/characters/creation/origins/past');
-            nav('/')
+            nav('/characters/creation/origins/features');
+            // nav('/')
         }  
     }
 
@@ -50,11 +51,9 @@ export default function CharacterOriginPast () {
     return (
         <>
             <div className='container-div-characters'>
-                <Link to = '/characters/creation/origins' >
-                    <Button className='absolute -bottom-80 -right-10' sx={{ outline: 'none !important'}} variant='soft'>
+                    <Button onClick = {() => GoBack('/characters/creation/origins', nav)} className='absolute -bottom-80 -right-10' sx={{ outline: 'none !important'}} variant='soft'>
                         <ArrowBackIcon />
                     </Button>
-                </Link>
 
                 <img src='/past2gif.gif' width={400} height={200} className='m-auto mr-8 grid rounded-md' />                
                 <Box sx={{

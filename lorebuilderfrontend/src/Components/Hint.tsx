@@ -14,7 +14,11 @@ export default function Hint (props = {props}) {
             val = 'Narrate the events and phenomena which\n made the current you, You';
             break;
         case 'personality':
-            val = 'Describe your restrained and unhinged self, unbeknownst to the concept of akwardness'
+            val = 'Describe your restrained and unhinged self, unbeknownst to the concept of akwardness';
+            break;
+        case 'skills':
+            val = 'What can you do, for real?';
+            break;
     }
 
     return (
