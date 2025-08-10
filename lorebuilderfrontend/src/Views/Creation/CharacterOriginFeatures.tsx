@@ -39,8 +39,7 @@ export default function CharacterOriginFeatures () {
         }
         else {
             setBinary(0);
-            // nav('/characters/creation/origins/past');
-            nav('/')
+            nav('/characters/creation/personal-attributes');
         }  
     }
 
@@ -48,9 +47,9 @@ export default function CharacterOriginFeatures () {
         let imgName = event.target.getAttribute('data-value')
         if (imgName === null)
         imgName = event.target.parentElement.getAttribute('data-value');
-    
+  
         setImg(imgName);
-        console.log(event)
+
         if (imgName === '/skills.png') {
             setWidth(400);
             setHeight(200);
