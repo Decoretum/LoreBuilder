@@ -21,6 +21,10 @@ export default function CharacterOriginFeatures () {
     const [strength, setStrength] = useState('');
     const [magic, setMagic] = useState('');
     const [binary, setBinary] = useState(0);
+    const [img, setImg] = useState('/skills.png')
+    const [imageEl, setImageEl] = useState('/skills.png');
+    const [width, setWidth] = useState(400);
+    const [height, setHeight] = useState(200);
     const nav = useNavigate();
 
     function stateValidator() {
@@ -40,6 +44,22 @@ export default function CharacterOriginFeatures () {
         }  
     }
 
+    function changeImage(event : Event, newValue : string) {
+        let imgName = event.target.getAttribute('data-value')
+        if (imgName === null)
+        imgName = event.target.parentElement.getAttribute('data-value');
+    
+        setImg(imgName);
+        console.log(event)
+        if (imgName === '/skills.png') {
+            setWidth(400);
+            setHeight(200);
+        } else {
+            setWidth(300);
+            setHeight(500);
+        }
+    }
+
     function resetBinary() {
         setBinary(0);
     }
@@ -50,8 +70,6 @@ export default function CharacterOriginFeatures () {
         let storeSkills = store.getState().char.attributes.skills;
         let storeStrength = store.getState().char.attributes.strength;
         let storeMagic = store.getState().char.attributes.magic;
-
-        console.log(storeSkills)
 
         if (storeSkills !== '' || null)
         setSkills(storeSkills);
@@ -68,20 +86,22 @@ export default function CharacterOriginFeatures () {
     return (
         <>
             <div className='container-div-features'>
-                <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} className='absolute -bottom-80 right-60' sx={{ outline: 'none !important'}} variant='soft'>
+                <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} className='absolute -bottom-80 -right-5' sx={{ outline: 'none !important'}} variant='soft'>
                     <ArrowBackIcon />
                 </Button>
 
+                <img src={img} width={width} height={height} className='m-auto mr-8 grid rounded-md' />                
+                
                 <Tabs
-                defaultValue = {0}
+                onChange = {changeImage}
                 aria-label="Vertical tabs"
                 orientation="vertical"
                 sx={{ minWidth: 500, height: 320, borderRadius: '10px', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
                 >
                 <TabList>
-                    <Tab sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
-                    <Tab sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
-                    <Tab sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
+                    <Tab data-value = '/skills.png' sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
+                    <Tab data-value = '/strength.png' sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
+                    <Tab data-value = '/pastgif.gif' sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
                 </TabList>
 
                 <TabPanel value={0}>
@@ -162,7 +182,7 @@ export default function CharacterOriginFeatures () {
 
 
                
-                <Button onClick={() => stateValidator()} className='absolute -bottom-80 left-60' sx={{ outline: 'none !important'}} variant='soft'>
+                <Button onClick={() => stateValidator()} className='absolute -bottom-80 right-5' sx={{ outline: 'none !important'}} variant='soft'>
                     <ArrowForwardIcon />
                 </Button>
 
