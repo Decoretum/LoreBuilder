@@ -53,10 +53,11 @@ export default function CharacterOriginFeatures () {
         if (imgName === '/skills.png') {
             setWidth(400);
             setHeight(200);
-        } else {
-            setWidth(300);
-            setHeight(500);
-        }
+            return;
+        } 
+        setWidth(300);
+        setHeight(500);
+        
     }
 
     function resetBinary() {
