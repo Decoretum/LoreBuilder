@@ -1,5 +1,5 @@
 import { Box, Button, Card, Grid, IconButton, Textarea, Typography, Tooltip } from "@mui/joy";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { Character } from '../../Controllers/Character.tsx'
 import { Link, useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -22,7 +22,6 @@ export default function CharacterOriginFeatures () {
     const [magic, setMagic] = useState('');
     const [binary, setBinary] = useState(0);
     const [img, setImg] = useState('/skills.png')
-    const [imageEl, setImageEl] = useState('/skills.png');
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(200);
     const nav = useNavigate();
@@ -43,7 +42,7 @@ export default function CharacterOriginFeatures () {
         }  
     }
 
-    function changeImage(event : Event, newValue : string) {
+    function changeImage(event : SyntheticEvent, newValue : string) {
         let imgName = event.target.getAttribute('data-value')
         if (imgName === null)
         imgName = event.target.parentElement.getAttribute('data-value');

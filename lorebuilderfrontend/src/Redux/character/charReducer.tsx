@@ -5,13 +5,23 @@ type stateTypeOrigins = {
     images: Array<string> // Filepath
     }
 
+type equipmentType = {
+    weaponMainHand: Array<string>, // array = [name, description, image]
+    weaponOffHand: Array<string>, // array = [name, description, image]
+    accessories: Array<object>, // array = [ Hashmap<accessoryName, description> ]
+    headGear: Array<string>, // array = [name, description, image]
+    chestGear: Array<string>, // array = [name, description, image]
+    backGear: Array<string>, // array = [name, description, image]
+    leggingGear: Array<string>, // array = [name, description, image]
+    footWear: Array<string> // array = [name, description, image]
+}
 
 type stateTypeAttributes = {
     magic: string, //
     skills: string, //
     strength: string, //
     personality: string, //
-    equipment: string,
+    equipment: equipmentType,
     physicalInfo: string, //
 
     hobbies: string,
@@ -32,7 +42,16 @@ let initialState = {
         skills: '',
         strength: '',
         personality: '',
-        equipment: '',
+        equipment: {
+            weaponMainHand: [''],
+            weaponOffHand: [''],
+            accessories: [{}],
+            headGear: [''],
+            chestGear: [''],
+            backGear: [''],
+            leggingGear: [''],
+            footWear: ['']
+        },
         physicalInfo: '',
 
         hobbies: '',
