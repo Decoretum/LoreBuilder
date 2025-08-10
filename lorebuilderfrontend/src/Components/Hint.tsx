@@ -19,6 +19,12 @@ export default function Hint (props = {props}) {
         case 'skills':
             val = 'What can you do, for real?';
             break;
+        case 'strength':
+            val = 'What sets you apart from the others? What empowers you and drives you forward?';
+            break;
+        case 'magic':
+            val = 'Are you capable of otherworldly feats?';
+            break;
     }
 
     return (

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "0XG4uDAyCqtSkJPtfSc7MMnJ8iNF6AQHsN8ifXofJOY=",
+  "Source": "csharpbackend",
+  "BasePath": "_content/csharpbackend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
