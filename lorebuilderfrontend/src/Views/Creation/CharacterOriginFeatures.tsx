@@ -1,7 +1,6 @@
-import { Box, Button, Card, Grid, IconButton, Textarea, Typography, Tooltip } from "@mui/joy";
+import { Box, Button, Textarea, Typography } from "@mui/joy";
 import { SyntheticEvent, useEffect, useState } from "react";
-import { Character } from '../../Controllers/Character.tsx'
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
@@ -9,11 +8,18 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
+import StateValidator from "../../Controllers/StateValidator.tsx";
 
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
+
+type comp  = {
+    class: 'attributes' | 'origins',
+    field: string
+}
+type stateArr = Array<comp>;
 
 
 export default function CharacterOriginFeatures () {
@@ -25,7 +31,12 @@ export default function CharacterOriginFeatures () {
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(200);
     const nav = useNavigate();
-
+    const storeFields : stateArr  = [
+        {'class' : 'attributes', 'field' : 'skills'}, 
+        {'class' : 'attributes', 'field' : 'strength'}, 
+        {'class': 'attributes', 'field' : 'magic'}
+]
+    
     function stateValidator() {
         let bad = ' ' || null || '';
         let storeSkills = store.getState().char.attributes.skills.trim();
@@ -42,7 +53,7 @@ export default function CharacterOriginFeatures () {
         }  
     }
 
-    function changeImage(event : SyntheticEvent, newValue : string) {
+    function changeImage(event : SyntheticEvent) {
         let imgName = event.target.getAttribute('data-value')
         if (imgName === null)
         imgName = event.target.parentElement.getAttribute('data-value');
@@ -61,6 +72,10 @@ export default function CharacterOriginFeatures () {
 
     function resetBinary() {
         setBinary(0);
+    }
+
+    function setBinaryChild(){
+        setBinary(1);
     }
 
 
@@ -181,7 +196,7 @@ export default function CharacterOriginFeatures () {
 
 
                
-                <Button onClick={() => stateValidator()} className='absolute -bottom-80 right-5' sx={{ outline: 'none !important'}} variant='soft'>
+                <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features')} className='absolute -bottom-80 right-5' sx={{ outline: 'none !important'}} variant='soft'>
                     <ArrowForwardIcon />
                 </Button>
 

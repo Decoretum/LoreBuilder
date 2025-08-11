@@ -9,29 +9,27 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
+import StateValidator from "../../Controllers/StateValidator.tsx";
+
+type comp  = {
+    class: 'attributes' | 'origins',
+    field: string
+}
+type stateArr = Array<comp>;
 
 export default function CharacterOriginPast () {
     const [past, setPast] = useState('');
     const [personality, setPersonality] = useState('');
     const [binary, setBinary] = useState(0);
     const nav = useNavigate();
-
-    function stateValidator() {
-        let bad = ' ' || null || '';
-        let pastInf = store.getState().char.origins.past.trim();
-        let personInf = store.getState().char.attributes.personality.trim();
-        if ((pastInf === bad || pastInf.length === 0) || (personInf === bad || personInf.length === 0)) {
-            setBinary(1);
-        }
-        else {
-            setBinary(0);
-            nav('/characters/creation/origins/features');
-            // nav('/')
-        }  
-    }
+    const storeFields : stateArr  = [{'class' : 'attributes', 'field' : 'personality'}, {'class' : 'origins', 'field' : 'present'}]
 
     function resetBinary() {
         setBinary(0);
+    }
+
+    function setBinaryChild(){
+        setBinary(1);
     }
 
 
@@ -130,7 +128,7 @@ export default function CharacterOriginPast () {
                     sx={{ minWidth: 300, minHeight: 400 }}
                     />
                 </Box>
-                <Button onClick={() => stateValidator()} className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
+                <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features')} className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
                     <ArrowForwardIcon />
                 </Button>
 
