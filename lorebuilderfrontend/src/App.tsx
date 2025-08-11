@@ -18,6 +18,7 @@ import store from './Redux/store.tsx'
 import CharacterOrigin  from './Views/Creation/CharacterOrigin.tsx'
 import CharacterOriginPast from './Views/Creation/CharacterOriginPast.tsx'
 import CharacterOriginFeatures from './Views/Creation/CharacterOriginFeatures.tsx'
+import CharacterPersonalAttributes from './Views/Creation/CharacterPersonalAttributes.tsx'
 
 const client = new QueryClient();
 
