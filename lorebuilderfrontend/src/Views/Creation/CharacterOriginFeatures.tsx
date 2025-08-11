@@ -37,21 +37,6 @@ export default function CharacterOriginFeatures () {
         {'class': 'attributes', 'field' : 'magic'}
 ]
     
-    function stateValidator() {
-        let bad = ' ' || null || '';
-        let storeSkills = store.getState().char.attributes.skills.trim();
-        let storeStrength = store.getState().char.attributes.strength.trim();
-        let storeMagic = store.getState().char.attributes.magic.trim();
-        if ((storeSkills === bad || storeSkills.length === 0) 
-        || (storeStrength === bad || storeStrength.length === 0)
-        || (storeMagic === bad || storeMagic.length === 0)) {
-            setBinary(1);
-        }
-        else {
-            setBinary(0);
-            nav('/characters/creation/personal-attributes');
-        }  
-    }
 
     function changeImage(event : SyntheticEvent) {
         let imgName = event.target.getAttribute('data-value')
