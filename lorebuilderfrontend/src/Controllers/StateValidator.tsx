@@ -1,6 +1,5 @@
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { NavigateFunction } from "react-router-dom";
 import store from '../Redux/store'
-import { useEffect } from "react";
 
 type comp  = {
     class: 'attributes' | 'origins',
