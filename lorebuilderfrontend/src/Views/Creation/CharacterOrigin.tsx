@@ -44,92 +44,103 @@ export default function CharacterOrigin () {
 
     return (
         <>
-            <div className='container-div-characters'>
-                
-                    <Button onClick = {() => GoBack('/', nav)} className='absolute -bottom-80 -right-10' sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowBackIcon />
-                    </Button>
-                
+            <div className='container-div-past'>
+                <Box className='flex flex-col'>
+                    {/* The images and textareas */}
+                    <Box className='flex flex-row mt-40'>
+                        <img src='/characterorigin.gif' width={350} height={350} className='m-auto -mt-4 mr-11 grid rounded-md' />                
+                        <Box sx={{
+                            width: '50%',
+                            height: '57%',
+                            maxWidth: 300,
+                            maxheight: 300,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                            marginRight: '2vw',
+                            marginTop: '-10vh'
+                        }}>
+                        <Typography level='h3' className=''> What are you at the present? </Typography>
 
-                <img src='/characterorigin.gif' width={350} height={350} className='m-auto mr-11 grid rounded-md' />                
-                <Box sx={{
-                    width: '50%',
-                    height: '57%',
-                    maxWidth: 300,
-                    maxheight: 300,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    marginRight: '2vw',
-                    marginTop: '-10vh'
-                }}>
-                    <Typography level='h3' className=''> What are you at the present? </Typography>
-
-                    <Textarea
-                    placeholder="Type in here…"
-                    value={present}
-                    onChange={(event) => {
-                        setPresent(event.target.value);
-                        StoreCharText('/origins/present', event.target.value);
-                       
-                    }}
-                    minRows={2}
-                    maxRows={4}
-                    startDecorator = {
-                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'present' />
-                        </Box>
-                    }
-                    endDecorator = {
-                        <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                        {present.length} character(s)
-                        </Typography>
-                    }
-                    sx={{ minWidth: 300, minHeight: 400 }}
-                    />
-                </Box>
-
-                <Box sx={{
-                    width: '50%',
-                    height: '57%',
-                    maxWidth: 300,
-                    maxheight: 300,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    marginRight: '2vw',
-                    marginTop: '-10vh'
-                }}>
-                    <Typography level='h3' className=''> Describe your physical self </Typography>
-
-                    <Textarea
-                    placeholder="Type in here…"
-                    value={physical}
-                    onChange={(event) => {
-                        setPhysical(event.target.value);
-                        StoreCharText('/attributes/physicalInfo', event.target.value);
+                        <Textarea
+                        placeholder="Type in here…"
+                        value={present}
+                        onChange={(event) => {
+                            setPresent(event.target.value);
+                            StoreCharText('/origins/present', event.target.value);
                         
-                    }}
-                    minRows={2}
-                    maxRows={4}
-                    startDecorator =  
-                    {
-                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'physical' />
+                        }}
+                        minRows={2}
+                        maxRows={4}
+                        startDecorator = {
+                            <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                <Hint props = 'present' />
+                            </Box>
+                        }
+                        endDecorator = {
+                            <Typography level="body-xs" sx={{ ml: 'auto' }}>
+                            {present.length} character(s)
+                            </Typography>
+                        }
+                        sx={{ minWidth: 300, minHeight: 400 }}
+                        />
                         </Box>
-                    }
-                    endDecorator = {
-                    <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                        {physical.length} character(s)
-                    </Typography>
-                    }
-                    sx={{ minWidth: 300, minHeight: 400 }}
-                    />
-                </Box>
 
-                    <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/past')} className='absolute -bottom-80 right-10' sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowForwardIcon />
-                    </Button>
+                        <Box sx={{
+                            width: '50%',
+                            height: '57%',
+                            maxWidth: 300,
+                            maxheight: 300,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                            marginRight: '2vw',
+                            marginTop: '-10vh'
+                        }}>
+                        <Typography level='h3' className=''> Describe your physical self </Typography>
+
+                        <Textarea
+                        placeholder="Type in here…"
+                        value={physical}
+                        onChange={(event) => {
+                            setPhysical(event.target.value);
+                            StoreCharText('/attributes/physicalInfo', event.target.value);
+                            
+                        }}
+                        minRows={2}
+                        maxRows={4}
+                        startDecorator =  
+                        {
+                            <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                <Hint props = 'physical' />
+                            </Box>
+                        }
+                        endDecorator = {
+                        <Typography level="body-xs" sx={{ ml: 'auto' }}>
+                            {physical.length} character(s)
+                        </Typography>
+                        }
+                        sx={{ minWidth: 300, minHeight: 400 }}
+                        />
+                        </Box>
+                    </Box>
+                </Box>
+                
+                <Box className='mt-10'>
+                    <div className='arrow-container'>
+                        <Button onClick = {() => GoBack('/', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowBackIcon />
+                        </Button>
+
+                        <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/past')} className='ml-8' sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowForwardIcon />
+                        </Button>
+                    </div>
+                </Box>
+            
+
+                
+
 
                 { NavigationValidator(binary, resetBinary) }
             </div>            

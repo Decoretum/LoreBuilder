@@ -10,6 +10,7 @@ type stateArr = Array<comp>
 export default function StateValidator(nav : NavigateFunction, arrFunctions : Array<Function>, arr : stateArr, nextPath : string) {
     let bad = ' ' || null || '';
     let state = store.getState();
+    console.log(arr)
 
     // Iterate through the states
     for (let i = 0; i <= Object.keys(arr).length - 1; i++) {
