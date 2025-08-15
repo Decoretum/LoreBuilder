@@ -61,7 +61,7 @@ function App() {
             <Route path='/characters/creation/origins' element={<CharacterOrigin />} />
             <Route path='/characters/creation/origins/past' element={<CharacterOriginPast />} />
             <Route path='/characters/creation/origins/features' element={<CharacterOriginFeatures />} />
-            <Route path='/characters/creation/personal-attributes' element={<Characters />} />
+            <Route path='/characters/creation/personal-attributes' element={<CharacterPersonalAttributes />} />
             <Route path='/characters/creation/personal-attributes-images' element={<Characters />} />
             <Route path='/characters/creation/present-goals' element={<Characters />} />
             <Route path='/characters/creation/present-goals-images' element={<Characters />} />

@@ -1,4 +1,4 @@
-import { Box, Button, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Textarea, Typography, styled } from "@mui/joy";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -21,6 +21,12 @@ type comp  = {
 }
 type stateArr = Array<comp>;
 
+const StyledTab = styled(Tab)(({ theme, color = 'primary' }) => ({
+    '&:hover': {
+      color: theme.palette[color].plainColor,
+      backgroundColor: 'green',
+    },
+  }));
 
 export default function CharacterOriginFeatures () {
     const [skills, setSkills] = useState('');
@@ -36,6 +42,8 @@ export default function CharacterOriginFeatures () {
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
 ]
+
+
     
 
     function changeImage(event : SyntheticEvent) {
@@ -85,105 +93,113 @@ export default function CharacterOriginFeatures () {
     return (
         <>
             <div className='container-div-features'>
-                <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} className='absolute -bottom-80 -right-5' sx={{ outline: 'none !important'}} variant='soft'>
-                    <ArrowBackIcon />
-                </Button>
-
-                <img src={img} width={width} height={height} className='m-auto mr-8 grid rounded-md' />                
+            <Box className='flex flex-col'>
+                {/* The images and textareas */}
+                <Box className='flex flex-row mt-40'>
+                    <img src={img} width={width} height={height} className='m-auto mr-8 grid rounded-md' />                
                 
-                <Tabs
-                onChange = {changeImage}
-                aria-label="Vertical tabs"
-                orientation="vertical"
-                sx={{ minWidth: 500, height: 320, borderRadius: '10px', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
-                >
-                <TabList>
-                    <Tab data-value = '/skills.png' sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
-                    <Tab data-value = '/strength.png' sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
-                    <Tab data-value = '/pastgif.gif' sx = {{ '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
-                </TabList>
+                    <Tabs
+                    onChange = {changeImage}
+                    aria-label="Vertical tabs"
+                    orientation="vertical"
+                    sx={{ minWidth: 500, height: 320, borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
+                    >
+                        <TabList>
+                            <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
+                            <Tab variant='plain' data-value = '/strength.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
+                            <Tab variant='plain' data-value = '/pastgif.gif' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
+                        </TabList>
 
-                <TabPanel value={0}>
-                <Textarea
-                    placeholder="Type in here…"
-                    value={skills}
-                    onChange={(event) => {
-                        setSkills(event.target.value);
-                        StoreCharText('/attributes/skills', event.target.value);
-                       
-                    }}
-                    minRows={2}
-                    maxRows={4}
-                    startDecorator = {
-                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'skills' />
-                        </Box>
-                    }
-                    endDecorator = {
-                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                        {skills.length} character(s)
-                        </Typography>
-                    }
-                    sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                    />
-                </TabPanel>
+                        <TabPanel value={0}>
+                            <Textarea
+                                placeholder="Type in here…"
+                                value={skills}
+                                onChange={(event) => {
+                                    setSkills(event.target.value);
+                                    StoreCharText('/attributes/skills', event.target.value);
+                                
+                                }}
+                                minRows={2}
+                                maxRows={4}
+                                startDecorator = {
+                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                        <Hint props = 'skills' />
+                                    </Box>
+                                }
+                                endDecorator = {
+                                    <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                    {skills.length} character(s)
+                                    </Typography>
+                                }
+                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
+                                />
+                        </TabPanel>
+                    
+                        <TabPanel value={1}>
+                            <Textarea
+                                placeholder="Type in here…"
+                                value={strength}
+                                onChange={(event) => {
+                                    setStrength(event.target.value);
+                                    StoreCharText('/attributes/strength', event.target.value);
+                                
+                                }}
+                                minRows={2}
+                                maxRows={4}
+                                startDecorator = {
+                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                        <Hint props = 'strength' />
+                                    </Box>
+                                }
+                                endDecorator = {
+                                    <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                    {strength.length} character(s)
+                                    </Typography>
+                                }
+                                sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
+                            />
+                        </TabPanel>
+
+                        <TabPanel value={2}>
+                            <Textarea
+                            placeholder="Type in here…"
+                            value={magic}
+                            onChange={(event) => {
+                                setMagic(event.target.value);
+                                StoreCharText('/attributes/magic', event.target.value);
+                            
+                            }}
+                            minRows={2}
+                            maxRows={4}
+                            startDecorator = {
+                                <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                    <Hint props = 'magic' />
+                                </Box>
+                            }
+                            endDecorator = {
+                                <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                {magic.length} character(s)
+                                </Typography>
+                            }
+                            sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
+                            />
+                        </TabPanel>
+                    </Tabs>
+
+                </Box>
+
+                <div className='arrow-container mt-44'>
+                    <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} sx={{ outline: 'none !important'}} variant='soft'>
+                        <ArrowBackIcon />
+                    </Button>
+                    <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/personal-attributes')} sx={{ outline: 'none !important'}} variant='soft'>
+                        <ArrowForwardIcon />
+                    </Button>
+                </div>
+            </Box>
+
+                    
                 
-                <TabPanel value={1}>
-                <Textarea
-                    placeholder="Type in here…"
-                    value={strength}
-                    onChange={(event) => {
-                        setStrength(event.target.value);
-                        StoreCharText('/attributes/strength', event.target.value);
-                       
-                    }}
-                    minRows={2}
-                    maxRows={4}
-                    startDecorator = {
-                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'strength' />
-                        </Box>
-                    }
-                    endDecorator = {
-                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                        {strength.length} character(s)
-                        </Typography>
-                    }
-                    sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                    />
-                </TabPanel>
-
-                <TabPanel value={2}>
-                    <Textarea
-                    placeholder="Type in here…"
-                    value={magic}
-                    onChange={(event) => {
-                        setMagic(event.target.value);
-                        StoreCharText('/attributes/magic', event.target.value);
-                       
-                    }}
-                    minRows={2}
-                    maxRows={4}
-                    startDecorator = {
-                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                            <Hint props = 'magic' />
-                        </Box>
-                    }
-                    endDecorator = {
-                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                        {magic.length} character(s)
-                        </Typography>
-                    }
-                    sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                    />
-                </TabPanel>
-                </Tabs>
-
-
-               
-                <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features')} className='absolute -bottom-80 right-5' sx={{ outline: 'none !important'}} variant='soft'>
-                    <ArrowForwardIcon />
-                </Button>
 
                 { NavigationValidator(binary, resetBinary) }
             </div>            

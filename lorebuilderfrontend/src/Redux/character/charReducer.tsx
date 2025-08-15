@@ -17,7 +17,7 @@ type equipmentType = {
 }
 
 type stateTypeAttributes = {
-    magic: string, //
+    magic: string, //   
     skills: string, //
     strength: string, //
     personality: string, //
