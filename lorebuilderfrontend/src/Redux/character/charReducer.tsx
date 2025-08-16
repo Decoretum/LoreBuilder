@@ -28,6 +28,9 @@ type stateTypeAttributes = {
     interests: string,
     occupation: string,
     images: Array<string> // Filepath
+
+    title: string
+    name: string
 }
 
 let initialState = {
@@ -57,7 +60,10 @@ let initialState = {
         hobbies: '',
         interests: '',
         occupation: '',
-        images: ['']
+        images: [''],
+
+        title: '',
+        name: ''
     }
 }
 

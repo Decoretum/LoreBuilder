@@ -1,4 +1,4 @@
-import { Box, Button, Textarea, Typography, styled } from "@mui/joy";
+import { Box, Button, Textarea, Typography } from "@mui/joy";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -15,36 +15,39 @@ import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
 
+import CircularProgress from '@mui/joy/CircularProgress';
+
 type comp  = {
     class: 'attributes' | 'origins',
     field: string
 }
 type stateArr = Array<comp>;
 
-const StyledTab = styled(Tab)(({ theme, color = 'primary' }) => ({
-    '&:hover': {
-      color: theme.palette[color].plainColor,
-      backgroundColor: 'green',
-    },
-  }));
-
 export default function CharacterOriginFeatures () {
     const [skills, setSkills] = useState('');
     const [strength, setStrength] = useState('');
     const [magic, setMagic] = useState('');
     const [binary, setBinary] = useState(0);
+
+    // Image settings
     const [img, setImg] = useState('/skills.png')
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(200);
-    const [arrowHeight, setArrowHeight] = useState(40);
+    const [imgLoading, setImageLoading] = useState(true)
+
+    // Arrow group
+    const [arrowHeight, setArrowHeight] = useState(5);
     const nav = useNavigate();
+
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
 ]
 
-
+    function imageLoad() {
+        setImageLoading(true);
+    }
     
 
     function changeImage(event : SyntheticEvent) {
@@ -57,14 +60,16 @@ export default function CharacterOriginFeatures () {
         if (imgName === '/skills.png') {
             setWidth(400);
             setHeight(200);
-            setArrowHeight(40);
+            setArrowHeight(5);
             return;
         } 
         setWidth(300);
         setHeight(450);
 
-        if (imgName === '/strength.png') setArrowHeight(24);
-        else setArrowHeight(28)
+        if (imgName === '/strength.png') {
+            setArrowHeight(5);
+        } 
+        else if (imgName === '/pastgif.gif') setArrowHeight(5)
         
     }
 
@@ -100,14 +105,16 @@ export default function CharacterOriginFeatures () {
             <div className='container-div-features'>
             <Box className='flex flex-col'>
                 {/* The images and textareas */}
-                <Box className='flex flex-row mt-40'>
-                    <img src={img} width={width} height={height} className='m-auto mr-8 grid rounded-md' />                
-                
+                <Box className='flex flex-row mt-40' sx = {{ minHeight: 450 }}>
+                    <Box className='ml-20' sx = {{ width: 400 }}>
+                        <img onLoad={imageLoad} src={img} width={width} height={height} className={`m-auto mr-8 grid rounded-md`} />                
+                    </Box>
+
                     <Tabs
                     onChange = {changeImage}
                     aria-label="Vertical tabs"
                     orientation="vertical"
-                    sx={{ minWidth: 500, height: 320, borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
+                    sx={{ width: 500, height: 320, marginLeft: '3vw', borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
                     >
                         <TabList>
                             <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
@@ -136,7 +143,7 @@ export default function CharacterOriginFeatures () {
                                     {skills.length} character(s)
                                     </Typography>
                                 }
-                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
+                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
                                 />
                         </TabPanel>
                     
@@ -193,7 +200,7 @@ export default function CharacterOriginFeatures () {
 
                 </Box>
                 
-                <Box className={`flex flex-row mt-${arrowHeight}`}>
+                <Box className={`flex flex-row`} sx = {{ marginTop: arrowHeight }}>
                     <div className='arrow-container'>
                         <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} sx={{ outline: 'none !important'}} variant='soft'>
                             <ArrowBackIcon />

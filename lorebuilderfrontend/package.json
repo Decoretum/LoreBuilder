@@ -15,6 +15,7 @@
     "@mui/joy": "^5.0.0-beta.52",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.9.0",
+    "ldrs": "^1.1.7",
     "react": "^19.0.0",
     "react-cookie": "^8.0.1",
     "react-dom": "^19.0.0",
