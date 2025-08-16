@@ -16,11 +16,11 @@ export default function NavigationValidator(binary : Number, resetBinary : Funct
 
     return (
         hide === false || (param === 1) && (
-            <Box sx={{ width: '50%', position: 'absolute' }} className = 'bottom-5'>
             <Alert 
             variant='soft'
             hidden = {hide}
             color = 'warning'
+            sx = {{ width: '50%', position: 'absolute', right: '20%'}}
             endDecorator= {
                 <IconButton variant='soft' onClick = {() => {
                     setHide(true);
@@ -31,7 +31,6 @@ export default function NavigationValidator(binary : Number, resetBinary : Funct
                 </IconButton>
             }
             > You have incomplete fields! </Alert>  
-        </Box>
         ) 
     )
 }

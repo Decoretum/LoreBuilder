@@ -36,6 +36,7 @@ export default function CharacterOriginFeatures () {
     const [img, setImg] = useState('/skills.png')
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(200);
+    const [arrowHeight, setArrowHeight] = useState(40);
     const nav = useNavigate();
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
@@ -56,10 +57,14 @@ export default function CharacterOriginFeatures () {
         if (imgName === '/skills.png') {
             setWidth(400);
             setHeight(200);
+            setArrowHeight(40);
             return;
         } 
         setWidth(300);
-        setHeight(500);
+        setHeight(450);
+
+        if (imgName === '/strength.png') setArrowHeight(24);
+        else setArrowHeight(28)
         
     }
 
@@ -187,21 +192,21 @@ export default function CharacterOriginFeatures () {
                     </Tabs>
 
                 </Box>
-
-                <div className='arrow-container mt-44'>
-                    <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowBackIcon />
-                    </Button>
-                    <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/personal-attributes')} sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowForwardIcon />
-                    </Button>
-                </div>
-            </Box>
-
-                    
                 
+                <Box className={`flex flex-row mt-${arrowHeight}`}>
+                    <div className='arrow-container'>
+                        <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowBackIcon />
+                        </Button>
 
-                { NavigationValidator(binary, resetBinary) }
+                        { NavigationValidator(binary, resetBinary) }
+
+                        <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/personal-attributes')} sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowForwardIcon />
+                        </Button>
+                    </div>
+                </Box>
+            </Box>
             </div>            
         </>
     )
