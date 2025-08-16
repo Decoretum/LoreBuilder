@@ -48,7 +48,7 @@ export default function CharacterOrigin () {
                 <Box className='flex flex-col'>
                     {/* The images and textareas */}
                     <Box className='flex flex-row mt-40'>
-                        <img src='/characterorigin.gif' width={350} height={350} className='m-auto -mt-4 mr-11 grid rounded-md' />                
+                        <img src='/characterorigin.gif' width={330} height={300} className='m-auto -mt-4 mr-11 grid rounded-md' />                
                         <Box sx={{
                             width: '50%',
                             height: '57%',
@@ -125,24 +125,21 @@ export default function CharacterOrigin () {
                         </Box>
                     </Box>
                 </Box>
-                
-                <Box className='mt-10'>
-                    <div className='arrow-container'>
-                        <Button onClick = {() => GoBack('/', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
-                            <ArrowBackIcon />
-                        </Button>
+                    
+                {/* Arrow buttons and prompt */}
+                <Box className='flex flex-row mt-14'>
+                        <div className='arrow-container'>
+                            <Button onClick = {() => GoBack('/', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                                <ArrowBackIcon />
+                            </Button>
 
-                        <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/past')} className='ml-8' sx={{ outline: 'none !important'}} variant='soft'>
-                            <ArrowForwardIcon />
-                        </Button>
-                    </div>
-                </Box>
-            
+                            { NavigationValidator(binary, resetBinary) }
 
-                
-
-
-                { NavigationValidator(binary, resetBinary) }
+                            <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/past')} className='ml-45' sx={{ outline: 'none !important'}} variant='soft'>
+                                <ArrowForwardIcon />
+                            </Button>
+                        </div>
+                </Box>               
             </div>            
         </>
     )

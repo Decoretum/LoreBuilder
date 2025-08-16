@@ -128,11 +128,14 @@ export default function CharacterOriginPast () {
                         </Box>
                     </Box>
                     
-                    <Box className='mt-28'>
+                    <Box className='flex flex-row mt-24'>
                         <div className='arrow-container'>
                             <Button onClick = {() => GoBack('/characters/creation/origins', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
                                 <ArrowBackIcon />
                             </Button>
+
+                            { NavigationValidator(binary, resetBinary) }
+
                             <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features')} className='' sx={{ outline: 'none !important'}} variant='soft'>
                                 <ArrowForwardIcon />
                             </Button>
@@ -141,7 +144,7 @@ export default function CharacterOriginPast () {
                 </Box>
                     
 
-                { NavigationValidator(binary, resetBinary) }
+                
             </div>            
         </>
     )
