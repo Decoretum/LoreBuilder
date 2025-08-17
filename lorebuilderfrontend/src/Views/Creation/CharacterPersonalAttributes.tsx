@@ -1,4 +1,4 @@
-import { Box, Button, Textarea, Typography, styled } from "@mui/joy";
+import { Box, Button, Card, CardContent, Modal, ModalClose, ModalDialog, Textarea, Typography, styled } from "@mui/joy";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -21,21 +21,9 @@ type comp  = {
 }
 type stateArr = Array<comp>;
 
-const StyledTab = styled(Tab)(({ theme, color = 'primary' }) => ({
-    '&:hover': {
-      color: theme.palette[color].plainColor,
-      backgroundColor: 'green',
-    },
-  }));
-
 export default function CharacterPersonalAttributes () {
-    const [skills, setSkills] = useState('');
-    const [strength, setStrength] = useState('');
-    const [magic, setMagic] = useState('');
     const [binary, setBinary] = useState(0);
-    const [img, setImg] = useState('/skills.png')
-    const [width, setWidth] = useState(400);
-    const [height, setHeight] = useState(200);
+    const [pointer, setPointer] = useState('general');
     const nav = useNavigate();
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
@@ -43,24 +31,13 @@ export default function CharacterPersonalAttributes () {
         {'class': 'attributes', 'field' : 'magic'}
 ]
 
+    function setLeftPane () {
+        if (pointer === 'general') {
+            return (
 
-    
-
-    function changeImage(event : SyntheticEvent) {
-        let imgName = event.target.getAttribute('data-value')
-        if (imgName === null)
-        imgName = event.target.parentElement.getAttribute('data-value');
-  
-        setImg(imgName);
-
-        if (imgName === '/skills.png') {
-            setWidth(400);
-            setHeight(200);
-            return;
-        } 
-        setWidth(300);
-        setHeight(500);
-        
+                <></>
+            )
+        }
     }
 
     function resetBinary() {
@@ -74,18 +51,19 @@ export default function CharacterPersonalAttributes () {
 
     useEffect(() => {
         // If Store has value
-        let storeSkills = store.getState().char.attributes.skills;
-        let storeStrength = store.getState().char.attributes.strength;
-        let storeMagic = store.getState().char.attributes.magic;
+        // let storeSkills = store.getState().char.attributes.skills;
+        // let storeStrength = store.getState().char.attributes.strength;
+        // let storeMagic = store.getState().char.attributes.magic;
 
-        if (storeSkills !== '' || null)
-        setSkills(storeSkills);
+        // if (storeSkills !== '' || null)
+        // setSkills(storeSkills);
 
-        if (storeStrength !== '' || null)
-        setStrength(storeStrength);
+        // if (storeStrength !== '' || null)
+        // setStrength(storeStrength);
 
-        if (storeMagic !== '' || null)
-        setMagic(storeMagic);
+        // if (storeMagic !== '' || null)
+        // setMagic(storeMagic);
+
     }, [])
 
 
@@ -93,115 +71,106 @@ export default function CharacterPersonalAttributes () {
     return (
         <>
             <div className='container-div-personalattributes'>
-            <Box className='flex flex-col'>
-                {/* The images and textareas */}
-                <Box className='flex flex-row mt-40'>
-                    <img src={img} width={width} height={height} className='m-auto mr-8 grid rounded-md' />                
+                <Box className='flex flex-row border border-solid'>
                 
-                    <Tabs
-                    onChange = {changeImage}
-                    aria-label="Vertical tabs"
-                    orientation="vertical"
-                    sx={{ minWidth: 500, height: 320, borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
-                    >
-                        <TabList>
-                            <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
-                            <Tab variant='plain' data-value = '/strength.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
-                            <Tab variant='plain' data-value = '/pastgif.gif' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
-                        </TabList>
-
-                        <TabPanel value={0}>
-                            <Textarea
-                                placeholder="Type in here…"
-                                value={skills}
-                                onChange={(event) => {
-                                    setSkills(event.target.value);
-                                    StoreCharText('/attributes/skills', event.target.value);
-                                
-                                }}
-                                minRows={2}
-                                maxRows={4}
-                                startDecorator = {
-                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                        <Hint props = 'skills' />
-                                    </Box>
-                                }
-                                endDecorator = {
-                                    <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    {skills.length} character(s)
+                    {/* Left Pane */}
+                    <Box className='h-[100%] relative' hidden = {false}>
+                        { pointer === 'armor' ? (
+                            <>
+                            <Box className='flex flex-col items-center'>
+                                <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
+                                    <Button variant='soft' color='warning' onClick = {() => setPointer('general')}>
+                                        <ArrowBackIcon />
+                                    </Button>
+                                    <img src='/attributes/backpack.png' width = {90} className='ml-[1vw]' />
+                                    <Typography variant="plain" level='h2' 
+                                    sx= {{ 
+                                        marginLeft: '1vw', 
+                                        color: 'brown', 
+                                        backdropFilter: 'blur(2px)' 
+                                        }}> 
+                                        Inventory 
                                     </Typography>
-                                }
-                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                                />
-                        </TabPanel>
-                    
-                        <TabPanel value={1}>
-                            <Textarea
-                                placeholder="Type in here…"
-                                value={strength}
-                                onChange={(event) => {
-                                    setStrength(event.target.value);
-                                    StoreCharText('/attributes/strength', event.target.value);
-                                
-                                }}
-                                minRows={2}
-                                maxRows={4}
-                                startDecorator = {
-                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                        <Hint props = 'strength' />
-                                    </Box>
-                                }
-                                endDecorator = {
-                                    <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    {strength.length} character(s)
-                                    </Typography>
-                                }
-                                sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                            />
-                        </TabPanel>
-
-                        <TabPanel value={2}>
-                            <Textarea
-                            placeholder="Type in here…"
-                            value={magic}
-                            onChange={(event) => {
-                                setMagic(event.target.value);
-                                StoreCharText('/attributes/magic', event.target.value);
-                            
-                            }}
-                            minRows={2}
-                            maxRows={4}
-                            startDecorator = {
-                                <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                    <Hint props = 'magic' />
                                 </Box>
-                            }
-                            endDecorator = {
-                                <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                {magic.length} character(s)
+                                <Typography variant="plain" level='body-lg' 
+                                sx= {{ 
+                                    marginTop: '-7vh', backdropFilter: 'blur(2px)', borderRadius: '12px', 
+                                    width: '14vw', padding: '5px', 
+                                    marginLeft: '2vw', color: 'black' 
+                                }}> 
+                                    Click on Any of the Gears
                                 </Typography>
-                            }
-                            sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                            />
-                        </TabPanel>
-                    </Tabs>
+                            </Box>
 
-                </Box>
+                            {/* Rest of the Inventory */}
 
-                <div className='arrow-container mt-44'>
-                    <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowBackIcon />
-                    </Button>
-                    <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/personal-attributes')} sx={{ outline: 'none !important'}} variant='soft'>
-                        <ArrowForwardIcon />
-                    </Button>
-                </div>
-            </Box>
+                            <Box className='relative mt-5 ml-[13vw] flex flex-row border'>
+                                <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
 
-                    
-                
+                                {/* Gears */}
+
+                                {/* left gauntlet, cape */}
+                                <Box className='flex flex-col ml-[1vw] mt-[15vh]'>
+                                    <img src='/attributes/glove.png' width = {100} className='z-10' />
+                                    <img src='/attributes/cloak.png' width = {80} className='rounded-md z-10 ml-[0.5vw]' />
+                                </Box>
+
+                                {/* helmet, armor, leggings, boots */}
+                                <Box className='flex flex-col ml-[3vw]'>
+                                <img src='/attributes/helm.png' width = {100} className='z-10' />
+                                <img src='/attributes/armor2.png' width = {100} className='z-10' />
+                                <img src='/attributes/leggings.png' width = {100} className='z-10' />
+                                <img src='/attributes/boots/41.png' width = {70} className='z-10 ml-[1.5vw]' />
+
+                                    
+                                </Box>
+
+                                {/* right gauntlet, accessories */}
+                                <Box className='flex flex-col mt-[15vh] ml-[3vw]'>
+                                    <img src='/attributes/glove.png' width = {100} className='z-10' />
+                                    <img src='/attributes/ring.png' width = {100} className='z-10' />
+                                </Box>
+                            </Box>
+                        </>
+                        ) 
+                        : pointer === 'general' ? (
+                            <>
+                                <Typography variant="plain" level='h3' sx= {{ marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '22vw', padding: '5px', color: 'black' }}> 
+                                        Choose an equipment category
+                                </Typography>
+
+                                <Box className='flex flex-row w-[40vw] h-[30vh] ml-[5vw] items-center'>
+                                    <Box className='flex flex-col'>
+                                        <Typography variant="plain" level='h4' sx= {{ backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
+                                            Armor
+                                        </Typography>
+                                        <img src='/attributes/armor.png' onClick = {() => setPointer('armor')} width = {100} className='ml-[5.3vw] cursor-pointer' />
+                                    </Box>
+
+                                    <Box className='flex flex-col -mt-[5vh]'>
+                                        <Typography variant="plain" level='h4' sx= {{ backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
+                                            Weapons
+                                        </Typography>
+                                        <img src='/attributes/weapons/weapon1.png' onClick = {() => console.log(1)} width = {100} className='ml-[5.3vw] mt-[5vh] -rotate-90 cursor-pointer' />
+                                    </Box>
+                                </Box>
+                            </>
+                        ) 
+                        : (
+                            <>
+                            
+                            </>
+                        )}
+                        
+                    </Box>
+
+                    {/* Right Pane  */}
+                    <Box className='border'>
+                        RIGHT
+                    </Box>
 
                 { NavigationValidator(binary, resetBinary) }
+                </Box>
             </div>            
         </>
     )

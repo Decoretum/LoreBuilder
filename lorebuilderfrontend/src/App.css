@@ -113,12 +113,14 @@ justify-content: center;
 
       .container-div-personalattributes{ 
         position: relative;
-      height: 110vh;
-      width: 90vw; 
-      border-radius: 20px;
-      background-image: url('/flowyview.gif');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      z-index: 2;
+        height: 110vh;
+        width: 90vw; 
+        border-radius: 20px;
+        background-image: url('/flowyview.gif');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 2;
+        justify-content: center;
+
         }
