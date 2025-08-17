@@ -2,6 +2,7 @@ type stateTypeOrigins = {
     past: string, //
     present: string, //
     dreams: string,
+    gender: string,
     images: Array<string> // Filepath
     }
 
@@ -38,6 +39,7 @@ let initialState = {
         past: '',
         present: '',
         dreams: '',
+        gender: '',
         images: ['']
     },
     attributes: {
