@@ -1,12 +1,14 @@
 import { Box, Button, Card, Grid, Typography } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { Character } from '../../Controllers/Character'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ArrowBack from "@mui/icons-material/ArrowBack";
+import GoBack from "../../Controllers/GoBack";
 
 export function Characters () {
     const { getCharacters } = Character();
     const [characters, setCharacters] = useState([]);
+    const nav = useNavigate();
 
     useEffect(() => {
         getCharacters();
@@ -40,13 +42,11 @@ export function Characters () {
                                 </Link>
                             </Box>  
 
-                            <Link to='/' className='font-normal'>
-                                <Box className='mt-[3vh]'>
-                                    <Button color='warning' variant='soft' className='w-[13%]'>
-                                        <ArrowBack />
-                                    </Button> 
-                                </Box>
-                            </Link>
+                            <Box className='mt-[3vh]'>
+                                <Button color='warning' variant='soft' className='w-[13%]' onClick={() => GoBack('/', nav)}>
+                                    <ArrowBack />
+                                </Button> 
+                            </Box>
                         </Box>
                         
                         
