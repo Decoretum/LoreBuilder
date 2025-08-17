@@ -129,7 +129,7 @@ export default function CharacterOrigin () {
                 {/* Arrow buttons and prompt */}
                 <Box className='flex flex-row mt-14'>
                         <div className='arrow-container'>
-                            <Button onClick = {() => GoBack('/', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                            <Button onClick = {() => GoBack('/characters', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
                                 <ArrowBackIcon />
                             </Button>
 
