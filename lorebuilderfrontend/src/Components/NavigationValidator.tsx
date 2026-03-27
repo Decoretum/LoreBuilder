@@ -1,6 +1,5 @@
-import { Box } from '@mui/joy';
 import Alert from '@mui/joy/Alert';
-import { JSX, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import IconButton from '@mui/joy/IconButton';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 

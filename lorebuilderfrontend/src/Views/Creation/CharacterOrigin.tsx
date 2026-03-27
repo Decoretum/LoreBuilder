@@ -35,10 +35,10 @@ export default function CharacterOrigin () {
         // If Store has value
         let storePresent = store.getState().char.origins.present;
         let storePhysical = store.getState().char.attributes.physicalInfo;
-        if (storePresent !== '' || null)
+        if (storePresent !== '' || storePresent !== null)
         setPresent(storePresent);
 
-        if (storePhysical !== '' || null)
+        if (storePhysical !== '' || storePresent !== null)
         setPhysical(storePhysical);
     }, [])
 

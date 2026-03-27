@@ -30,27 +30,25 @@ export function Characters () {
 
                     { characters.length === 0 ? (
                         <>
-                        <Box className='flex flex-col'>
-                            <Box className='w-[50%] ml-[9.5vw] p-5' sx = {{ backdropFilter: 'blur(2px)' }}>
-                                <Link to='/characters/creation/origins'>
-                                    <Box className='p-2 bg-white w-[8vw] rounded-lg m-auto p-6'>
-                                        <img src='/book.gif' width={50} height={50} className='m-auto' />
-                                    </Box>
-                                    <Box className='mt-[5vh]'>
-                                        <Typography level='body-lg' variant='plain' sx = {{ color: 'black' }}> No Characters present. Build your first character! </Typography>
-                                    </Box>
-                                </Link>
-                            </Box>  
+                            <Box className='flex flex-col'>
+                                <Box className='w-[50%] ml-[9.5vw] p-5' sx = {{ backdropFilter: 'blur(2px)' }}>
+                                    <Link to='/characters/creation/origins'>
+                                        <Box className='p-2 bg-white w-[8vw] rounded-lg m-auto p-6'>
+                                            <img src='/book.gif' width={50} height={50} className='m-auto' />
+                                        </Box>
+                                        <Box className='mt-[5vh]'>
+                                            <Typography level='body-lg' variant='plain' sx = {{ color: 'black' }}> No Characters present. Build your first character! </Typography>
+                                        </Box>
+                                    </Link>
+                                </Box>  
 
-                            <Box className='mt-[3vh]'>
-                                <Button color='warning' variant='soft' className='w-[13%]' onClick={() => GoBack('/', nav)}>
-                                    <ArrowBack />
-                                </Button> 
-                            </Box>
-                        </Box>
-                        
-                        
-                    </>
+                                <Box className='mt-[3vh]'>
+                                    <Button color='warning' variant='soft' className='w-[13%]' onClick={() => GoBack('/', nav)}>
+                                        <ArrowBack />
+                                    </Button> 
+                                </Box>
+                            </Box>                   
+                        </>
                     ) : (
                         <>
                             Haha

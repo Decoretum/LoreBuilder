@@ -11,6 +11,7 @@ export default function StateValidator(nav : NavigateFunction, arrFunctions : Ar
     let bad = ' ' || null || '';
     let state = store.getState();
     console.log(arr)
+    console.log(arrFunctions);
 
     // Iterate through the states
     for (let i = 0; i <= Object.keys(arr).length - 1; i++) {

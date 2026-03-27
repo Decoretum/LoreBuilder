@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Modal, ModalClose, ModalDialog, Textarea, Typography, styled } from "@mui/joy";
+import { Box, Button, Card, CardContent, Input, Modal, ModalClose, ModalDialog, Textarea, Typography, styled } from "@mui/joy";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -22,8 +22,11 @@ type comp  = {
 type stateArr = Array<comp>;
 
 export default function CharacterPersonalAttributes () {
+    const invText : string = "Click on Any of the Gear";
     const [binary, setBinary] = useState(0);
     const [pointer, setPointer] = useState('general');
+    const [inventoryText, setInventoryText] = useState(invText);
+    const [img, setImg] = useState("");
     const nav = useNavigate();
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
@@ -31,12 +34,68 @@ export default function CharacterPersonalAttributes () {
         {'class': 'attributes', 'field' : 'magic'}
 ]
 
+    function clickImage (img: string) {
+        switch(img){
+            case "armor/helm":
+                 setPointer(img); 
+                 setInventoryText("Helmet");
+                 setImg(`/attributes/${img.substring(6)}.png`);
+                 break;
+            case "armor/leftarm":
+                setPointer(img);
+                setInventoryText("Left Armwear");
+                setImg(`/attributes/glove.png`);
+                break;
+            case "armor/rightarm":
+                setPointer(img);
+                setInventoryText("Right Armwear");
+                setImg(`/attributes/glove.png`);
+                break;
+            case "armor/backwear":
+                setPointer("armor/backwear");
+                setInventoryText("Backwear");
+                setImg(`/attributes/${img.substring(6)}.png`);
+                break;
+            case "armor/chest":
+                setPointer("armor/chest");
+                setInventoryText("Chestwear");
+                setImg(`/attributes/${img.substring(6)}.png`);
+                break;
+            case "armor/leggings":
+                setPointer("armor/leggings");
+                setInventoryText("Legwear");
+                setImg(`/attributes/${img.substring(6)}.png`);
+                break;
+            case "armor/foot":
+                setPointer("armor/foor");
+                setInventoryText("Footwear");
+                setImg(`/attributes/${img.substring(6)}.png`);
+                break;
+            case "armor/ring":
+                setPointer("armor/ring");
+                setInventoryText("Ring");
+                setImg(`/attributes/${img.substring(6)}.png`);
+                break;
+        }
+
+    }
     function setLeftPane () {
         if (pointer === 'general') {
             return (
 
                 <></>
             )
+        }
+    }
+
+    function goBack() {
+        if (pointer == "armor") {
+            setInventoryText(invText);
+            setPointer("general");
+        }
+        else if (pointer.indexOf("armor/") == 0) {
+            setInventoryText(invText);
+            setPointer("armor");
         }
     }
 
@@ -75,11 +134,12 @@ export default function CharacterPersonalAttributes () {
                 
                     {/* Left Pane */}
                     <Box className='h-[100%] relative' hidden = {false}>
-                        { pointer === 'armor' ? (
-                            <>
+                        { pointer.indexOf('armor') != -1 ? 
+                        (
+                        <>
                             <Box className='flex flex-col items-center'>
                                 <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
-                                    <Button variant='soft' color='warning' onClick = {() => setPointer('general')}>
+                                    <Button variant='soft' color='warning' onClick = {goBack}>
                                         <ArrowBackIcon />
                                     </Button>
                                     <img src='/attributes/backpack.png' width = {90} className='ml-[1vw]' />
@@ -92,13 +152,13 @@ export default function CharacterPersonalAttributes () {
                                         Inventory 
                                     </Typography>
                                 </Box>
-                                <Typography variant="plain" level='body-lg' 
+                                <Typography variant="plain" level='h2' className='rounded-b-lg'
                                 sx= {{ 
-                                    marginTop: '-7vh', backdropFilter: 'blur(2px)', borderRadius: '12px', 
+                                    marginTop: '-7vh', backdropFilter: 'blur(2px)', 
                                     width: '14vw', padding: '5px', 
                                     marginLeft: '2vw', color: 'black' 
                                 }}> 
-                                    Click on Any of the Gears
+                                    { inventoryText }
                                 </Typography>
                             </Box>
 
@@ -106,33 +166,49 @@ export default function CharacterPersonalAttributes () {
 
                             <Box className='relative mt-5 ml-[13vw] flex flex-row border'>
                                 <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
+                                
+                                {/* If a gear is selected */}
+                                { pointer.indexOf("armor/") != -1 ?
+                                ( 
+                                <Box className='flex flex-col items-center border ml-[7vw] gap-5'>
+                                    <img src={img} width = {100} className='z-10' />
+                                    <Input size='lg' variant='plain' 
+                                    placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
+                                    sx={{ backgroundColor: "floralwhite" }}
+                                    />
+                                </Box> 
+                                ) : pointer == "armor" ? 
+                                (
+                                <>
+                                    {/* Overview of Gears */}
+                                    {/* left gauntlet, cape */}
+                                    <Box className='flex flex-col ml-[1vw] mt-[15vh]'>
+                                        <img src='/attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leftarm")}} />
+                                        <img src='/attributes/backwear.png' width = {80} className='cursor-pointer rounded-md z-10 ml-[0.5vw]' onClick={() => {clickImage("armor/backwear")}} />
+                                    </Box>
 
-                                {/* Gears */}
+                                    {/* helmet, armor, leggings, boots */}
+                                    <Box className='flex flex-col ml-[3vw]'>
+                                        <img src='/attributes/helm.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/helm")}} />
+                                        <img src='/attributes/chest.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/chest")}} />
+                                        <img src='/attributes/leggings.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leggings")}} />
+                                        <img src='/attributes/boots/41.png' width = {70} className='z-10 ml-[1.5vw] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
+                                    </Box>
 
-                                {/* left gauntlet, cape */}
-                                <Box className='flex flex-col ml-[1vw] mt-[15vh]'>
-                                    <img src='/attributes/glove.png' width = {100} className='z-10' />
-                                    <img src='/attributes/cloak.png' width = {80} className='rounded-md z-10 ml-[0.5vw]' />
-                                </Box>
-
-                                {/* helmet, armor, leggings, boots */}
-                                <Box className='flex flex-col ml-[3vw]'>
-                                <img src='/attributes/helm.png' width = {100} className='z-10' />
-                                <img src='/attributes/armor2.png' width = {100} className='z-10' />
-                                <img src='/attributes/leggings.png' width = {100} className='z-10' />
-                                <img src='/attributes/boots/41.png' width = {70} className='z-10 ml-[1.5vw]' />
-
-                                    
-                                </Box>
-
-                                {/* right gauntlet, accessories */}
-                                <Box className='flex flex-col mt-[15vh] ml-[3vw]'>
-                                    <img src='/attributes/glove.png' width = {100} className='z-10' />
-                                    <img src='/attributes/ring.png' width = {100} className='z-10' />
-                                </Box>
+                                    {/* right gauntlet, accessories */}
+                                    <Box className='flex flex-col mt-[15vh] ml-[3vw]'>
+                                        <img src='/attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/rightarm")}} />
+                                        <img src='/attributes/ring.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/ring")}} />
+                                    </Box>
+                                </>
+                                ) : 
+                                (
+                                    <>
+                                    </>
+                                )}
                             </Box>
                         </>
-                        ) 
+                        )
                         : pointer === 'general' ? (
                             <>
                                 <Typography variant="plain" level='h3' sx= {{ marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '22vw', padding: '5px', color: 'black' }}> 
@@ -165,9 +241,32 @@ export default function CharacterPersonalAttributes () {
                     </Box>
 
                     {/* Right Pane  */}
-                    <Box className='border'>
-                        RIGHT
-                    </Box>
+                    <div className='container-div border backdrop-blur-sm'>
+                    <Textarea
+                        variant='outlined'
+                        color='primary'
+                        placeholder="Type in here…"
+                        value={"Gael"}
+                        sx = {{ color: 'red' }}
+                        // onChange={(event) => {
+
+                        // }}
+                        minRows={2}
+                        maxRows={4}
+                        startDecorator = {
+                            <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                <Hint props = 'skills' />
+                            </Box>
+                        }
+                        endDecorator = {""
+                            // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                            // {skills.length} character(s)
+                            // </Typography>
+                        }
+                        sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
+                    />
+
+                    </div>
 
                 { NavigationValidator(binary, resetBinary) }
                 </Box>
