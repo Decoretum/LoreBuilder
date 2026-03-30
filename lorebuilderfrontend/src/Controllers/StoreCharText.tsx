@@ -1,21 +1,22 @@
 import store from '../Redux/store'
+import type {stateTypeOrigins} from '../Redux/character/charReducer'
 
-export default function StoreCharText (textType : string, text : string) {
+export default function StoreCharText (textType : string, text : string, equipment? : object) {
     let state = store.getState();
     switch (textType) {
 
         // First Page
         case '/origins/present':
-            store.dispatch({
-                type: 'char/editOrigins',
-                payload: {
-                    origins : {
-                        ...state.char.origins,
-                        present: text,
+            let origins : stateTypeOrigins = state.char!.origins;
+            if ("dreams" in origins) {
+                store.dispatch({
+                    type: 'char/editOrigins',
+                    payload: {
+                        ...origins
                     }
-                }
-            })
+                })}
             break;
+            
         case '/attributes/physicalInfo':
             store.dispatch({
                 type: 'char/editAttributes',
@@ -40,6 +41,7 @@ export default function StoreCharText (textType : string, text : string) {
                 }
             })
             break;
+
         case '/origins/past':
             store.dispatch({
                 type: 'char/editOrigins',
@@ -87,6 +89,19 @@ export default function StoreCharText (textType : string, text : string) {
                     }
                 }
             }) 
+            break;
+        
+            // 4th Page
+        case "/attributes/equipment":
+            store.dispatch({
+                type: "char/editAttributes",
+                payload: {
+                    attributes: {
+                        ...state.char.attributes,
+                        equipment: equipment
+                    }
+                }
+            })
             break;
     }
 }

@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Input, Modal, ModalClose, ModalDialog, Textarea, Typography, styled } from "@mui/joy";
+import { Box, Button, Card, CardContent, FormControl, FormLabel, Input, Modal, ModalClose, ModalDialog, Textarea, Typography, styled } from "@mui/joy";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -26,6 +26,7 @@ export default function CharacterPersonalAttributes () {
     const [binary, setBinary] = useState(0);
     const [pointer, setPointer] = useState('general');
     const [inventoryText, setInventoryText] = useState(invText);
+    const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [img, setImg] = useState("");
     const nav = useNavigate();
     const storeFields : stateArr  = [
@@ -33,6 +34,18 @@ export default function CharacterPersonalAttributes () {
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
 ]
+    const [equipment, setEquipment] = useState({
+        headGear: [""],
+        footGear: [""],
+        leftArmGear: [""],
+        rightArmGear: [""],
+        backGear:[""],
+        chestGear: [""],
+        leggingGear: [""],
+        accessories: [""],
+        weaponMainHand: [""],
+        weaponOffHand: [""]
+    });
 
     function clickImage (img: string) {
         switch(img){
@@ -67,13 +80,13 @@ export default function CharacterPersonalAttributes () {
                 setImg(`/attributes/${img.substring(6)}.png`);
                 break;
             case "armor/foot":
-                setPointer("armor/foor");
+                setPointer("armor/foot");
                 setInventoryText("Footwear");
                 setImg(`/attributes/${img.substring(6)}.png`);
                 break;
             case "armor/ring":
-                setPointer("armor/ring");
-                setInventoryText("Ring");
+                setPointer("armor/accessory");
+                setInventoryText("Accessory");
                 setImg(`/attributes/${img.substring(6)}.png`);
                 break;
         }
@@ -122,15 +135,23 @@ export default function CharacterPersonalAttributes () {
 
         // if (storeMagic !== '' || null)
         // setMagic(storeMagic);
-
     }, [])
+
+    useEffect(() => {
+        if (pointer.indexOf("armor/") != -1) {
+            setRightPaneHidden(false);
+        } else {
+            setRightPaneHidden(true);
+        }
+        
+    }, [pointer])
 
 
 
     return (
         <>
             <div className='container-div-personalattributes'>
-                <Box className='flex flex-row border border-solid'>
+                <Box className={`flex flex-row border border-solid ${rightPaneHidden ? "justify-center items-center" : ""}`}>
                 
                     {/* Left Pane */}
                     <Box className='h-[100%] relative' hidden = {false}>
@@ -154,9 +175,9 @@ export default function CharacterPersonalAttributes () {
                                 </Box>
                                 <Typography variant="plain" level='h2' className='rounded-b-lg'
                                 sx= {{ 
-                                    marginTop: '-7vh', backdropFilter: 'blur(2px)', 
+                                    marginTop: '-7vh', backdropFilter: 'blur(4px)', 
                                     width: '14vw', padding: '5px', 
-                                    marginLeft: '2vw', color: 'black' 
+                                    marginLeft: '2vw', color: '#E1AD01'
                                 }}> 
                                     { inventoryText }
                                 </Typography>
@@ -164,13 +185,13 @@ export default function CharacterPersonalAttributes () {
 
                             {/* Rest of the Inventory */}
 
-                            <Box className='relative mt-5 ml-[13vw] flex flex-row border'>
+                            <Box className='relative mt-5 flex flex-row border justify-center'>
                                 <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
                                 
                                 {/* If a gear is selected */}
                                 { pointer.indexOf("armor/") != -1 ?
                                 ( 
-                                <Box className='flex flex-col items-center border ml-[7vw] gap-5'>
+                                <Box className='flex flex-col items-center border gap-5'>
                                     <img src={img} width = {100} className='z-10' />
                                     <Input size='lg' variant='plain' 
                                     placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
@@ -211,7 +232,7 @@ export default function CharacterPersonalAttributes () {
                         )
                         : pointer === 'general' ? (
                             <>
-                                <Typography variant="plain" level='h3' sx= {{ marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '22vw', padding: '5px', color: 'black' }}> 
+                                <Typography variant="plain" level='h3' sx= {{ marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', padding: '5px', color: 'lightsalmon' }}> 
                                         Choose an equipment category
                                 </Typography>
 
@@ -241,31 +262,32 @@ export default function CharacterPersonalAttributes () {
                     </Box>
 
                     {/* Right Pane  */}
-                    <div className='container-div border backdrop-blur-sm'>
-                    <Textarea
-                        variant='outlined'
-                        color='primary'
-                        placeholder="Type in here…"
-                        value={"Gael"}
-                        sx = {{ color: 'red' }}
-                        // onChange={(event) => {
+                    <div className={`${rightPaneHidden ? "hidden" : "container-div border backdrop-blur-sm"}`}>
+                        <FormControl>
+                            <FormLabel sx= {{ fontWeight: 'bold' }}>{inventoryText}'s Description</FormLabel>
+                            <Textarea
+                                variant='outlined'
+                                color='primary'
+                                placeholder="Type in here…"
+                                value={"Gael"}
+                                // onChange={(event) => {
 
-                        // }}
-                        minRows={2}
-                        maxRows={4}
-                        startDecorator = {
-                            <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                <Hint props = 'skills' />
-                            </Box>
-                        }
-                        endDecorator = {""
-                            // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                            // {skills.length} character(s)
-                            // </Typography>
-                        }
-                        sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
-                    />
-
+                                // }}
+                                minRows={2}
+                                maxRows={4}
+                                startDecorator = {
+                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                        <Hint props = 'skills' />
+                                    </Box>
+                                }
+                                endDecorator = {""
+                                    // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                    // {skills.length} character(s)
+                                    // </Typography>
+                                }
+                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
+                            />
+                        </FormControl>
                     </div>
 
                 { NavigationValidator(binary, resetBinary) }
