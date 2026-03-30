@@ -15,7 +15,7 @@ export default function StateValidator(nav : NavigateFunction, arrFunctions : Ar
 
     // Iterate through the states
     for (let i = 0; i <= Object.keys(arr).length - 1; i++) {
-        let val = state['char'][arr[i].class][arr[i].field].trim();
+        var val = state['char'][arr[i].class][arr[i].field].trim();
         if (val === bad || val.length === 0) {
             arrFunctions[1]();
             return;
