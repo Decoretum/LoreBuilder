@@ -110,6 +110,7 @@ export default function charReducer(
 
         case 'char/editAttributes': {
             console.log(action.payload.attributes);
+            console.log(state)
             let { images } = action.payload;
             let newImageArr = state.attributes.images;
             if (images != undefined) {
@@ -120,17 +121,33 @@ export default function charReducer(
                     }
                 }    
             }
+            if ("equipmentObject" in action.payload.attributes) {
+                var equipmentPayload = action.payload.attributes.equipment.equipmentObject;
+                var key = equipmentPayload["equipmentType"];
+                var value = equipmentPayload["equipmentValue"];
+                return {
+                    ...state,
+                    attributes: {
+                        ...state.attributes,
+                        equipment: {
+                            ...state.attributes.equipment,
+                            [key] : value
+                        },
+                        images: newImageArr
+                    }
+                }
+            }
 
-            return {
-                ...state,
-                attributes: {
-                    ...action.payload.attributes,
-                    images: newImageArr
+            else {
+                return {
+                    ...state,
+                    attributes: {
+                        ...action.payload.attributes,
+                        images: newImageArr
                     }
                 }    
-            
-
-
+    
+            }
         }
 
         default: {

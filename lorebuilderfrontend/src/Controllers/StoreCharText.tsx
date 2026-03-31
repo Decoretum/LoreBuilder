@@ -1,8 +1,12 @@
 import store from '../Redux/store'
 
-export default function StoreCharText (textType : string, text : string, equipment? : object) {
+type equipmentObject = {
+    equipmentType: string,
+    equipmentValue: string
+};
+
+export default function StoreCharText (textType : string, text : string, equipmentObject?: equipmentObject) {
     let state = store.getState();
-    console.log(textType)
     switch (textType) {
 
         // First Page
@@ -95,15 +99,21 @@ export default function StoreCharText (textType : string, text : string, equipme
         
             // 4th Page
         case "/attributes/equipment":
-            store.dispatch({
-                type: "char/editAttributes",
-                payload: {
-                    attributes: {
-                        ...state.char.attributes,
-                        equipment: equipment
+            if (equipmentObject != undefined) {
+                var eProp : string = equipmentObject["equipmentType"];
+                var eVal : string = equipmentObject["equipmentValue"];
+                store.dispatch({
+                    type: "char/editAttributes",
+                    payload: {
+                        attributes: {
+                            equipment: {
+                                ...state.char.attributes.equipment,
+                                equipmentObject
+                            }
+                        }
                     }
+                })
                 }
-            })
             break;
     }
 }
