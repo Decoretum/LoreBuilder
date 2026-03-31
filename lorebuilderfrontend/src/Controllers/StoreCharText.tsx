@@ -1,32 +1,34 @@
 import store from '../Redux/store'
-import type {stateTypeOrigins} from '../Redux/character/charReducer'
 
 export default function StoreCharText (textType : string, text : string, equipment? : object) {
     let state = store.getState();
+    console.log(textType)
     switch (textType) {
 
         // First Page
         case '/origins/present':
-            let origins : stateTypeOrigins = state.char!.origins;
-            if ("dreams" in origins) {
                 store.dispatch({
                     type: 'char/editOrigins',
                     payload: {
-                        ...origins
+                        origins: {
+                            ...state.char.origins,
+                            present: text  
+                        }
                     }
-                })}
+                })
             break;
             
         case '/attributes/physicalInfo':
-            store.dispatch({
-                type: 'char/editAttributes',
-                payload: {
-                    attributes : {
-                        ...state.char.attributes,
-                        physicalInfo : text,
+                store.dispatch({
+                    type: 'char/editAttributes',
+                    payload: {
+                        attributes : {
+                            ...state.char.attributes,
+                            physicalInfo : text
+                        }
                     }
-                }
-            })
+                })
+                
             break;
 
         // Second Page

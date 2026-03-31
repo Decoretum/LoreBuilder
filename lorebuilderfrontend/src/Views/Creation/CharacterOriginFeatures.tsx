@@ -84,9 +84,9 @@ export default function CharacterOriginFeatures () {
 
     useEffect(() => {
         // If Store has value
-        let storeSkills = store.getState().char.attributes.skills;
-        let storeStrength = store.getState().char.attributes.strength;
-        let storeMagic = store.getState().char.attributes.magic;
+        let storeSkills = store.getState().char!.attributes.skills;
+        let storeStrength = store.getState().char!.attributes.strength;
+        let storeMagic = store.getState().char!.attributes.magic;
 
         if (storeSkills !== '' || null)
         setSkills(storeSkills);

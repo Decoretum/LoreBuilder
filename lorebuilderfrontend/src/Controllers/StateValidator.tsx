@@ -12,10 +12,12 @@ export default function StateValidator(nav : NavigateFunction, arrFunctions : Ar
     let state = store.getState();
     console.log(arr)
     console.log(arrFunctions);
+    console.log(state)
 
     // Iterate through the states
     for (let i = 0; i <= Object.keys(arr).length - 1; i++) {
         var val = state['char'][arr[i].class][arr[i].field].trim();
+        console.log(val + " at " + arr[i].class + " " + arr[i].field)
         if (val === bad || val.length === 0) {
             arrFunctions[1]();
             return;
