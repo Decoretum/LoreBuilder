@@ -19,9 +19,9 @@ type equipmentType = {
     footGear: Array<string> // array = [name, description, image],
 }
 
-type onlyAttributes = Omit<stateTypeAttributes, "equipment">;
+export type onlyAttributes = Omit<stateTypeAttributes, "equipment">;
 
-type stateTypeAttributes = {
+export type stateTypeAttributes = {
     magic: string, //   
     skills: string, //
     strength: string, //
@@ -54,12 +54,14 @@ let initialState = {
         equipment: {
             weaponMainHand: [''],
             weaponOffHand: [''],
+            leftArmGear: [''],
+            rightArmGear: [''],
             accessories: [{}],
             headGear: [''],
             chestGear: [''],
             backGear: [''],
             leggingGear: [''],
-            footWear: ['']
+            footGear: ['']
         },
         physicalInfo: '',
 
@@ -79,57 +81,54 @@ export default function charReducer(
     state = initialState, 
     action: {
         type: string, 
-        payload: equipmentType | stateTypeAttributes | stateTypeOrigins;
-        })
+        payload: any;
+        }
+        )
     {
     switch (action.type) {
         case 'char/editOrigins': {
-            if ("past" in action.payload) {
-                // let payload : stateTypeOrigins = action.payload.origins;
                 let { images } = action.payload;
                 let newImageArr = state.origins.images;
-                for (let i = 0; i <= images.length - 1; i++) {
-                    let image = images[i];
-                    if (!newImageArr.includes(image)) {
-                        newImageArr.push(image);
-                    }
-                }   
+                if (images != undefined) {
+                    for (let i = 0; i <= images.length - 1; i++) {
+                        let image = images[i];
+                        if (!newImageArr.includes(image)) {
+                            newImageArr.push(image);
+                        }
+                    }   
+    
+                }
 
                 return {
                     ...state,
                     origins: {
-                        ...action.payload,
+                        ...action.payload.origins,
                         images: newImageArr
                     }
                 }
-            }
         }
 
         case 'char/editAttributes': {
-            var payload : equipmentType | onlyAttributes;
-            if ("weaponMainHand" in action.payload) {
-                payload = action.payload;
-                return;
-            } else if ("name" in action.payload) {
-                payload = action.payload;
-                let { images } = payload;
-                let newImageArr = state.attributes.images;
+            console.log(action.payload.attributes);
+            let { images } = action.payload;
+            let newImageArr = state.attributes.images;
+            if (images != undefined) {
                 for (let i = 0; i <= images.length - 1; i++) {
                     let image = images[i];
                     if (!newImageArr.includes(image)) {
                         newImageArr.push(image);
                     }
-                }  
-                return {
-                    ...state,
-                    attributes: {
-                        ...payload,
-                        images: newImageArr
-                    }
-                }
-     
-    
+                }    
             }
+
+            return {
+                ...state,
+                attributes: {
+                    ...action.payload.attributes,
+                    images: newImageArr
+                    }
+                }    
+            
 
 
         }
