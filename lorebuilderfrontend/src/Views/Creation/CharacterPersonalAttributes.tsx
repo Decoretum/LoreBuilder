@@ -9,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
+import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
@@ -28,6 +29,7 @@ export default function CharacterPersonalAttributes () {
     const [inventoryText, setInventoryText] = useState(invText);
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [img, setImg] = useState("");
+    const [equipmentVal, setEquipmentVal] = useState("");
     const nav = useNavigate();
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
@@ -47,12 +49,20 @@ export default function CharacterPersonalAttributes () {
         weaponOffHand: [""]
     });
 
+    function handleEquipmentChange(equipmentType: string, equipmentValue: string) {
+        return {
+            equipmentType: EquipmentDictionary().get(equipmentType),
+            equipmentValue: equipmentValue
+        }
+    }
+
     function clickImage (img: string) {
         switch(img){
             case "armor/helm":
                  setPointer(img); 
                  setInventoryText("Helmet");
                  setImg(`/attributes/${img.substring(6)}.png`);
+                 
                  break;
             case "armor/leftarm":
                 setPointer(img);
@@ -269,10 +279,10 @@ export default function CharacterPersonalAttributes () {
                                 variant='outlined'
                                 color='primary'
                                 placeholder="Type in here…"
-                                value={"Gael"}
-                                // onChange={(event) => {
-
-                                // }}
+                                value={store.getState().char.attributes.equipment[inventoryText]}
+                                onChange={(event) => {
+                                    StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, event.target.value))
+                                }}
                                 minRows={2}
                                 maxRows={4}
                                 startDecorator = {
