@@ -42,6 +42,20 @@
   position: relative;
 }
 
+.arrow-container-multibox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin-left: 4vw;
+  position: relative;
+}
+
+.arrow-container-multiparentbox {
+  position: absolute;
+  bottom: 5;
+}
+
 .card {
   padding: 2em;
 }

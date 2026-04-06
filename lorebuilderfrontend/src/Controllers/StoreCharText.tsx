@@ -1,12 +1,13 @@
 import store from '../Redux/store'
 
-type equipmentObject = {
+export type equipmentObject = {
     equipmentType: string,
-    equipmentValue: string
+    equipmentValue: Array<string>
 };
 
 export default function StoreCharText (textType : string, text : string, equipmentObject?: equipmentObject) {
     let state = store.getState();
+    console.log(equipmentObject)
     switch (textType) {
 
         // First Page
@@ -101,7 +102,8 @@ export default function StoreCharText (textType : string, text : string, equipme
         case "/attributes/equipment":
             if (equipmentObject != undefined) {
                 var eProp : string = equipmentObject["equipmentType"];
-                var eVal : string = equipmentObject["equipmentValue"];
+                var eTitle : string = equipmentObject["equipmentValue"][0];
+                var eVal : string = equipmentObject["equipmentValue"][1];
                 store.dispatch({
                     type: "char/editAttributes",
                     payload: {
