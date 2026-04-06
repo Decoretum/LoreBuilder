@@ -7,13 +7,18 @@ type comp  = {
 }
 type stateArr = Array<comp>
 
-export default function StateValidator(nav : NavigateFunction, arrFunctions : Array<Function>, arr : stateArr, nextPath : string) {
+export default function StateValidator(nav : NavigateFunction, 
+    arrFunctions : Array<Function>, arr : stateArr, 
+    nextPath : string, 
+    endValidation?: number) {
     let bad = ' ' || null || '';
     let state = store.getState();
     console.log(arr)
     console.log(arrFunctions);
     console.log(state)
 
+    if (endValidation != undefined) {
+        
     // Iterate through the states
     for (let i = 0; i <= Object.keys(arr).length - 1; i++) {
         var val = state['char'][arr[i].class][arr[i].field].trim();
@@ -21,9 +26,10 @@ export default function StateValidator(nav : NavigateFunction, arrFunctions : Ar
         if (val === bad || val.length === 0) {
             arrFunctions[1]();
             return;
+            }
         }
     }
+
     arrFunctions[0]();
     nav(nextPath);
-    
 }

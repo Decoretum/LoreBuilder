@@ -9,8 +9,8 @@ export type stateTypeOrigins = {
 type equipmentType = {
     weaponMainHand: Array<string>, // array = [name, description, image]
     weaponOffHand: Array<string>, // array = [name, description, image]
-    leftArmGear: Array<string>,
-    rightArmGear: Array<string>,
+    leftArmGear: Array<string>, // array = [name, description, image]
+    rightArmGear: Array<string>, // array = [name, description, image]
     accessories: Array<object>, // array = [ Hashmap<accessoryName, description> ]
     headGear: Array<string>, // array = [name, description, image]
     chestGear: Array<string>, // array = [name, description, image]
@@ -26,15 +26,16 @@ export type stateTypeAttributes = {
     skills: string, //
     strength: string, //
     personality: string, //
-    equipment: equipmentType,
+    equipment: equipmentType, // images left
     physicalInfo: string, //
 
     hobbies: string,
     interests: string,
-    occupation: string,
-    images: Array<string> // Filepath for character images
+    occupation: Array<string>,
+    images: Array<string> // image addition
 
-    title: string
+    title: string,
+    subtitle: string,
     name: string
 }
 
@@ -52,25 +53,26 @@ let initialState = {
         strength: '',
         personality: '',
         equipment: {
-            weaponMainHand: [''],
-            weaponOffHand: [''],
-            leftArmGear: [''],
-            rightArmGear: [''],
+            weaponMainHand: ['', ''],
+            weaponOffHand: ['', ''],
+            leftArmGear: ['', ''],
+            rightArmGear: ['', ''],
             accessories: [{}],
-            headGear: [''],
-            chestGear: [''],
-            backGear: [''],
-            leggingGear: [''],
-            footGear: ['']
+            headGear: ['', ''],
+            chestGear: ['', ''],
+            backGear: ['', ''],
+            leggingGear: ['', ''],
+            footGear: ['', '']
         },
         physicalInfo: '',
 
         hobbies: '',
         interests: '',
-        occupation: '',
+        occupation: ["", ""],
         images: [''],
 
         title: '',
+        subtitle: "",
         name: ''
     }
 }
@@ -113,6 +115,7 @@ export default function charReducer(
             console.log(state)
             let { images } = action.payload;
             let newImageArr = state.attributes.images;
+            var isEquipmentPayload = action.payload.attributes.equipment.hasOwnProperty("equipmentObject");
             if (images != undefined) {
                 for (let i = 0; i <= images.length - 1; i++) {
                     let image = images[i];
@@ -121,7 +124,7 @@ export default function charReducer(
                     }
                 }    
             }
-            if ("equipmentObject" in action.payload.attributes) {
+            if (isEquipmentPayload) {
                 var equipmentPayload = action.payload.attributes.equipment.equipmentObject;
                 var key = equipmentPayload["equipmentType"];
                 var value = equipmentPayload["equipmentValue"];

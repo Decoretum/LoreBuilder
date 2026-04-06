@@ -10,6 +10,7 @@ import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
 import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
+import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
 
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
@@ -28,76 +29,111 @@ export default function CharacterPersonalAttributes () {
     const [pointer, setPointer] = useState('general');
     const [inventoryText, setInventoryText] = useState(invText);
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
+    const [equipmentType, setEquipmentType] = useState("");
+    const [equipmentValue, setEquipmentValue] = useState(["", ""]);
     const [img, setImg] = useState("");
-    const [equipmentVal, setEquipmentVal] = useState("");
     const nav = useNavigate();
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
 ]
-    const [equipment, setEquipment] = useState({
-        headGear: [""],
-        footGear: [""],
-        leftArmGear: [""],
-        rightArmGear: [""],
-        backGear:[""],
-        chestGear: [""],
-        leggingGear: [""],
-        accessories: [""],
-        weaponMainHand: [""],
-        weaponOffHand: [""]
-    });
+    // const [equipment, setEquipment] = useState({
+    //     headGear: ["", ""],
+    //     footGear: ["", ""],
+    //     leftArmGear: ["", ""],
+    //     rightArmGear: ["", ""],
+    //     backGear:["", ""],
+    //     chestGear: ["", ""],
+    //     leggingGear: ["", ""],
+    //     accessories: ["", ""],
+    //     weaponMainHand: ["", ""],
+    //     weaponOffHand: ["", ""]
+    // });
 
-    function handleEquipmentChange(equipmentType: string, equipmentValue: string) {
+    // function equipmentEmpty() {
+    //     Object.entries(equipment).map(([key, value]) => {
+    //         if (va)
+    //     })
+    // }
+
+    function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>) : equipmentObject {
         return {
-            equipmentType: EquipmentDictionary().get(equipmentType),
-            equipmentValue: equipmentValue
+            equipmentType: EquipmentDictionary().get(equipmentType)!,
+            equipmentValue: [equipmentValue[0], equipmentValue[1]]
         }
     }
 
     function clickImage (img: string) {
         switch(img){
             case "armor/helm":
-                 setPointer(img); 
-                 setInventoryText("Helmet");
-                 setImg(`/attributes/${img.substring(6)}.png`);
-                 
-                 break;
+                setPointer(img); 
+                setInventoryText("Helmet");
+                setImg(`/attributes/${img.substring(6)}.png`);
+                var storeData = store.getState().char.attributes.equipment.headGear;
+                setEquipmentType("headGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
+                break;
             case "armor/leftarm":
                 setPointer(img);
                 setInventoryText("Left Armwear");
                 setImg(`/attributes/glove.png`);
+                var storeData = store.getState().char.attributes.equipment.leftArmGear;
+                setEquipmentType("leftArmGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
                 break;
             case "armor/rightarm":
                 setPointer(img);
                 setInventoryText("Right Armwear");
                 setImg(`/attributes/glove.png`);
+                var storeData = store.getState().char.attributes.equipment.rightArmGear;
+                setEquipmentType("rightArmGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
+                console.log(storeData)
                 break;
             case "armor/backwear":
                 setPointer("armor/backwear");
                 setInventoryText("Backwear");
                 setImg(`/attributes/${img.substring(6)}.png`);
+                var storeData = store.getState().char.attributes.equipment.backGear;
+                setEquipmentType("backGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
                 break;
             case "armor/chest":
                 setPointer("armor/chest");
                 setInventoryText("Chestwear");
                 setImg(`/attributes/${img.substring(6)}.png`);
+                var storeData = store.getState().char.attributes.equipment.chestGear;
+                //  setEquipment(oldEq => ({
+                //     ...oldEq,
+                //     headGear: ["Helmet Title", storeData]
+                //  }));
+                setEquipmentType("chestGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
                 break;
             case "armor/leggings":
                 setPointer("armor/leggings");
                 setInventoryText("Legwear");
                 setImg(`/attributes/${img.substring(6)}.png`);
+                var storeData = store.getState().char.attributes.equipment.leggingGear;
+                setEquipmentType("leggingGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
                 break;
             case "armor/foot":
                 setPointer("armor/foot");
                 setInventoryText("Footwear");
                 setImg(`/attributes/${img.substring(6)}.png`);
+                var storeData = store.getState().char.attributes.equipment.footGear;
+                setEquipmentType("footGear");
+                setEquipmentValue([storeData[0], storeData[1]]);
                 break;
             case "armor/ring":
                 setPointer("armor/accessory");
                 setInventoryText("Accessory");
                 setImg(`/attributes/${img.substring(6)}.png`);
+                // setEquipmentType("headGear");
+                // setEquipmentValue([storeData[0], storeData[1]]);
+                console.log(store.getState())
                 break;
         }
 
@@ -170,7 +206,7 @@ export default function CharacterPersonalAttributes () {
                         <>
                             <Box className='flex flex-col items-center'>
                                 <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
-                                    <Button variant='soft' color='warning' onClick = {goBack}>
+                                    <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                         <ArrowBackIcon />
                                     </Button>
                                     <img src='/attributes/backpack.png' width = {90} className='ml-[1vw]' />
@@ -205,6 +241,11 @@ export default function CharacterPersonalAttributes () {
                                     <img src={img} width = {100} className='z-10' />
                                     <Input size='lg' variant='plain' 
                                     placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
+                                    value={equipmentValue[0]}
+                                    onChange={(event : React.ChangeEvent<HTMLInputElement>) => {
+                                        setEquipmentValue([event.target.value, equipmentValue[1]]);
+                                        StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
+                                    }}
                                     sx={{ backgroundColor: "floralwhite" }}
                                     />
                                 </Box> 
@@ -279,9 +320,10 @@ export default function CharacterPersonalAttributes () {
                                 variant='outlined'
                                 color='primary'
                                 placeholder="Type in here…"
-                                value={store.getState().char.attributes.equipment[inventoryText]}
+                                value={equipmentValue[1]}
                                 onChange={(event) => {
-                                    StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, event.target.value))
+                                    setEquipmentValue([equipmentValue[0], event.target.value]);
+                                    StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
                                 }}
                                 minRows={2}
                                 maxRows={4}
@@ -295,13 +337,28 @@ export default function CharacterPersonalAttributes () {
                                     // {skills.length} character(s)
                                     // </Typography>
                                 }
-                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
+                                sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
                             />
                         </FormControl>
                     </div>
 
                 { NavigationValidator(binary, resetBinary) }
                 </Box>
+                
+                <div className='absolute w-[100%] bottom-5'>
+                    <div className='arrow-container-multibox'>
+                        <Button onClick = {() => GoBack('/characters/creation/origins/features', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowBackIcon />
+                        </Button>
+
+                        { NavigationValidator(binary, resetBinary) }
+
+                        <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features')} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowForwardIcon />
+                        </Button>
+                    </div>
+                </div>
+
             </div>            
         </>
     )
