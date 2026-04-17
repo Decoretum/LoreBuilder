@@ -1,5 +1,5 @@
-import { Box, Button, Card, CardContent, FormControl, FormLabel, Input, Modal, ModalClose, ModalDialog, Textarea, Typography, styled } from "@mui/joy";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { Box, Button, FormControl, FormLabel, Input, Textarea, Typography } from "@mui/joy";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
@@ -11,11 +11,7 @@ import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
 import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
-
-import Tabs from '@mui/joy/Tabs';
-import TabList from '@mui/joy/TabList';
-import Tab from '@mui/joy/Tab';
-import TabPanel from '@mui/joy/TabPanel';
+import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -30,7 +26,11 @@ export default function CharacterPersonalAttributes () {
     const [inventoryText, setInventoryText] = useState(invText);
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [equipmentType, setEquipmentType] = useState("");
-    const [equipmentValue, setEquipmentValue] = useState(["", ""]);
+    const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
+
+    // Accessory-related Components
+    const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["",""]>);
+
     const [img, setImg] = useState("");
     const nav = useNavigate();
     const storeFields : stateArr  = [
@@ -38,30 +38,16 @@ export default function CharacterPersonalAttributes () {
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
 ]
-    // const [equipment, setEquipment] = useState({
-    //     headGear: ["", ""],
-    //     footGear: ["", ""],
-    //     leftArmGear: ["", ""],
-    //     rightArmGear: ["", ""],
-    //     backGear:["", ""],
-    //     chestGear: ["", ""],
-    //     leggingGear: ["", ""],
-    //     accessories: ["", ""],
-    //     weaponMainHand: ["", ""],
-    //     weaponOffHand: ["", ""]
-    // });
-
-    // function equipmentEmpty() {
-    //     Object.entries(equipment).map(([key, value]) => {
-    //         if (va)
-    //     })
-    // }
 
     function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>) : equipmentObject {
         return {
             equipmentType: EquipmentDictionary().get(equipmentType)!,
             equipmentValue: [equipmentValue[0], equipmentValue[1]]
         }
+    }
+
+    function handlePointerChange(accessoryPointer: string) {
+        setPointer(accessoryPointer);
     }
 
     function clickImage (img: string) {
@@ -128,12 +114,18 @@ export default function CharacterPersonalAttributes () {
                 setEquipmentValue([storeData[0], storeData[1]]);
                 break;
             case "armor/ring":
+                // Special Case
+                // Left Pane: Show Container full of accessories
+                // Retrieve images from FileSystem and store it within repo FS
+                var storeData = store.getState().char.attributes.equipment.accessories;
                 setPointer("armor/accessory");
                 setInventoryText("Accessory");
+                setEquipmentType("accessories");
+                setAccessory(storeData);
+
+                // Right Pane: 
                 setImg(`/attributes/${img.substring(6)}.png`);
-                // setEquipmentType("headGear");
-                // setEquipmentValue([storeData[0], storeData[1]]);
-                console.log(store.getState())
+                console.log(storeData)
                 break;
         }
 
@@ -184,6 +176,7 @@ export default function CharacterPersonalAttributes () {
     }, [])
 
     useEffect(() => {
+        console.log(pointer)
         if (pointer.indexOf("armor/") != -1) {
             setRightPaneHidden(false);
         } else {
@@ -231,24 +224,30 @@ export default function CharacterPersonalAttributes () {
 
                             {/* Rest of the Inventory */}
 
-                            <Box className='relative mt-5 flex flex-row border justify-center'>
-                                <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
+                            <Box className='relative mt-5 flex flex-row justify-center'>
                                 
                                 {/* If a gear is selected */}
-                                { pointer.indexOf("armor/") != -1 ?
+                                { pointer.indexOf("armor/") != -1 && pointer.indexOf("armor/accessory") == -1 ?
                                 ( 
-                                <Box className='flex flex-col items-center border gap-5'>
-                                    <img src={img} width = {100} className='z-10' />
-                                    <Input size='lg' variant='plain' 
-                                    placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
-                                    value={equipmentValue[0]}
-                                    onChange={(event : React.ChangeEvent<HTMLInputElement>) => {
-                                        setEquipmentValue([event.target.value, equipmentValue[1]]);
-                                        StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
-                                    }}
-                                    sx={{ backgroundColor: "floralwhite" }}
-                                    />
-                                </Box> 
+                                <>
+                                    <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
+                                    <Box className='flex flex-col items-center border gap-5'>
+                                        <img src={img} width = {100} className='z-10' />
+                                        <Input size='lg' variant='plain' 
+                                        placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
+                                        value={equipmentValue[0]}
+                                        onChange={(event : React.ChangeEvent<HTMLInputElement>) => {
+                                            setEquipmentValue([event.target.value, equipmentValue[1]]);
+                                            StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
+                                        }}
+                                        sx={{ backgroundColor: "floralwhite" }}
+                                        />
+                                    </Box> 
+                                </>
+                                ) : pointer.indexOf("armor/accessory") != -1 ? (
+
+                                    // If Accessory is selected 
+                                    <AccessoryContainer map={accessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
@@ -315,7 +314,19 @@ export default function CharacterPersonalAttributes () {
                     {/* Right Pane  */}
                     <div className={`${rightPaneHidden ? "hidden" : "container-div border backdrop-blur-sm"}`}>
                         <FormControl>
-                            <FormLabel sx= {{ fontWeight: 'bold' }}>{inventoryText}'s Description</FormLabel>
+                            { pointer == "armor/accessory/new" && (
+                                <>
+                                    <Box className="flex flex-col gap-1">
+                                    <FormLabel sx= {{ fontWeight: 'bold' }}>Accessory's Name</FormLabel>
+                                        <Input
+                                            size="lg"
+                                            sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
+
+                                        />
+                                    </Box>
+                                </>
+                            )}
+                            <FormLabel sx= {{ fontWeight: 'bold', marginTop: pointer.indexOf("armor/accessory") != -1 && pointer != "armor/accessory" ? "2vh" : "" }}>{inventoryText}'s Description</FormLabel>
                             <Textarea
                                 variant='outlined'
                                 color='primary'

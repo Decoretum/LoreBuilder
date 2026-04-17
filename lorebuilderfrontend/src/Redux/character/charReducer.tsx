@@ -11,13 +11,16 @@ type equipmentType = {
     weaponOffHand: Array<string>, // array = [name, description, image]
     leftArmGear: Array<string>, // array = [name, description, image]
     rightArmGear: Array<string>, // array = [name, description, image]
-    accessories: Array<object>, // array = [ Hashmap<accessoryName, description> ]
+    accessories: Array<object>, // array = [ Hashmap<accessoryName, description>, image ]
     headGear: Array<string>, // array = [name, description, image]
     chestGear: Array<string>, // array = [name, description, image]
     backGear: Array<string>, // array = [name, description, image]
     leggingGear: Array<string>, // array = [name, description, image]
     footGear: Array<string> // array = [name, description, image],
 }
+
+export type accessoryType = Map<string, Array<string>>;
+
 
 export type onlyAttributes = Omit<stateTypeAttributes, "equipment">;
 
@@ -57,7 +60,7 @@ let initialState = {
             weaponOffHand: ['', ''],
             leftArmGear: ['', ''],
             rightArmGear: ['', ''],
-            accessories: [{}],
+            accessories: new Map<string, Array<string>>,
             headGear: ['', ''],
             chestGear: ['', ''],
             backGear: ['', ''],
