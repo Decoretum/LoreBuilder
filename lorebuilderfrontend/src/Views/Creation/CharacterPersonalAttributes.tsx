@@ -12,6 +12,7 @@ import StateValidator from "../../Controllers/StateValidator.tsx";
 import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
 import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
+import AccessoryTest from "../../Test/AccessoryTest.tsx"
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -117,7 +118,9 @@ export default function CharacterPersonalAttributes () {
                 // Special Case
                 // Left Pane: Show Container full of accessories
                 // Retrieve images from FileSystem and store it within repo FS
-                var storeData = store.getState().char.attributes.equipment.accessories;
+                // var storeData = store.getState().char.attributes.equipment.accessories;
+                var storeData : any = AccessoryTest();
+
                 setPointer("armor/accessory");
                 setInventoryText("Accessory");
                 setEquipmentType("accessories");
@@ -236,7 +239,7 @@ export default function CharacterPersonalAttributes () {
                                         <Input size='lg' variant='plain' 
                                         placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
                                         value={equipmentValue[0]}
-                                        onChange={(event : React.ChangeEvent<HTMLInputElement>) => {
+                                        onChange={(event) => {
                                             setEquipmentValue([event.target.value, equipmentValue[1]]);
                                             StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
                                         }}
@@ -247,7 +250,7 @@ export default function CharacterPersonalAttributes () {
                                 ) : pointer.indexOf("armor/accessory") != -1 ? (
 
                                     // If Accessory is selected 
-                                    <AccessoryContainer map={accessory} pointer={pointer} pointerFunction={handlePointerChange} />
+                                    <AccessoryContainer map={accessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
@@ -312,20 +315,27 @@ export default function CharacterPersonalAttributes () {
                     </Box>
 
                     {/* Right Pane  */}
-                    <div className={`${rightPaneHidden ? "hidden" : "container-div border backdrop-blur-sm"}`}>
-                        <FormControl>
+                    <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col border backdrop-blur-sm"}`}>
                             { pointer == "armor/accessory/new" && (
                                 <>
+                                <FormControl>
                                     <Box className="flex flex-col gap-1">
                                     <FormLabel sx= {{ fontWeight: 'bold' }}>Accessory's Name</FormLabel>
                                         <Input
                                             size="lg"
                                             sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
-
+                                            onChange={(event) => {
+                                                setEquipmentValue([event.target.value, equipmentValue[1]]);
+                                                StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
+                                                }}
                                         />
                                     </Box>
+                                    </FormControl>
                                 </>
                             )}
+
+                            { pointer != "armor/accessory" && (
+                            <FormControl>
                             <FormLabel sx= {{ fontWeight: 'bold', marginTop: pointer.indexOf("armor/accessory") != -1 && pointer != "armor/accessory" ? "2vh" : "" }}>{inventoryText}'s Description</FormLabel>
                             <Textarea
                                 variant='outlined'
@@ -351,6 +361,7 @@ export default function CharacterPersonalAttributes () {
                                 sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
                             />
                         </FormControl>
+                        ) }
                     </div>
 
                 { NavigationValidator(binary, resetBinary) }
