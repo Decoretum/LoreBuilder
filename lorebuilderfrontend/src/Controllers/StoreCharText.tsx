@@ -104,6 +104,29 @@ export default function StoreCharText (textType : string, text : string, equipme
                 var eProp : string = equipmentObject["equipmentType"];
                 var eTitle : string = equipmentObject["equipmentValue"][0];
                 var eVal : string = equipmentObject["equipmentValue"][1];
+                console.log(equipmentObject)
+                if (equipmentObject.equipmentType == "accessories") {
+                    var name = equipmentObject.equipmentValue[0];
+                    var desc = equipmentObject.equipmentValue[1];
+                    var imgPath = equipmentObject.equipmentValue[2] ?? null;
+                    var hm : Map<string, Array<string>> = store.getState().char.attributes.equipment.accessories;
+                    hm.set(name, [desc, imgPath]);
+
+                    // Add Handler for duplicate Accessory Name
+                    store.dispatch({
+                        type: "char/editAttributes",
+                        payload: {
+                            attributes: {
+                                equipment: {
+                                    ...state.char.attributes.equipment,
+                                    accessories: hm
+                                }
+                            }
+                        }
+                    })
+                }
+
+                else 
                 store.dispatch({
                     type: "char/editAttributes",
                     payload: {

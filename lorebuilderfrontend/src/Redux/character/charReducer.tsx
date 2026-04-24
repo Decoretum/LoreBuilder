@@ -11,7 +11,7 @@ type equipmentType = {
     weaponOffHand: Array<string>, // array = [name, description, image]
     leftArmGear: Array<string>, // array = [name, description, image]
     rightArmGear: Array<string>, // array = [name, description, image]
-    accessories: Array<object>, // array = [ Hashmap<accessoryName, description>, image ]
+    accessories: Array<object>, // Hashmap<id, [accessoryName, description, image]>
     headGear: Array<string>, // array = [name, description, image]
     chestGear: Array<string>, // array = [name, description, image]
     backGear: Array<string>, // array = [name, description, image]
@@ -60,7 +60,7 @@ let initialState = {
             weaponOffHand: ['', ''],
             leftArmGear: ['', ''],
             rightArmGear: ['', ''],
-            accessories: new Map<string, Array<string>>,
+            accessories: new Map<Number, Array<string>>(),
             headGear: ['', ''],
             chestGear: ['', ''],
             backGear: ['', ''],
