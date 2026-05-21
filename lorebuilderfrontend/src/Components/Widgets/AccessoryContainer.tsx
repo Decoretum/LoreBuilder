@@ -1,6 +1,8 @@
 import { Box, Card, Typography } from "@mui/joy";
 import { accessoryType } from "../../Redux/character/charReducer";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useEffect, useState } from "react";
 
 type propsType = {
@@ -8,6 +10,7 @@ type propsType = {
     setMap: Function,
     pointer: string,
     pointerFunction: Function,
+    saveNewAccessory: Function
 }
 
 type AdditionalBoxPropsType = {
@@ -15,7 +18,8 @@ type AdditionalBoxPropsType = {
     pointer: string,
     setClicked: Function,
     id: number,
-    pointerFunction: Function
+    pointerFunction: Function,
+    saveNewAccessory: Function
 }
 
 type AccessoryContainerPropsType = {
@@ -28,6 +32,7 @@ type AccessoryContainerPropsType = {
 
 function handleClick (id: number, pointerFunction: Function, map: Map<number, boolean>, setClicked: Function, pointer: string) {
     console.log(map)
+    console.log(id)
     if (id == 0) {
         if (pointer == "armor/accessory/new") pointerFunction("armor/accessory");
         else pointerFunction("armor/accessory/new");
@@ -77,29 +82,53 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     }, [props.map, toggled])
     console.log(props.map)
         return (
-            <Box className='cursor-pointer min-w-[8vw]' data-id={props.id} 
-            onClick={
-                (event) => {
-                    handleClick (
-                    Number(event.currentTarget.dataset.id), 
-                    props.pointerFunction,
-                    props.map,
-                    props.setClicked,
-                    props.pointer)
-                    setToggled(!toggled);
-                    }
-            
-            }>
+            <Box className='min-w-[8vw]' data-id={props.id}>
                 <Card variant='soft' color='success' sx={{ }}>
                     { !toggled ? (
                         <Box>
                             Add One
-                            <Box>
+                            <Box className='cursor-pointer' 
+                            onClick={(event) => {
+                                    handleClick (
+                                        Number(event.currentTarget.parentElement?.parentElement?.parentElement.dataset.id), 
+                                        props.pointerFunction,
+                                        props.map,
+                                        props.setClicked,
+                                        props.pointer 
+                                    );
+                                    setToggled(!toggled);
+                                }
+                            }>
                                 <ControlPointIcon />
                             </Box>
                         </Box>
                     ) : (
-                        <Box>In Progress</Box>
+                        <Box className='flex flex-col gap-2'>
+                            <Box>
+                                In Progress
+                            </Box>
+                            <Box className='flex flex-row gap-2'>
+                                <Box className='cursor-pointer'
+                                    onClick={() => props.saveNewAccessory()}
+                                    >
+                                    <CheckCircleIcon color="primary" />
+                                </Box>
+                                <Box className='cursor-pointer' 
+                                onClick={(event) => {
+                                    handleClick (
+                                        Number(event.currentTarget.parentElement?.parentElement?.parentElement?.parentElement.dataset.id), 
+                                        props.pointerFunction,
+                                        props.map,
+                                        props.setClicked,
+                                        props.pointer
+                                    );
+                                    setToggled(!toggled);
+                                    }
+                                }> 
+                                    <CancelIcon color='action' />
+                                </Box>
+                            </Box>
+                        </Box>
                     ) }
                 </Card>
         </Box>
@@ -110,15 +139,18 @@ export function AccessoryContainer(props : propsType) {
     console.log(props)
     var hm= props.map;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
+    useEffect(() => {
+
+    });
     return (
         <Box className="flex flex-row items-center rounded-lg p-10 overflow-x-auto gap-10 backdrop-blur-sm w-[50vw] min-h-[40vh] max-h-[40vh]"> 
             { 
                [...props.map].map(([key, value], id) => (
-                    <Container id={id} name={key} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+                    <Container id={id} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
                 ))
             }                
                 
-            <AdditionalBox map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+            <AdditionalBox saveNewAccessory={props.saveNewAccessory} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
 
         </Box>
     )

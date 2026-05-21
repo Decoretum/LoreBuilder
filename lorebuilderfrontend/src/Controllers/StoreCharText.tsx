@@ -106,11 +106,21 @@ export default function StoreCharText (textType : string, text : string, equipme
                 var eVal : string = equipmentObject["equipmentValue"][1];
                 console.log(equipmentObject)
                 if (equipmentObject.equipmentType == "accessories") {
-                    var name = equipmentObject.equipmentValue[0];
-                    var desc = equipmentObject.equipmentValue[1];
-                    var imgPath = equipmentObject.equipmentValue[2] ?? null;
+                    var uuid = equipmentObject.equipmentValue[0];
+                    var name = equipmentObject.equipmentValue[1];
+                    var desc = equipmentObject.equipmentValue[2];
+                    var imgPath = equipmentObject.equipmentValue[3] ?? null;
+                    
                     var hm : Map<string, Array<string>> = store.getState().char.attributes.equipment.accessories;
-                    hm.set(name, [desc, imgPath]);
+                    
+                    console.log(hm)
+                    
+                    if (uuid == "none") {
+                        var random = crypto.randomUUID();
+                        uuid = random;
+                    }
+
+                    hm.set(uuid, [name, desc, imgPath]);
 
                     // Add Handler for duplicate Accessory Name
                     store.dispatch({

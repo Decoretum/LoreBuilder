@@ -60,7 +60,7 @@ let initialState = {
             weaponOffHand: ['', ''],
             leftArmGear: ['', ''],
             rightArmGear: ['', ''],
-            accessories: new Map<Number, Array<string>>(),
+            accessories: new Map<string, Array<string>>(),
             headGear: ['', ''],
             chestGear: ['', ''],
             backGear: ['', ''],
