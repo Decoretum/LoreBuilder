@@ -48,23 +48,25 @@ export default function CharacterPersonalAttributes () {
         }
     }
 
-    function saveNewAccessory() {
+    function saveNewAccessory() : boolean {
         console.log("Saved New Accessory");
         StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
+
             // Fetch UUID
             const reduxMap : Map<string, string> = store.getState().char.attributes.equipment.accessories;
-            console.log(reduxMap)
             let uuid = "";
             for (const key of reduxMap.keys()) {
                 if (reduxMap.get(key)![0] == equipmentValue[0]) {
                     uuid = key;
                 }
-            }
+            } 
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             return newMap;
         })
+        setEquipmentValue([]);
+        return true;
     }
 
     function handlePointerChange(accessoryPointer: string) {
@@ -139,16 +141,21 @@ export default function CharacterPersonalAttributes () {
                 // Left Pane: Show Container full of accessories
                 // Retrieve images from FileSystem and store it within repo FS
                 // var storeData = store.getState().char.attributes.equipment.accessories;
-                var storeData : any = AccessoryTest();
-
-                setPointer("armor/accessory");
-                setInventoryText("Accessory");
-                setEquipmentType("accessories");
-                setAccessory(storeData);
-
-                // Right Pane: 
-                setImg(`/attributes/${img.substring(6)}.png`);
-                console.log(storeData)
+                setEquipmentValue([]);
+                var testing = true;
+                if (testing) {
+                    var storeData : any = AccessoryTest();
+                    var existingData = store.getState().char.attributes.equipment.accessories;
+                    var merged: Map<string, string[]> = new Map([...storeData, ...existingData]);
+                    setPointer("armor/accessory");
+                    setInventoryText("Accessory");
+                    setEquipmentType("accessories");
+                    setAccessory(merged);
+    
+                    // Right Pane: 
+                    setImg(`/attributes/${img.substring(6)}.png`);
+                    console.log(merged);
+                }
                 break;
         }
 
