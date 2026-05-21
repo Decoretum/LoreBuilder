@@ -30,7 +30,7 @@ export default function CharacterPersonalAttributes () {
     const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
 
     // Accessory-related Components
-    const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["",""]>);
+    const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["","", ""]>);
 
     const [img, setImg] = useState("");
     const nav = useNavigate();
@@ -40,11 +40,31 @@ export default function CharacterPersonalAttributes () {
         {'class': 'attributes', 'field' : 'magic'}
 ]
 
-    function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>) : equipmentObject {
+    function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>, uuid?: string) : equipmentObject {
         return {
             equipmentType: EquipmentDictionary().get(equipmentType)!,
-            equipmentValue: [equipmentValue[0], equipmentValue[1]]
+            equipmentValue: uuid != null ? [uuid, equipmentValue[0], equipmentValue[1]] : 
+            [equipmentValue[0], equipmentValue[1]]
         }
+    }
+
+    function saveNewAccessory() {
+        console.log("Saved New Accessory");
+        StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
+        setAccessory(prevMap => {
+            const newMap = new Map(prevMap);
+            // Fetch UUID
+            const reduxMap : Map<string, string> = store.getState().char.attributes.equipment.accessories;
+            console.log(reduxMap)
+            let uuid = "";
+            for (const key of reduxMap.keys()) {
+                if (reduxMap.get(key)![0] == equipmentValue[0]) {
+                    uuid = key;
+                }
+            }
+            newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
+            return newMap;
+        })
     }
 
     function handlePointerChange(accessoryPointer: string) {
@@ -250,7 +270,7 @@ export default function CharacterPersonalAttributes () {
                                 ) : pointer.indexOf("armor/accessory") != -1 ? (
 
                                     // If Accessory is selected 
-                                    <AccessoryContainer map={accessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
+                                    <AccessoryContainer map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
@@ -318,21 +338,20 @@ export default function CharacterPersonalAttributes () {
                     <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col border backdrop-blur-sm"}`}>
                             { pointer == "armor/accessory/new" && (
                                 <>
-                                <FormControl>
-                                    <Box className="flex flex-col gap-1">
-                                    <FormLabel sx= {{ fontWeight: 'bold' }}>Accessory's Name</FormLabel>
-                                        <Input
-                                            size="lg"
-                                            sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
-                                            onChange={(event) => {
-                                                setEquipmentValue([event.target.value, equipmentValue[1]]);
-                                                StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
-                                                }}
-                                        />
-                                    </Box>
+                                    <FormControl>
+                                        <Box className="flex flex-col gap-1">
+                                        <FormLabel sx= {{ fontWeight: 'bold' }}>Accessory's Name</FormLabel>
+                                            <Input
+                                                size="lg"
+                                                sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
+                                                onChange={(event) => {
+                                                    setEquipmentValue([event.target.value, equipmentValue[1]]);
+                                                    }}
+                                            />
+                                        </Box>
                                     </FormControl>
                                 </>
-                            )}
+                            ) }
 
                             { pointer != "armor/accessory" && (
                             <FormControl>
@@ -344,7 +363,7 @@ export default function CharacterPersonalAttributes () {
                                 value={equipmentValue[1]}
                                 onChange={(event) => {
                                     setEquipmentValue([equipmentValue[0], event.target.value]);
-                                    StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
+                                    if (pointer !== "armor/accessory/new") StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
                                 }}
                                 minRows={2}
                                 maxRows={4}
