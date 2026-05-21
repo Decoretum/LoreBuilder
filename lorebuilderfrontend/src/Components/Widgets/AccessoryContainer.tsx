@@ -31,14 +31,12 @@ type AccessoryContainerPropsType = {
 }
 
 function handleClick (id: number, pointerFunction: Function, map: Map<number, boolean>, setClicked: Function, pointer: string) {
-    console.log(map)
-    console.log(id)
     if (id == 0) {
         if (pointer == "armor/accessory/new") pointerFunction("armor/accessory");
         else pointerFunction("armor/accessory/new");
-        map.forEach((kvp) => {
-            console.log(kvp) 
-        })
+        // map.forEach((kvp) => {
+        //     console.log(kvp) 
+        // })
         
     }
 }
@@ -61,7 +59,7 @@ function Container(props: AccessoryContainerPropsType){
             <Card variant='soft' color='success'>
                 <Box className='flex flex-col gap-2 rounded-lg'>
                     <Box>
-                        <Box className='bg-[#ADCAD6] rounded-lg'>
+                        <Box className='bg-[#ADCAD6] rounded-lg p-2'>
                             <Typography variant='plain'>{props.name}</Typography>
                         </Box>
                     </Box>
@@ -80,7 +78,6 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     useEffect(() => {
 
     }, [props.map, toggled])
-    console.log(props.map)
         return (
             <Box className='min-w-[8vw]' data-id={props.id}>
                 <Card variant='soft' color='success' sx={{ }}>
@@ -109,7 +106,13 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                             </Box>
                             <Box className='flex flex-row gap-2'>
                                 <Box className='cursor-pointer'
-                                    onClick={() => props.saveNewAccessory()}
+                                    onClick={() => {
+                                        var bool : boolean = props.saveNewAccessory();
+                                        if (bool) {
+                                            setToggled(!toggled);
+                                            props.pointerFunction("armor/accessory");
+                                        }
+                                    }}
                                     >
                                     <CheckCircleIcon color="primary" />
                                 </Box>
@@ -136,7 +139,6 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
 }
 
 export function AccessoryContainer(props : propsType) {
-    console.log(props)
     var hm= props.map;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
     useEffect(() => {
