@@ -84,19 +84,21 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                     { !toggled ? (
                         <Box>
                             Add One
-                            <Box className='cursor-pointer' 
+                            <Box                                
                             onClick={(event) => {
-                                    handleClick (
-                                        Number(event.currentTarget.parentElement?.parentElement?.parentElement.dataset.id), 
-                                        props.pointerFunction,
-                                        props.map,
-                                        props.setClicked,
-                                        props.pointer 
-                                    );
+                            handleClick (
+                                Number(event.currentTarget.parentElement?.parentElement?.parentElement!.dataset.id), 
+                                props.pointerFunction,
+                                props.map,
+                                props.setClicked,
+                                props.pointer 
+                            );
                                     setToggled(!toggled);
-                                }
-                            }>
-                                <ControlPointIcon />
+                                }} 
+>
+                            <ControlPointIcon 
+                                className='cursor-pointer' 
+                            />
                             </Box>
                         </Box>
                     ) : (
@@ -119,7 +121,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                                 <Box className='cursor-pointer' 
                                 onClick={(event) => {
                                     handleClick (
-                                        Number(event.currentTarget.parentElement?.parentElement?.parentElement?.parentElement.dataset.id), 
+                                        Number(event.currentTarget.parentElement?.parentElement?.parentElement?.parentElement!.dataset.id), 
                                         props.pointerFunction,
                                         props.map,
                                         props.setClicked,
