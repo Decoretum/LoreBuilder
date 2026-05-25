@@ -1,9 +1,10 @@
-import { Box, Card, Typography } from "@mui/joy";
+import { Box, Card, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
 import { accessoryType } from "../../Redux/character/charReducer";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useEffect, useState } from "react";
+import React from "react";
 
 type propsType = {
     map : accessoryType,
@@ -14,6 +15,8 @@ type propsType = {
 }
 
 type AdditionalBoxPropsType = {
+    toggleArray: Array<boolean | Function>,
+    setModalOpen: Function,
     map: Map<number, boolean>,
     pointer: string,
     setClicked: Function,
@@ -42,20 +45,8 @@ function handleClick (id: number, pointerFunction: Function, map: Map<number, bo
 }
 
 function Container(props: AccessoryContainerPropsType){
-    const [toggled, setToggled] = useState(false);
     return (
-        <Box className='cursor-pointer' data-id={props.id} 
-        onClick={
-            (event) => {
-                // handleClick (
-                // Number(event.currentTarget.dataset.id), 
-                // props.pointerFunction,
-                // props.map,
-                // props.setClicked,
-                // props.pointer)
-                // setToggled(!toggled);
-                }
-        }>
+        <Box className='cursor-pointer' data-id={props.id}>
             <Card variant='soft' color='success'>
                 <Box className='flex flex-col gap-2 rounded-lg'>
                     <Box>
@@ -74,7 +65,8 @@ function Container(props: AccessoryContainerPropsType){
 }
 
 function AdditionalBox(props: AdditionalBoxPropsType) {
-    const [toggled, setToggled] = useState(false);
+    let toggled : boolean = props.toggleArray[0];
+    let setToggled : Function = props.toggleArray[1];
     useEffect(() => {
 
     }, [props.map, toggled])
@@ -109,25 +101,22 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                             <Box className='flex flex-row gap-2'>
                                 <Box className='cursor-pointer'
                                     onClick={() => {
-                                        var bool : boolean = props.saveNewAccessory();
-                                        if (bool) {
-                                            setToggled(!toggled);
-                                            props.pointerFunction("armor/accessory");
-                                        }
+                                        props.setModalOpen(true);
                                     }}
                                     >
                                     <CheckCircleIcon color="primary" />
                                 </Box>
                                 <Box className='cursor-pointer' 
                                 onClick={(event) => {
-                                    handleClick (
-                                        Number(event.currentTarget.parentElement?.parentElement?.parentElement?.parentElement!.dataset.id), 
-                                        props.pointerFunction,
-                                        props.map,
-                                        props.setClicked,
-                                        props.pointer
-                                    );
-                                    setToggled(!toggled);
+                                    // handleClick (
+                                    //     Number(event.currentTarget.parentElement?.parentElement?.parentElement?.parentElement!.dataset.id), 
+                                    //     props.pointerFunction,
+                                    //     props.map,
+                                    //     props.setClicked,
+                                    //     props.pointer
+                                    // );
+                                    // setToggled(!toggled);
+                                    props.setModalOpen(true);
                                     }
                                 }> 
                                     <CancelIcon color='action' />
@@ -143,6 +132,9 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
 export function AccessoryContainer(props : propsType) {
     var hm= props.map;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [toggled, setToggled] = useState(false);
+    const prompt = "The Accessory name and/or description may be invalid";
     useEffect(() => {
 
     });
@@ -153,8 +145,34 @@ export function AccessoryContainer(props : propsType) {
                     <Container id={id} key={key} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
                 ))
             }                
-                
-            <AdditionalBox saveNewAccessory={props.saveNewAccessory} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+            
+            <AdditionalBox toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveNewAccessory} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+            <Modal 
+                open={modalOpen} 
+                onClose={() => setModalOpen(false)}
+                className='flex flex-col justify-center items-center'
+            >
+                <Sheet variant='soft' className='flex flex-col items-center min-w-[20vw] max-w-[20vw] p-5 rounded-lg'>
+                    <Sheet variant='soft' className='m-auto p-3'>
+                        <Typography> Are you sure you want to discard your accessory? </Typography>
+                    </Sheet>
+                    <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
+                        <Sheet className='cursor-pointer' variant='soft' onClick={() => {
+                            var bool : boolean = props.saveNewAccessory();
+                            if (bool) {
+                                setToggled(!toggled);
+                                props.pointerFunction("armor/accessory");
+                            }
+                            setModalOpen(false);
+                        }}>
+                            <CheckCircleIcon />
+                        </Sheet>
+                        <Sheet className='cursor-pointer' variant='soft' onClick={() => setModalOpen(false)}>
+                            <CancelIcon />
+                        </Sheet>
+                    </Sheet>
+                </Sheet>
+            </Modal>
 
         </Box>
     )
