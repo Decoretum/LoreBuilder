@@ -147,10 +147,10 @@ export function AccessoryContainer(props : propsType) {
 
     });
     return (
-        <Box className="flex flex-row items-center rounded-lg p-10 overflow-x-auto gap-10 backdrop-blur-sm w-[50vw] min-h-[40vh] max-h-[40vh]"> 
+        <Box className="grid grid-cols-4 gap-4 items-center rounded-lg p-10 overflow-y-auto backdrop-blur-sm w-[50vw] min-h-[40vh] max-h-[40vh]"> 
             { 
                [...props.map].map(([key, value], id) => (
-                    <Container id={id} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+                    <Container id={id} key={key} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
                 ))
             }                
                 
