@@ -50,6 +50,16 @@ export default function CharacterPersonalAttributes () {
 
     function saveNewAccessory() : boolean {
         console.log("Saved New Accessory");
+        // Validate accessory data
+        var regexNoWordChar = /([a-zA-Z])+/;
+        var isEmptyString = equipmentValue[0].trim() == "" || equipmentValue[1].trim() == "";
+        var onlyNumbersAndSpecialCharacters = regexNoWordChar.test(equipmentValue[0].trim()) == false
+        || regexNoWordChar.test(equipmentValue[1].trim()) == false;
+
+        if (isEmptyString || onlyNumbersAndSpecialCharacters) {
+            return false;
+        }
+
         StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
