@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, Input, Textarea, Typography } from "@mui/joy";
+import { Alert, Box, Button, FormControl, FormLabel, IconButton, Input, Textarea, Typography } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import store from '../../Redux/store.tsx'
@@ -6,6 +6,8 @@ import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import WarningIcon from '@mui/icons-material/Warning';
+import CloseIcon from '@mui/icons-material/Close';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
@@ -25,6 +27,8 @@ export default function CharacterPersonalAttributes () {
     const [binary, setBinary] = useState(0);
     const [pointer, setPointer] = useState('general');
     const [inventoryText, setInventoryText] = useState(invText);
+    const [alertText, setAlertText] = useState("");
+    const [alert, setAlert] = useState("hidden flex width-full ml-[3vw] mt-[4vh]");
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [equipmentType, setEquipmentType] = useState("");
     const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
@@ -40,6 +44,11 @@ export default function CharacterPersonalAttributes () {
         {'class': 'attributes', 'field' : 'magic'}
 ]
 
+    function openAlert(alertText: string) {
+        setAlert("flex width-full ml-[3vw] mt-[4vh]");
+        setAlertText(alertText);
+    }
+
     function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>, uuid?: string) : equipmentObject {
         return {
             equipmentType: EquipmentDictionary().get(equipmentType)!,
@@ -51,6 +60,9 @@ export default function CharacterPersonalAttributes () {
     function saveNewAccessory() : boolean {
         console.log("Saved New Accessory");
         // Validate accessory data
+        if (equipmentValue[0] == undefined || equipmentValue[1] == undefined) {
+            return false;
+        }
         var regexNoWordChar = /([a-zA-Z])+/;
         var isEmptyString = equipmentValue[0].trim() == "" || equipmentValue[1].trim() == "";
         var onlyNumbersAndSpecialCharacters = regexNoWordChar.test(equipmentValue[0].trim()) == false
@@ -217,7 +229,11 @@ export default function CharacterPersonalAttributes () {
 
     useEffect(() => {
         console.log(pointer)
+        console.log(equipmentValue)
         if (pointer.indexOf("armor/") != -1) {
+            if (pointer == "armor/accessory/new") {
+                setEquipmentValue(["", ""]);
+            }
             setRightPaneHidden(false);
         } else {
             setRightPaneHidden(true);
@@ -245,6 +261,7 @@ export default function CharacterPersonalAttributes () {
                                     <img src='/attributes/backpack.png' width = {90} className='ml-[1vw]' />
                                     <Typography variant="plain" level='h2' 
                                     sx= {{ 
+                                        fontFamily: 'PixelFont',
                                         marginLeft: '1vw', 
                                         color: 'brown', 
                                         backdropFilter: 'blur(2px)' 
@@ -254,6 +271,7 @@ export default function CharacterPersonalAttributes () {
                                 </Box>
                                 <Typography variant="plain" level='h2' className='rounded-b-lg'
                                 sx= {{ 
+                                    fontFamily: 'PixelFont',
                                     marginTop: '-7vh', backdropFilter: 'blur(4px)', 
                                     width: '14vw', padding: '5px', 
                                     marginLeft: '2vw', color: '#E1AD01'
@@ -287,7 +305,7 @@ export default function CharacterPersonalAttributes () {
                                 ) : pointer.indexOf("armor/accessory") != -1 ? (
 
                                     // If Accessory is selected 
-                                    <AccessoryContainer map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
+                                    <AccessoryContainer openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
@@ -322,20 +340,20 @@ export default function CharacterPersonalAttributes () {
                         )
                         : pointer === 'general' ? (
                             <>
-                                <Typography variant="plain" level='h3' sx= {{ marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', padding: '5px', color: 'lightsalmon' }}> 
+                                <Typography variant="plain" level='h3' sx= {{ fontFamily: 'PixelFont', marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', padding: '5px', color: 'lightsalmon' }}> 
                                         Choose an equipment category
                                 </Typography>
 
                                 <Box className='flex flex-row w-[40vw] h-[30vh] ml-[5vw] items-center'>
                                     <Box className='flex flex-col'>
-                                        <Typography variant="plain" level='h4' sx= {{ backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
+                                        <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
                                             Armor
                                         </Typography>
                                         <img src='/attributes/armor.png' onClick = {() => setPointer('armor')} width = {100} className='ml-[5.3vw] cursor-pointer' />
                                     </Box>
 
                                     <Box className='flex flex-col -mt-[5vh]'>
-                                        <Typography variant="plain" level='h4' sx= {{ backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
+                                        <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
                                             Weapons
                                         </Typography>
                                         <img src='/attributes/weapons/weapon1.png' onClick = {() => console.log(1)} width = {100} className='ml-[5.3vw] mt-[5vh] -rotate-90 cursor-pointer' />
@@ -403,6 +421,22 @@ export default function CharacterPersonalAttributes () {
                 { NavigationValidator(binary, resetBinary) }
                 </Box>
                 
+                {/* Alert */}
+                <Box className={alert}>
+                    <Alert 
+                    startDecorator={<WarningIcon />}
+                    variant='soft' 
+                    color='danger'
+                    endDecorator={
+                        <IconButton onClick={() => setAlert("hidden flex width-full ml-[3vw] mt-[4vh]")}>
+                            <CloseIcon />
+                        </IconButton>
+                    }
+                    >
+                        {alertText}
+                </Alert>
+                </Box> 
+
                 <div className='absolute w-[100%] bottom-5'>
                     <div className='arrow-container-multibox'>
                         <Button onClick = {() => GoBack('/characters/creation/origins/features', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
