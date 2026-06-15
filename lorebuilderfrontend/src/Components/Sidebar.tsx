@@ -12,7 +12,7 @@ export function Sidebar () {
     return (
         <>
             <div className='z-10 absolute ml-10 mt-10 font-normal text-blue'>
-                <Button variant='soft' onClick ={() => setOpen(true)} sx = {{ outline: 'none !important'}}>
+                <Button variant='soft' onClick ={() => setOpen(true)} sx = {{ outline: 'none !important', fontFamily: 'PixelFont'}}>
                      Menu 
                 </Button>
             </div>
@@ -36,7 +36,7 @@ export function Sidebar () {
                     onMouseLeave={() => setKey('')}
                     sx = {{backgroundColor: key === text ? '#5C6C60' : hoverBgColor}}>
                         <Typography variant='plain' level='body-md'>
-                            <span className='text-gray-50'>
+                            <span className='text-gray-50 font-PixelFont'>
                             {text}
                             </span>
                         </Typography>

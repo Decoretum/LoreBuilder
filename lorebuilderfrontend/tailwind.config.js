@@ -6,7 +6,11 @@ export default {
     "./src/assets/**/*.{jpeg,jpg,png,gif}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        PixelFont: ['PixelFont', 'sans-serif']
+      }
+    },
   },
   plugins: [],
 }
