@@ -34,7 +34,11 @@ export default function CharacterPersonalAttributes () {
     const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
 
     // Accessory-related Components
+    // For selected accessory: id, name, description, imgPath
     const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["","", ""]>);
+    const [accessorySelected, setAccessorySelected] = useState<Array<string>>([]);
+
+
 
     const [img, setImg] = useState("");
     const nav = useNavigate();
@@ -87,8 +91,12 @@ export default function CharacterPersonalAttributes () {
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             return newMap;
         })
-        setEquipmentValue([]);
+        setEquipmentValue(["", ""]);
         return true;
+    }
+
+    function selectAccessory() {
+
     }
 
     function handlePointerChange(accessoryPointer: string) {
@@ -163,7 +171,7 @@ export default function CharacterPersonalAttributes () {
                 // Left Pane: Show Container full of accessories
                 // Retrieve images from FileSystem and store it within repo FS
                 // var storeData = store.getState().char.attributes.equipment.accessories;
-                setEquipmentValue([]);
+                setEquipmentValue(["", ""]);
                 var testing = true;
                 if (testing) {
                     var storeData : any = AccessoryTest();
@@ -238,8 +246,19 @@ export default function CharacterPersonalAttributes () {
         } else {
             setRightPaneHidden(true);
         }
+        console.log(rightPaneHidden)
         
     }, [pointer])
+    
+    useEffect(() => {
+        console.log(accessorySelected);  
+        console.log(accessory)
+        if (accessory.size > 0) {
+            var acc : string[] = accessory.get(accessorySelected[0])!;
+            setEquipmentValue([acc[0], acc[1]]);
+            console.log(acc)
+            }
+    }, [accessorySelected])
 
 
 
@@ -305,7 +324,7 @@ export default function CharacterPersonalAttributes () {
                                 ) : pointer.indexOf("armor/accessory") != -1 ? (
 
                                     // If Accessory is selected 
-                                    <AccessoryContainer openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
+                                    <AccessoryContainer setAccessorySelected={setAccessorySelected} openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
@@ -371,12 +390,13 @@ export default function CharacterPersonalAttributes () {
 
                     {/* Right Pane  */}
                     <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col border backdrop-blur-sm"}`}>
-                            { pointer == "armor/accessory/new" && (
+                            { (pointer == "armor/accessory/new" || pointer == "armor/accessory/edit") && (
                                 <>
                                     <FormControl>
                                         <Box className="flex flex-col gap-1">
                                         <FormLabel sx= {{ fontWeight: 'bold' }}>Accessory's Name</FormLabel>
                                             <Input
+                                                value={equipmentValue[0]}
                                                 size="lg"
                                                 sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
                                                 onChange={(event) => {
@@ -403,9 +423,11 @@ export default function CharacterPersonalAttributes () {
                                 minRows={2}
                                 maxRows={4}
                                 startDecorator = {
-                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                    pointer.indexOf("armor") == -1 ?? (
+                                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
                                         <Hint props = 'skills' />
-                                    </Box>
+                                            </Box>
+                                    ) 
                                 }
                                 endDecorator = {""
                                     // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>

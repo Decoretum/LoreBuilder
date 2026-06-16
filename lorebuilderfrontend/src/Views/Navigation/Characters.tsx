@@ -37,7 +37,7 @@ export function Characters () {
                                             <img src='/book.gif' width={50} height={50} className='m-auto' />
                                         </Box>
                                         <Box className='mt-[5vh]'>
-                                            <Typography level='body-lg' variant='plain' sx = {{ color: 'black' }}> No Characters present. Build your first character! </Typography>
+                                            <Typography level='body-lg' variant='plain' sx = {{ color: 'black', fontFamily: 'PixelFont' }}> No Characters present. Build your first character! </Typography>
                                         </Box>
                                     </Link>
                                 </Box>  
