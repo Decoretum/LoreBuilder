@@ -10,10 +10,16 @@ type propsType = {
     map : accessoryType,
     setMap: Function,
     pointer: string,
+    modalText: string,
     openAlert: Function,
     pointerFunction: Function,
     saveNewAccessory: Function,
-    setAccessorySelected: Function
+    setAccessorySelected: Function,
+    setToggled: Function,
+    setModalOpen: Function,
+    setModalText: Function,
+    toggled: boolean,
+    modalOpen: boolean
 }
 
 type AdditionalBoxPropsType = {
@@ -160,10 +166,13 @@ export function AccessoryContainer(props : propsType) {
     var hm= props.map;
     var openAlert : Function = props.openAlert;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [toggled, setToggled] = useState(false);
-    const [modalText, setModalText] = useState("");
     const prompt = "The Accessory name and/or description may be invalid";
+    const toggled = props.toggled;
+    const setToggled = props.setToggled;
+    const modalOpen = props.modalOpen;
+    const setModalOpen = props.setModalOpen;
+    const modalText = props.modalText;
+    const setModalText = props.setModalText;
     useEffect(() => {
 
     });

@@ -30,6 +30,7 @@ export default function CharacterPersonalAttributes () {
     const [alertText, setAlertText] = useState("");
     const [alert, setAlert] = useState("hidden flex width-full ml-[3vw] mt-[4vh]");
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
+    const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
     const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
 
@@ -37,7 +38,8 @@ export default function CharacterPersonalAttributes () {
     // For selected accessory: id, name, description, imgPath
     const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["","", ""]>);
     const [accessorySelected, setAccessorySelected] = useState<Array<string>>([]);
-
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalText, setModalText] = useState("");
 
 
     const [img, setImg] = useState("");
@@ -93,10 +95,6 @@ export default function CharacterPersonalAttributes () {
         })
         setEquipmentValue(["", ""]);
         return true;
-    }
-
-    function selectAccessory() {
-
     }
 
     function handlePointerChange(accessoryPointer: string) {
@@ -190,14 +188,6 @@ export default function CharacterPersonalAttributes () {
         }
 
     }
-    function setLeftPane () {
-        if (pointer === 'general') {
-            return (
-
-                <></>
-            )
-        }
-    }
 
     function goBack() {
         if (pointer == "armor") {
@@ -259,8 +249,6 @@ export default function CharacterPersonalAttributes () {
             console.log(acc)
             }
     }, [accessorySelected])
-
-
 
     return (
         <>
@@ -324,7 +312,7 @@ export default function CharacterPersonalAttributes () {
                                 ) : pointer.indexOf("armor/accessory") != -1 ? (
 
                                     // If Accessory is selected 
-                                    <AccessoryContainer setAccessorySelected={setAccessorySelected} openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
+                                    <AccessoryContainer modalOpen={modalOpen} modalText={modalText} setModalOpen={setModalOpen} setModalText={setModalText}  toggled={toggled} setToggled={setToggled} setAccessorySelected={setAccessorySelected} openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
