@@ -9,5 +9,5 @@ social media or email"
 echo -e "\n\nStarting Frontend Application"
 
 cd lorebuilderfrontend
-npm run start
-
+npm run build
+npm run preview
