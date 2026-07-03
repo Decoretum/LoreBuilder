@@ -13,8 +13,8 @@ type propsType = {
     modalText: string,
     openAlert: Function,
     pointerFunction: Function,
-    saveNewAccessory: Function,
-    setAccessorySelected: Function,
+    saveNewWeapon: Function,
+    setWeaponSelected: Function,
     setToggled: Function,
     setModalOpen: Function,
     setModalText: Function,
@@ -162,7 +162,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     )
 }
 
-export function AccessoryContainer(props : propsType) {
+export function WeaponContainer(props : propsType) {
     var hm= props.map;
     var openAlert : Function = props.openAlert;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
