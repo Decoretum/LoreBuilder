@@ -56,8 +56,8 @@ let initialState = {
         strength: '',
         personality: '',
         equipment: {
-            weaponMainHand: ['', ''],
-            weaponOffHand: ['', ''],
+            weaponMainHand: new Map<string, Array<string>>(),
+            weaponOffHand: new Map<string, Array<string>>(),
             leftArmGear: ['', ''],
             rightArmGear: ['', ''],
             accessories: new Map<string, Array<string>>(),

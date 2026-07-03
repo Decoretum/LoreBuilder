@@ -191,7 +191,7 @@ export function AccessoryContainer(props : propsType) {
                 className='flex flex-col justify-center items-center'
             >
                 <Sheet variant='soft' className='flex flex-col items-center min-w-[20vw] max-w-[20vw] p-5 rounded-lg'>
-                    <Sheet variant='soft' className='m-auto p-3'>
+                    <Sheet variant='soft' className='m-auto p-3 text-center'>
                         <Typography> {modalText} </Typography>
                     </Sheet>
                     <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
@@ -204,7 +204,12 @@ export function AccessoryContainer(props : propsType) {
                                 } else {
                                     openAlert("One more of the fields have invalid input");
                                 }
-                            } else {
+                            } 
+                            else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
+                                setToggled(!toggled);
+                                props.pointerFunction("armor");
+                            } 
+                            else {
                                 setToggled(!toggled);
                                 props.pointerFunction("armor/accessory");
                             }

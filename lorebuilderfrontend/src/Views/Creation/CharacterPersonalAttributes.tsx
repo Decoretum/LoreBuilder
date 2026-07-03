@@ -15,6 +15,8 @@ import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
 import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
 import AccessoryTest from "../../Test/AccessoryTest.tsx"
+import { WeaponContainer } from "../../Components/Widgets/WeaponContainer.tsx";
+import WeaponTest from "../../Test/WeaponTest.tsx";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -22,7 +24,8 @@ type comp  = {
 }
 type stateArr = Array<comp>;
 
-export default function CharacterPersonalAttributes () {
+export default function CharacterPersonalAttributes () 
+{
     const invText : string = "Click on Any of the Gear";
     const [binary, setBinary] = useState(0);
     const [pointer, setPointer] = useState('general');
@@ -38,9 +41,15 @@ export default function CharacterPersonalAttributes () {
     // For selected accessory: id, name, description, imgPath
     const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["","", ""]>);
     const [accessorySelected, setAccessorySelected] = useState<Array<string>>([]);
+
+    // Weapon-related Components
+    // For selected Weapon: id, name, description, imgPath
+    const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
+    const [weaponSelected, setWeaponSelected] = useState<Array<string>>([]);
+
+    // Used by both accessory and weapon components
     const [modalOpen, setModalOpen] = useState(false);
     const [modalText, setModalText] = useState("");
-
 
     const [img, setImg] = useState("");
     const nav = useNavigate();
@@ -95,6 +104,10 @@ export default function CharacterPersonalAttributes () {
         })
         setEquipmentValue(["", ""]);
         return true;
+    }
+
+    function saveNewWeapon() : boolean {
+        console.log("Weapon Saved");
     }
 
     function handlePointerChange(accessoryPointer: string) {
@@ -185,6 +198,23 @@ export default function CharacterPersonalAttributes () {
                     console.log(merged);
                 }
                 break;
+            case "weapon/mainhand":
+                setEquipmentValue(["", ""]);
+                var testing = true;
+                if (testing) {
+                    var storeData : any = WeaponTest();
+                    var existingData = store.getState().char.attributes.equipment.weaponMainHand;
+                    var merged: Map<string, string[]> = new Map([...storeData, ...existingData]);
+                    setPointer("weapon/mainhand");
+                    setInventoryText("Mainhand Weapon");
+                    setEquipmentType("weaponMainHand");
+                    setWeapon(merged);
+    
+                    // Right Pane: 
+                    setImg(`/attributes/${img.substring(6)}.png`);
+                    console.log(merged);
+                }
+                break;
         }
 
     }
@@ -195,8 +225,18 @@ export default function CharacterPersonalAttributes () {
             setPointer("general");
         }
         else if (pointer.indexOf("armor/") == 0) {
-            setInventoryText(invText);
-            setPointer("armor");
+            console.log(pointer)
+            console.log(toggled)
+            if (pointer == "armor/accessory/new" && toggled) {
+                setModalOpen(true);
+                setModalText("You still have an accessory in-progress. Go back to Armor overview?");
+            } else {
+                setInventoryText(invText);
+                setPointer("armor");    
+            }
+        }
+        else {
+            setPointer("general");
         }
     }
 
@@ -257,6 +297,8 @@ export default function CharacterPersonalAttributes () {
                 
                     {/* Left Pane */}
                     <Box className='h-[100%] relative' hidden = {false}>
+                        
+                        {/* For Armor */}
                         { pointer.indexOf('armor') != -1 ? 
                         (
                         <>
@@ -279,9 +321,9 @@ export default function CharacterPersonalAttributes () {
                                 <Typography variant="plain" level='h2' className='rounded-b-lg'
                                 sx= {{ 
                                     fontFamily: 'PixelFont',
-                                    marginTop: '-7vh', backdropFilter: 'blur(4px)', 
-                                    width: '14vw', padding: '5px', 
-                                    marginLeft: '2vw', color: '#E1AD01'
+                                    marginTop: '-7vh', backdropFilter: 'blur(2px)', 
+                                    minWidth: '18vw', padding: '5px', 
+                                    marginLeft: '2vw', color: pointer == "armor" ? "#F8E16C" : '#E1AD01'
                                 }}> 
                                     { inventoryText }
                                 </Typography>
@@ -345,7 +387,88 @@ export default function CharacterPersonalAttributes () {
                             </Box>
                         </>
                         )
-                        : pointer === 'general' ? (
+                        : pointer.indexOf("weapon") != -1 ? (
+                        <>
+                            {pointer == "weapon" && (
+                                <Box className='flex flex-col items-center'>
+                                    <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
+                                        <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
+                                            <ArrowBackIcon />
+                                        </Button>
+                                        <img src='/attributes/weapons/celestialsword.png' width = {60} className='ml-[2vw] rounded-lg' />
+                                        <Typography variant="plain" level='h2' 
+                                        sx= {{ 
+                                            fontFamily: 'PixelFont',
+                                            marginLeft: '1vw', 
+                                            color: 'brown', 
+                                            backdropFilter: 'blur(2px)' 
+                                            }}> 
+                                            Weapons 
+                                        </Typography>
+                                    </Box>
+                                    <Typography variant="plain" level='h2' className='rounded-b-lg'
+                                        sx= {{ 
+                                            fontFamily: 'PixelFont',
+                                            marginTop: '-7vh', backdropFilter: 'blur(4px)', 
+                                            width: '14vw', padding: '5px', 
+                                            marginLeft: '2vw', color: '#E1AD01'
+                                        }}> 
+                                            Select a Weapon Type
+                                    </Typography>
+                                    <Box className='flex flex-row gap-12 mt-[13vh] items-center'>
+                                        <Box className='flex flex-col gap-2 items-center cursor-pointer'
+                                            onClick={() => setPointer("weapon/mainhand")}
+                                        >
+                                        <img src='/attributes/weapons/scepter.jpg' width = {90} className='rounded-lg bg-[#F5DD90]' />
+                                            <Typography variant='plain' level='h4'
+                                                sx= {{
+                                                    fontFamily: 'PixelFont',
+                                                    backdropFilter: 'blur(4px)',
+                                                    color: '#FAF4D3'
+                                                }}>
+                                                    Mainhand
+                                            </Typography>
+                                        </Box>
+                                        <Box className='flex flex-col gap-2 items-center'>
+                                            <img src='/attributes/weapons/shield.png' width = {90} className='rounded-lg' />
+                                            <Typography variant='plain' level='h4'
+                                                sx= {{
+                                                    fontFamily: 'PixelFont',
+                                                    backdropFilter: 'blur(4px)',
+                                                    color: '#FAF4D3'
+                                                }}>
+                                                    Off-hand
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            )}
+
+                            {pointer == "armor/mainhand" && (
+                                <Box className='flex flex-row gap-2'>
+                                    <Box className='flex flex-row gap-2'>
+                                    <WeaponContainer
+                                        modalOpen={modalOpen}
+                                        modalText={modalText}
+                                        setModalOpen={setModalOpen}
+                                        setModalText={setModalText}
+                                        toggled={toggled}
+                                        setToggled={setToggled}
+                                        setWeaponSelected={setWeaponSelected}
+                                        openAlert={openAlert}
+                                        map={accessory}
+                                        saveNewWeapon={saveNewWeapon}
+                                        setMap={setWeapon}
+                                        pointer={pointer}
+                                        pointerFunction={handlePointerChange} 
+                                        />
+                                    </Box>
+
+                                </Box>
+                            )}
+                        </>
+                        )
+                        : (
                             <>
                                 <Typography variant="plain" level='h3' sx= {{ fontFamily: 'PixelFont', marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', padding: '5px', color: 'lightsalmon' }}> 
                                         Choose an equipment category
@@ -363,16 +486,14 @@ export default function CharacterPersonalAttributes () {
                                         <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
                                             Weapons
                                         </Typography>
-                                        <img src='/attributes/weapons/weapon1.png' onClick = {() => console.log(1)} width = {100} className='ml-[5.3vw] mt-[5vh] -rotate-90 cursor-pointer' />
+                                        <img src='/attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")} width = {100} className='ml-[5.3vw] mt-[5vh] -rotate-90 cursor-pointer' />
                                     </Box>
                                 </Box>
                             </>
-                        ) 
-                        : (
-                            <>
-                            
-                            </>
                         )}
+
+
+                        
                         
                     </Box>
 
@@ -411,11 +532,9 @@ export default function CharacterPersonalAttributes () {
                                 minRows={2}
                                 maxRows={4}
                                 startDecorator = {
-                                    pointer.indexOf("armor") == -1 ?? (
-                                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
                                         <Hint props = 'skills' />
-                                            </Box>
-                                    ) 
+                                    </Box>
                                 }
                                 endDecorator = {""
                                     // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
@@ -464,4 +583,4 @@ export default function CharacterPersonalAttributes () {
             </div>            
         </>
     )
-}
+    }
