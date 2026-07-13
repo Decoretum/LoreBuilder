@@ -20,6 +20,7 @@ type equipmentType = {
 }
 
 export type accessoryType = Map<string, Array<string>>;
+export type weaponType = Map<string, Array<string>>;
 
 
 export type onlyAttributes = Omit<stateTypeAttributes, "equipment">;

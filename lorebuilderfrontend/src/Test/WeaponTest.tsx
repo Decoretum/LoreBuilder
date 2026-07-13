@@ -22,7 +22,7 @@ export default function WeaponText() {
         ["Tempest Glaive", "A glaive that dances with the wind.", "assets\\weapons\\tempest_glaive.png"],
         ["Oblivion Cannon", "A devastating siege weapon with unparalleled destructive power.", "assets\\weapons\\oblivion_cannon.png"]
     ];
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i <= items.length - 1; i++) {
         var uuid = crypto.randomUUID();
         m.set(uuid, items[i]);
     }

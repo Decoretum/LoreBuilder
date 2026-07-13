@@ -1,5 +1,5 @@
 import { Alert, Box, Card, IconButton, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
-import { accessoryType } from "../../Redux/character/charReducer";
+import { accessoryType, weaponType } from "../../Redux/character/charReducer";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -7,14 +7,14 @@ import { useEffect, useState } from "react";
 import React from "react";
 
 type propsType = {
-    map : accessoryType,
+    map : weaponType,
     setMap: Function,
     pointer: string,
     modalText: string,
     openAlert: Function,
     pointerFunction: Function,
-    saveNewWeapon: Function,
-    setWeaponSelected: Function,
+    saveNewMainhandWeapon: Function,
+    setMainhandWeaponSelected: Function,
     setToggled: Function,
     setModalOpen: Function,
     setModalText: Function,
@@ -34,7 +34,7 @@ type AdditionalBoxPropsType = {
     saveNewAccessory: Function
 }
 
-type AccessoryContainerPropsType = {
+type  WeaponContainerPropsType = {
     id: string,
     name: string,
     imgPath: string,
@@ -66,7 +66,8 @@ function handleClick (id: string | Number | undefined,
     }
 }
 
-function Container(props: AccessoryContainerPropsType){
+function Container(props: WeaponContainerPropsType){
+    console.log(props)
     return (
         <Box data-id={props.id}>
             <Card variant='soft' color='success'>
@@ -162,7 +163,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     )
 }
 
-export function WeaponContainer(props : propsType) {
+export function MainhandWeaponContainer(props : propsType) {
     var hm= props.map;
     var openAlert : Function = props.openAlert;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
@@ -173,18 +174,19 @@ export function WeaponContainer(props : propsType) {
     const setModalOpen = props.setModalOpen;
     const modalText = props.modalText;
     const setModalText = props.setModalText;
+    console.log(hm)
     useEffect(() => {
 
     });
     return (
         <Box className="grid grid-cols-4 gap-4 items-center rounded-lg p-10 overflow-y-auto backdrop-blur-sm w-[50vw] min-h-[40vh] max-h-[40vh]"> 
             { 
-               [...props.map].map(([key, value], id) => (
-                    <Container modalOpen={modalOpen} setModalOpen={setModalOpen} toggled={toggled} setToggled={setToggled} setAccessorySelected={props.setAccessorySelected} id={key} key={id} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+               [...hm].map(([key, value], id) => (
+                    <Container modalOpen={modalOpen} setModalOpen={setModalOpen} toggled={toggled} setToggled={setToggled} setAccessorySelected={props.setMainhandWeaponSelected} id={key} key={id} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
                 ))
             }                
             
-            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveNewAccessory} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveNewMainhandWeapon} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
             <Modal 
                 open={modalOpen} 
                 onClose={() => setModalOpen(false)}
@@ -197,7 +199,7 @@ export function WeaponContainer(props : propsType) {
                     <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
                         <IconButton variant='soft' onClick={() => {
                             if (modalText == "Are you sure you want to set your accessory?") {
-                                var bool : boolean = props.saveNewAccessory();
+                                var bool : boolean = props.saveNewMainhandWeapon();
                                 if (bool) {
                                     setToggled(!toggled);
                                     props.pointerFunction("armor/accessory");
