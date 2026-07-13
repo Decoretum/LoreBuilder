@@ -15,7 +15,7 @@ import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
 import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
 import AccessoryTest from "../../Test/AccessoryTest.tsx"
-import { WeaponContainer } from "../../Components/Widgets/WeaponContainer.tsx";
+import { MainhandWeaponContainer } from "../../Components/Widgets/MainhandWeaponContainer.tsx";
 import WeaponTest from "../../Test/WeaponTest.tsx";
 
 type comp  = {
@@ -44,8 +44,8 @@ export default function CharacterPersonalAttributes ()
 
     // Weapon-related Components
     // For selected Weapon: id, name, description, imgPath
-    const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
-    const [weaponSelected, setWeaponSelected] = useState<Array<string>>([]);
+    const [mainHandweapon, setMainhandWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
+    const [mainHandWeaponSelected, setMainhandWeaponSelected] = useState<Array<string>>([]);
 
     // Used by both accessory and weapon components
     const [modalOpen, setModalOpen] = useState(false);
@@ -72,8 +72,7 @@ export default function CharacterPersonalAttributes ()
         }
     }
 
-    function saveNewAccessory() : boolean {
-        console.log("Saved New Accessory");
+    function validateItem() : boolean {
         // Validate accessory data
         if (equipmentValue[0] == undefined || equipmentValue[1] == undefined) {
             return false;
@@ -86,6 +85,13 @@ export default function CharacterPersonalAttributes ()
         if (isEmptyString || onlyNumbersAndSpecialCharacters) {
             return false;
         }
+        return true;
+    }
+
+    function saveNewAccessory() : boolean {
+        // Validate accessory data
+        var validationResult = validateItem();
+        if (!validationResult) return false;
 
         StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
         setAccessory(prevMap => {
@@ -106,8 +112,28 @@ export default function CharacterPersonalAttributes ()
         return true;
     }
 
-    function saveNewWeapon() : boolean {
-        console.log("Weapon Saved");
+    function saveNewMainhandWeapon() : boolean {
+        // Validate weapon data
+        var validationResult = validateItem();
+        if (!validationResult) return false;
+
+        StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
+        setAccessory(prevMap => {
+            const newMap = new Map(prevMap);
+
+            // Fetch UUID
+            const reduxMap : Map<string, string> = store.getState().char.attributes.equipment.weaponMainhand;
+            let uuid = "";
+            for (const key of reduxMap.keys()) {
+                if (reduxMap.get(key)![0] == equipmentValue[0]) {
+                    uuid = key;
+                }
+            } 
+            newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
+            return newMap;
+        })
+        setEquipmentValue(["", ""]);
+        return true;
     }
 
     function handlePointerChange(accessoryPointer: string) {
@@ -115,6 +141,7 @@ export default function CharacterPersonalAttributes ()
     }
 
     function clickImage (img: string) {
+        console.log(img)
         switch(img){
             case "armor/helm":
                 setPointer(img); 
@@ -172,7 +199,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/foot":
                 setPointer("armor/foot");
                 setInventoryText("Footwear");
-                setImg(`/attributes/${img.substring(6)}.png`);
+                setImg(`/attributes/boots/37.png`);
                 var storeData = store.getState().char.attributes.equipment.footGear;
                 setEquipmentType("footGear");
                 setEquipmentValue([storeData[0], storeData[1]]);
@@ -201,6 +228,7 @@ export default function CharacterPersonalAttributes ()
             case "weapon/mainhand":
                 setEquipmentValue(["", ""]);
                 var testing = true;
+                console.log("ano")
                 if (testing) {
                     var storeData : any = WeaponTest();
                     var existingData = store.getState().char.attributes.equipment.weaponMainHand;
@@ -208,11 +236,12 @@ export default function CharacterPersonalAttributes ()
                     setPointer("weapon/mainhand");
                     setInventoryText("Mainhand Weapon");
                     setEquipmentType("weaponMainHand");
-                    setWeapon(merged);
+                    setMainhandWeapon(merged);
     
                     // Right Pane: 
                     setImg(`/attributes/${img.substring(6)}.png`);
                     console.log(merged);
+                    console.log(storeData)
                 }
                 break;
         }
@@ -267,16 +296,16 @@ export default function CharacterPersonalAttributes ()
 
     useEffect(() => {
         console.log(pointer)
-        console.log(equipmentValue)
-        if (pointer.indexOf("armor/") != -1) {
-            if (pointer == "armor/accessory/new") {
+        // console.log(equipmentValue)
+        if (pointer.indexOf("armor/") != -1 || pointer.indexOf("weapon/") != -1) {
+            if (pointer.split("/")[2] == "new") {
                 setEquipmentValue(["", ""]);
             }
             setRightPaneHidden(false);
         } else {
             setRightPaneHidden(true);
         }
-        console.log(rightPaneHidden)
+        // console.log(rightPaneHidden)
         
     }, [pointer])
     
@@ -307,7 +336,7 @@ export default function CharacterPersonalAttributes ()
                                     <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                         <ArrowBackIcon />
                                     </Button>
-                                    <img src='/attributes/backpack.png' width = {90} className='ml-[1vw]' />
+                                    <img src='/attributes/backpack2.png' width = {90} className='ml-[1vw]' />
                                     <Typography variant="plain" level='h2' 
                                     sx= {{ 
                                         fontFamily: 'PixelFont',
@@ -351,7 +380,8 @@ export default function CharacterPersonalAttributes ()
                                         />
                                     </Box> 
                                 </>
-                                ) : pointer.indexOf("armor/accessory") != -1 ? (
+                                ) : pointer.indexOf("armor/accessory") != -1 ? 
+                                (
 
                                     // If Accessory is selected 
                                     <AccessoryContainer modalOpen={modalOpen} modalText={modalText} setModalOpen={setModalOpen} setModalText={setModalText}  toggled={toggled} setToggled={setToggled} setAccessorySelected={setAccessorySelected} openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
@@ -366,15 +396,15 @@ export default function CharacterPersonalAttributes ()
                                     </Box>
 
                                     {/* helmet, armor, leggings, boots */}
-                                    <Box className='flex flex-col ml-[3vw]'>
+                                    <Box className='flex flex-col ml-[1vw]'>
                                         <img src='/attributes/helm.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/helm")}} />
                                         <img src='/attributes/chest.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/chest")}} />
                                         <img src='/attributes/leggings.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leggings")}} />
-                                        <img src='/attributes/boots/41.png' width = {70} className='z-10 ml-[1.5vw] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
+                                        <img src='/attributes/boots/37.png' width = {70} className='z-10 ml-[2vw] mt-[1vh] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
                                     </Box>
 
                                     {/* right gauntlet, accessories */}
-                                    <Box className='flex flex-col mt-[15vh] ml-[3vw]'>
+                                    <Box className='flex flex-col mt-[15vh] ml-[1vw]'>
                                         <img src='/attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/rightarm")}} />
                                         <img src='/attributes/ring.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/ring")}} />
                                     </Box>
@@ -389,6 +419,54 @@ export default function CharacterPersonalAttributes ()
                         )
                         : pointer.indexOf("weapon") != -1 ? (
                         <>
+                        {/* For weapon */}
+                            {pointer.indexOf("weapon/mainhand") != -1 && 
+                                (
+                                <>
+                                    <Box className='flex flex-col items-center'>
+                                        <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
+                                            <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
+                                                <ArrowBackIcon />
+                                            </Button>
+                                            <img src='/attributes/backpack2.png' width = {90} className='ml-[1vw]' />
+                                            <Typography variant="plain" level='h2' 
+                                            sx= {{ 
+                                                fontFamily: 'PixelFont',
+                                                marginLeft: '1vw', 
+                                                color: 'brown', 
+                                                backdropFilter: 'blur(2px)' 
+                                                }}> 
+                                                Inventory 
+                                            </Typography>
+                                        </Box>
+                                        <Typography variant="plain" level='h2' className='rounded-b-lg'
+                                        sx= {{ 
+                                            fontFamily: 'PixelFont',
+                                            marginTop: '-7vh', backdropFilter: 'blur(2px)', 
+                                            minWidth: '18vw', padding: '5px', 
+                                            marginLeft: '2vw', color: pointer == "armor" ? "#F8E16C" : '#E1AD01'
+                                        }}> 
+                                            { inventoryText }
+                                        </Typography>
+                                    </Box>
+    
+                                    <MainhandWeaponContainer
+                                        modalOpen={modalOpen}
+                                        modalText={modalText}
+                                        setModalOpen={setModalOpen}
+                                        setModalText={setModalText}
+                                        toggled={toggled}
+                                        setToggled={setToggled}
+                                        setMainhandWeaponSelected={setMainhandWeaponSelected}
+                                        openAlert={openAlert}
+                                        map={mainHandweapon}
+                                        saveNewMainhandWeapon={saveNewMainhandWeapon}
+                                        setMap={setMainhandWeapon}
+                                        pointer={pointer}
+                                        pointerFunction={handlePointerChange} 
+                                    />                                        
+                                </>
+                                )}
                             {pointer == "weapon" && (
                                 <Box className='flex flex-col items-center'>
                                     <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
@@ -417,7 +495,7 @@ export default function CharacterPersonalAttributes ()
                                     </Typography>
                                     <Box className='flex flex-row gap-12 mt-[13vh] items-center'>
                                         <Box className='flex flex-col gap-2 items-center cursor-pointer'
-                                            onClick={() => setPointer("weapon/mainhand")}
+                                            onClick={() => clickImage("weapon/mainhand")}
                                         >
                                         <img src='/attributes/weapons/scepter.jpg' width = {90} className='rounded-lg bg-[#F5DD90]' />
                                             <Typography variant='plain' level='h4'
@@ -444,28 +522,6 @@ export default function CharacterPersonalAttributes ()
                                 </Box>
                             )}
 
-                            {pointer == "armor/mainhand" && (
-                                <Box className='flex flex-row gap-2'>
-                                    <Box className='flex flex-row gap-2'>
-                                    <WeaponContainer
-                                        modalOpen={modalOpen}
-                                        modalText={modalText}
-                                        setModalOpen={setModalOpen}
-                                        setModalText={setModalText}
-                                        toggled={toggled}
-                                        setToggled={setToggled}
-                                        setWeaponSelected={setWeaponSelected}
-                                        openAlert={openAlert}
-                                        map={accessory}
-                                        saveNewWeapon={saveNewWeapon}
-                                        setMap={setWeapon}
-                                        pointer={pointer}
-                                        pointerFunction={handlePointerChange} 
-                                        />
-                                    </Box>
-
-                                </Box>
-                            )}
                         </>
                         )
                         : (
@@ -499,7 +555,7 @@ export default function CharacterPersonalAttributes ()
 
                     {/* Right Pane  */}
                     <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col border backdrop-blur-sm"}`}>
-                            { (pointer == "armor/accessory/new" || pointer == "armor/accessory/edit") && (
+                            { (pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit" ) && (
                                 <>
                                     <FormControl>
                                         <Box className="flex flex-col gap-1">
@@ -517,33 +573,33 @@ export default function CharacterPersonalAttributes ()
                                 </>
                             ) }
 
-                            { pointer != "armor/accessory" && (
+                            { pointer != "armor/accessory" && pointer != "weapon/mainhand" && pointer != "weapon/offhand" && (
                             <FormControl>
-                            <FormLabel sx= {{ fontWeight: 'bold', marginTop: pointer.indexOf("armor/accessory") != -1 && pointer != "armor/accessory" ? "2vh" : "" }}>{inventoryText}'s Description</FormLabel>
-                            <Textarea
-                                variant='outlined'
-                                color='primary'
-                                placeholder="Type in here…"
-                                value={equipmentValue[1]}
-                                onChange={(event) => {
-                                    setEquipmentValue([equipmentValue[0], event.target.value]);
-                                    if (pointer !== "armor/accessory/new") StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
-                                }}
-                                minRows={2}
-                                maxRows={4}
-                                startDecorator = {
-                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                        <Hint props = 'skills' />
-                                    </Box>
-                                }
-                                endDecorator = {""
-                                    // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    // {skills.length} character(s)
-                                    // </Typography>
-                                }
-                                sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
-                            />
-                        </FormControl>
+                                <FormLabel sx= {{ fontWeight: 'bold', marginTop: pointer.indexOf("armor/accessory") != -1 && pointer != "armor/accessory" ? "2vh" : "" }}>{inventoryText}'s Description</FormLabel>
+                                <Textarea
+                                    variant='outlined'
+                                    color='primary'
+                                    placeholder="Type in here…"
+                                    value={equipmentValue[1]}
+                                    onChange={(event) => {
+                                        setEquipmentValue([equipmentValue[0], event.target.value]);
+                                        if (pointer.split("/")[2] != "new") StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
+                                    }}
+                                    minRows={2}
+                                    maxRows={4}
+                                    startDecorator = {
+                                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                            <Hint props = 'skills' />
+                                        </Box>
+                                    }
+                                    endDecorator = {""
+                                        // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                        // {skills.length} character(s)
+                                        // </Typography>
+                                    }
+                                    sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
+                                />
+                            </FormControl>
                         ) }
                     </div>
 
