@@ -67,8 +67,9 @@ export default function CharacterPersonalAttributes ()
     function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>, uuid?: string) : equipmentObject {
         return {
             equipmentType: EquipmentDictionary().get(equipmentType)!,
-            equipmentValue: uuid != null ? [uuid, equipmentValue[0], equipmentValue[1]] : 
-            [equipmentValue[0], equipmentValue[1]]
+            equipmentValue: uuid != null || uuid != undefined 
+            ? [uuid, equipmentValue[0], equipmentValue[1]] 
+            : [equipmentValue[0], equipmentValue[1]]
         }
     }
 
@@ -88,12 +89,11 @@ export default function CharacterPersonalAttributes ()
         return true;
     }
 
-    function saveNewAccessory() : boolean {
+    function saveAccessory(edit?: boolean) : boolean {
         // Validate accessory data
         var validationResult = validateItem();
         if (!validationResult) return false;
-
-        StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
+        StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? accessorySelected[0] : "none"));        
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
 
@@ -384,7 +384,7 @@ export default function CharacterPersonalAttributes ()
                                 (
 
                                     // If Accessory is selected 
-                                    <AccessoryContainer modalOpen={modalOpen} modalText={modalText} setModalOpen={setModalOpen} setModalText={setModalText}  toggled={toggled} setToggled={setToggled} setAccessorySelected={setAccessorySelected} openAlert={openAlert} map={accessory} saveNewAccessory={saveNewAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
+                                    <AccessoryContainer modalOpen={modalOpen} modalText={modalText} setModalOpen={setModalOpen} setModalText={setModalText}  toggled={toggled} setToggled={setToggled} setAccessorySelected={setAccessorySelected} openAlert={openAlert} map={accessory} saveAccessory={saveAccessory} setMap={setAccessory} pointer={pointer} pointerFunction={handlePointerChange} />
                                 ) : pointer == "armor" ? 
                                 (
                                 <>
@@ -554,7 +554,7 @@ export default function CharacterPersonalAttributes ()
                     </Box>
 
                     {/* Right Pane  */}
-                    <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col border backdrop-blur-sm"}`}>
+                    <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col border backdrop-blur-sm mt-[2vh]"}`}>
                             { (pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit" ) && (
                                 <>
                                     <FormControl>
@@ -574,6 +574,7 @@ export default function CharacterPersonalAttributes ()
                             ) }
 
                             { pointer != "armor/accessory" && pointer != "weapon/mainhand" && pointer != "weapon/offhand" && (
+                            <Box className='flex flex-col gap-2 items-center'>
                             <FormControl>
                                 <FormLabel sx= {{ fontWeight: 'bold', marginTop: pointer.indexOf("armor/accessory") != -1 && pointer != "armor/accessory" ? "2vh" : "" }}>{inventoryText}'s Description</FormLabel>
                                 <Textarea
@@ -600,6 +601,22 @@ export default function CharacterPersonalAttributes ()
                                     sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
                                 />
                             </FormControl>
+
+                            { pointer.split("/")[2] == "edit" && (
+                                <Button variant='soft' 
+                                color='success' 
+                                className='w-[10vw]'
+                                onClick={() => {
+                                    setModalOpen(true);
+                                    setModalText("Are you sure you want to save these changes?")
+                                }}
+                                >
+                                    <Typography sx={{ fontFamily: 'PixelFont', fontSize: 13}}>
+                                        Save Changes
+                                    </Typography>
+                                </Button>
+                            ) }             
+                            </Box>
                         ) }
                     </div>
 

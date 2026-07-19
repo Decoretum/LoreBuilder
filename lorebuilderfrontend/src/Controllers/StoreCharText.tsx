@@ -118,8 +118,7 @@ export default function StoreCharText (textType : string, text : string, equipme
                     if (uuid == "none") {
                         var random = crypto.randomUUID();
                         uuid = random;
-                    }
-
+                    } 
                     hm.set(uuid, [name, desc, imgPath]);
 
                     // Add Handler for duplicate Accessory Name

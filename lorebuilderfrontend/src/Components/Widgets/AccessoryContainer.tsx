@@ -13,7 +13,7 @@ type propsType = {
     modalText: string,
     openAlert: Function,
     pointerFunction: Function,
-    saveNewAccessory: Function,
+    saveAccessory: Function,
     setAccessorySelected: Function,
     setToggled: Function,
     setModalOpen: Function,
@@ -28,13 +28,14 @@ type AdditionalBoxPropsType = {
     setModalOpen: Function,
     map: Map<number, boolean>,
     pointer: string,
-    setClicked: Function,
     id: number,
     pointerFunction: Function,
     saveNewAccessory: Function
 }
 
 type AccessoryContainerPropsType = {
+    clicked: string,
+    setClicked: Function,
     id: string,
     name: string,
     imgPath: string,
@@ -47,12 +48,23 @@ type AccessoryContainerPropsType = {
     toggled: boolean
 }
 
-function handleClick (id: string | Number | undefined, 
+function handleClick (
+    id: string | Number | undefined, 
     pointerFunction: Function, 
-    pointer: string, setAccessorySelected?: Function,
-    toggled?: boolean
+    pointer: string, 
+    setClicked?: Function,
+    clicked?: string,
+    setAccessorySelected?: Function,
+    toggled?: boolean,
     ) {
+
     console.log(pointer)
+    console.log(id)
+    console.log(toggled)
+    console.log(clicked)
+    
+    if (setClicked != undefined) setClicked(id!);
+
     if (id == 0) {
         if (pointer == "armor/accessory/new") pointerFunction("armor/accessory");
         else pointerFunction("armor/accessory/new");
@@ -60,6 +72,12 @@ function handleClick (id: string | Number | undefined,
         if (toggled) {
             console.log("Check your shit")
             return;
+        } else {
+            if ((pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit") && clicked == id) {
+                console.log("unselect accessory")
+                pointerFunction("armor/accessory");
+                return;
+            }
         }
         setAccessorySelected!([id]);
         pointerFunction("armor/accessory/edit");
@@ -76,7 +94,7 @@ function Container(props: AccessoryContainerPropsType){
                         className='bg-[#ADCAD6] rounded-lg p-2 cursor-pointer'
                         onClick={() => {
                                 // props.setAccessorySelected(props.id); 
-                                handleClick(props.id, props.pointerFunction, props.pointer, props.setAccessorySelected, props.toggled); 
+                                handleClick(props.id, props.pointerFunction, props.pointer, props.setClicked, props.clicked, props.setAccessorySelected, props.toggled); 
                             }}>
                         
                             <Typography 
@@ -121,9 +139,9 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                             handleClick (
                                 event.currentTarget.parentElement?.parentElement?.parentElement!.dataset.id, 
                                 props.pointerFunction,
-                                props.pointer 
+                                props.pointer
                             );
-                                    setToggled(!toggled);
+                                    setToggled(true);
                                 }}>
                             <ControlPointIcon 
                                 className='cursor-pointer' 
@@ -165,7 +183,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
 export function AccessoryContainer(props : propsType) {
     var hm= props.map;
     var openAlert : Function = props.openAlert;
-    const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
+    const [clicked, setClicked] = useState("");
     const prompt = "The Accessory name and/or description may be invalid";
     const toggled = props.toggled;
     const setToggled = props.setToggled;
@@ -180,11 +198,25 @@ export function AccessoryContainer(props : propsType) {
         <Box className="grid grid-cols-4 gap-4 items-center rounded-lg p-10 overflow-y-auto backdrop-blur-sm w-[50vw] min-h-[40vh] max-h-[40vh]"> 
             { 
                [...props.map].map(([key, value], id) => (
-                    <Container modalOpen={modalOpen} setModalOpen={setModalOpen} toggled={toggled} setToggled={setToggled} setAccessorySelected={props.setAccessorySelected} id={key} key={id} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+                    <Container 
+                        modalOpen={modalOpen} 
+                        clicked={clicked} 
+                        setClicked={setClicked} 
+                        setModalOpen={setModalOpen} 
+                        toggled={toggled} 
+                        setToggled={setToggled} 
+                        setAccessorySelected={props.setAccessorySelected} 
+                        id={key} 
+                        key={id} 
+                        name={value[0]} 
+                        imgPath={value[1]} 
+                        pointer={props.pointer} 
+                        pointerFunction={props.pointerFunction} 
+                    />
                 ))
             }                
             
-            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveNewAccessory} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveAccessory} map={hm} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
             <Modal 
                 open={modalOpen} 
                 onClose={() => setModalOpen(false)}
@@ -197,21 +229,32 @@ export function AccessoryContainer(props : propsType) {
                     <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
                         <IconButton variant='soft' onClick={() => {
                             if (modalText == "Are you sure you want to set your accessory?") {
-                                var bool : boolean = props.saveNewAccessory();
+                                var bool : boolean = props.saveAccessory();
                                 if (bool) {
-                                    setToggled(!toggled);
+                                    setToggled(false);
                                     props.pointerFunction("armor/accessory");
                                 } else {
                                     openAlert("One more of the fields have invalid input");
                                 }
                             } 
                             else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
-                                setToggled(!toggled);
+                                setToggled(false);
                                 props.pointerFunction("armor");
                             } 
-                            else {
-                                setToggled(!toggled);
+                            else if (modalText == "Are you sure you want to discard your accessory?") {
+                                setToggled(false);
                                 props.pointerFunction("armor/accessory");
+                            }
+                            else {
+                                // Saving changes
+                                console.log("Saving changes")
+                                var bool : boolean = props.saveAccessory(true);
+                                if (bool) {
+                                    setToggled(false);
+                                    props.pointerFunction("armor/accessory");
+                                } else {
+                                    openAlert("One more of the fields have invalid input");
+                                }
                             }
                             setModalOpen(false);
                         }}>
