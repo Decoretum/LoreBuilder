@@ -212,8 +212,15 @@ export function MainhandWeaponContainer(props : propsType) {
                                 props.pointerFunction("armor");
                             } 
                             else {
-                                setToggled(!toggled);
-                                props.pointerFunction("armor/accessory");
+                                // Saving changes
+                                console.log("Saving changes")
+                                var bool : boolean = props.saveMainhandWeapon(true);
+                                if (bool) {
+                                    setToggled(false);
+                                    props.pointerFunction("weapon/mainhand");
+                                } else {
+                                    openAlert("One more of the fields have invalid input");
+                                }
                             }
                             setModalOpen(false);
                         }}>
