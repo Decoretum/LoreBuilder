@@ -1,10 +1,9 @@
-import { Alert, Box, Card, IconButton, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
+import { Box, Card, IconButton, Modal, Sheet, Typography } from "@mui/joy";
 import { accessoryType } from "../../Redux/character/charReducer";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useEffect, useState } from "react";
-import React from "react";
 
 type propsType = {
     map : accessoryType,
@@ -14,6 +13,7 @@ type propsType = {
     openAlert: Function,
     pointerFunction: Function,
     saveAccessory: Function,
+    deleteAccessory: Function,
     setAccessorySelected: Function,
     setToggled: Function,
     setModalOpen: Function,
@@ -122,10 +122,9 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     let toggled : boolean = props.toggleArray[0];
     let setToggled : Function = props.toggleArray[1];
     let setModalText : Function = props.setModalText;
-    console.log(props)
-    useEffect(() => {
+    // useEffect(() => {
 
-    }, [props.map, toggled])
+    // }, [props.map, toggled])
         return (
             <Box className='min-w-[8vw]' data-id={props.id}>
                 <Card variant='soft' color='success' sx={{ }}>
@@ -244,13 +243,16 @@ export function AccessoryContainer(props : propsType) {
                             else if (modalText == "Are you sure you want to discard your accessory?") {
                                 setToggled(false);
                                 props.pointerFunction("armor/accessory");
+                            } else if  (modalText == "Are you sure you want to delete this accessory?") {
+                                props.pointerFunction("armor/accessory");
+                                setToggled(false);
+                                props.deleteAccessory();
                             }
                             else {
                                 // Saving changes
                                 console.log("Saving changes")
                                 var bool : boolean = props.saveAccessory(true);
                                 if (bool) {
-                                    setToggled(false);
                                     props.pointerFunction("armor/accessory");
                                 } else {
                                     openAlert("One more of the fields have invalid input");

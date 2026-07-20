@@ -118,8 +118,17 @@ export default function StoreCharText (textType : string, text : string, equipme
                     if (uuid == "none") {
                         var random = crypto.randomUUID();
                         uuid = random;
-                    } 
-                    hm.set(uuid, [name, desc, imgPath]);
+                        hm.set(uuid, [name, desc, imgPath]);
+                    } else {
+                        // Adding and Editing
+                        if (text == "edit")
+                        hm.set(uuid, [name, desc, imgPath]);
+
+                        // Deleting
+                        else if (text == "delete") {
+                            hm.delete(uuid);
+                        }                        
+                    }
 
                     // Add Handler for duplicate Accessory Name
                     store.dispatch({
