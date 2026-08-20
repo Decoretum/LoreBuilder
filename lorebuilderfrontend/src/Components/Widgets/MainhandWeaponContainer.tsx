@@ -4,7 +4,6 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useEffect, useState } from "react";
-import React from "react";
 
 type propsType = {
     map : weaponType,
@@ -13,8 +12,8 @@ type propsType = {
     modalText: string,
     openAlert: Function,
     pointerFunction: Function,
-    saveNewMainhandWeapon: Function,
-    setMainhandWeaponSelected: Function,
+    saveNewWeapon: Function,
+    setWeaponSelected: Function,
     setToggled: Function,
     setModalOpen: Function,
     setModalText: Function,
@@ -40,34 +39,40 @@ type  WeaponContainerPropsType = {
     imgPath: string,
     pointer: string,
     pointerFunction: Function,
-    setAccessorySelected: Function,
+    setWeaponSelected: Function,
     setModalOpen: Function,
     setToggled: Function,
     modalOpen: boolean,
     toggled: boolean
 }
 
-function handleClick (id: string | Number | undefined, 
+function handleClick (
+    id: string | Number | undefined, 
     pointerFunction: Function, 
-    pointer: string, setAccessorySelected?: Function,
+    pointer: string, 
+    setWeaponSelected?: Function,
     toggled?: boolean
     ) {
     console.log(pointer)
+    console.log(id)
+    console.log(toggled)
+    var weaponCategory = pointer.split("/")[1];
+    console.log(weaponCategory)
     if (id == 0) {
-        if (pointer == "armor/accessory/new") pointerFunction("armor/accessory");
-        else pointerFunction("armor/accessory/new");
+        if (pointer.split("/")[2] == "new") pointerFunction(`weapon/${weaponCategory}`);
+        else pointerFunction(`weapon/${weaponCategory}/new`);
     } else {
         if (toggled) {
             console.log("Check your shit")
             return;
         }
-        setAccessorySelected!([id]);
-        pointerFunction("armor/accessory/edit");
+        setWeaponSelected!([id]);
+        pointerFunction(`weapon/${weaponCategory}/edit`);
     }
 }
 
 function Container(props: WeaponContainerPropsType){
-    console.log(props)
+    // console.log(props)
     return (
         <Box data-id={props.id}>
             <Card variant='soft' color='success'>
@@ -77,7 +82,13 @@ function Container(props: WeaponContainerPropsType){
                         className='bg-[#ADCAD6] rounded-lg p-2 cursor-pointer'
                         onClick={() => {
                                 // props.setAccessorySelected(props.id); 
-                                handleClick(props.id, props.pointerFunction, props.pointer, props.setAccessorySelected, props.toggled); 
+                                handleClick(
+                                    props.id, 
+                                    props.pointerFunction, 
+                                    props.pointer, 
+                                    props.setWeaponSelected, 
+                                    props.toggled
+                                ); 
                             }}>
                         
                             <Typography 
@@ -174,7 +185,7 @@ export function MainhandWeaponContainer(props : propsType) {
     const setModalOpen = props.setModalOpen;
     const modalText = props.modalText;
     const setModalText = props.setModalText;
-    console.log(hm)
+    // console.log(hm)
     useEffect(() => {
 
     });
@@ -182,57 +193,22 @@ export function MainhandWeaponContainer(props : propsType) {
         <Box className="grid grid-cols-4 gap-4 items-center rounded-lg p-10 overflow-y-auto backdrop-blur-sm w-[50vw] min-h-[40vh] max-h-[40vh]"> 
             { 
                [...hm].map(([key, value], id) => (
-                    <Container modalOpen={modalOpen} setModalOpen={setModalOpen} toggled={toggled} setToggled={setToggled} setAccessorySelected={props.setMainhandWeaponSelected} id={key} key={id} name={value[0]} imgPath={value[1]} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+                    <Container 
+                        modalOpen={modalOpen} 
+                        setModalOpen={setModalOpen} 
+                        toggled={toggled} 
+                        setToggled={setToggled} 
+                        setWeaponSelected={props.setWeaponSelected} 
+                        id={key} 
+                        key={id} 
+                        name={value[0]} 
+                        imgPath={value[1]} 
+                        pointer={props.pointer} 
+                        pointerFunction={props.pointerFunction} 
+                    />
                 ))
-            }                
-            
-            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveNewMainhandWeapon} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
-            <Modal 
-                open={modalOpen} 
-                onClose={() => setModalOpen(false)}
-                className='flex flex-col justify-center items-center'
-            >
-                <Sheet variant='soft' className='flex flex-col items-center min-w-[20vw] max-w-[20vw] p-5 rounded-lg'>
-                    <Sheet variant='soft' className='m-auto p-3 text-center'>
-                        <Typography> {modalText} </Typography>
-                    </Sheet>
-                    <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
-                        <IconButton variant='soft' onClick={() => {
-                            if (modalText == "Are you sure you want to set your accessory?") {
-                                var bool : boolean = props.saveNewMainhandWeapon();
-                                if (bool) {
-                                    setToggled(!toggled);
-                                    props.pointerFunction("armor/accessory");
-                                } else {
-                                    openAlert("One more of the fields have invalid input");
-                                }
-                            } 
-                            else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
-                                setToggled(!toggled);
-                                props.pointerFunction("armor");
-                            } 
-                            else {
-                                // Saving changes
-                                console.log("Saving changes")
-                                var bool : boolean = props.saveMainhandWeapon(true);
-                                if (bool) {
-                                    setToggled(false);
-                                    props.pointerFunction("weapon/mainhand");
-                                } else {
-                                    openAlert("One more of the fields have invalid input");
-                                }
-                            }
-                            setModalOpen(false);
-                        }}>
-                            <CheckCircleIcon />
-                        </IconButton>
-                        <IconButton variant='soft' onClick={() => setModalOpen(false)}>
-                            <CancelIcon />
-                        </IconButton>
-                    </Sheet>
-                </Sheet>
-            </Modal>
-
+            }                           
+            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveNewWeapon} map={hm} clicked={clicked} setClicked={setClicked} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
         </Box>
     )
 }

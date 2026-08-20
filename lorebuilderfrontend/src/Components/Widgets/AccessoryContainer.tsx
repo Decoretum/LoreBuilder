@@ -216,59 +216,6 @@ export function AccessoryContainer(props : propsType) {
             }                
             
             <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveAccessory} map={hm} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
-            <Modal 
-                open={modalOpen} 
-                onClose={() => setModalOpen(false)}
-                className='flex flex-col justify-center items-center'
-            >
-                <Sheet variant='soft' className='flex flex-col items-center min-w-[20vw] max-w-[20vw] p-5 rounded-lg'>
-                    <Sheet variant='soft' className='m-auto p-3 text-center'>
-                        <Typography> {modalText} </Typography>
-                    </Sheet>
-                    <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
-                        <IconButton variant='soft' onClick={() => {
-                            if (modalText == "Are you sure you want to set your accessory?") {
-                                var bool : boolean = props.saveAccessory();
-                                if (bool) {
-                                    setToggled(false);
-                                    props.pointerFunction("armor/accessory");
-                                } else {
-                                    openAlert("One more of the fields have invalid input");
-                                }
-                            } 
-                            else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
-                                setToggled(false);
-                                props.pointerFunction("armor");
-                            } 
-                            else if (modalText == "Are you sure you want to discard your accessory?") {
-                                setToggled(false);
-                                props.pointerFunction("armor/accessory");
-                            } else if  (modalText == "Are you sure you want to delete this accessory?") {
-                                props.pointerFunction("armor/accessory");
-                                setToggled(false);
-                                props.deleteAccessory();
-                            }
-                            else {
-                                // Saving changes
-                                console.log("Saving changes")
-                                var bool : boolean = props.saveAccessory(true);
-                                if (bool) {
-                                    props.pointerFunction("armor/accessory");
-                                } else {
-                                    openAlert("One more of the fields have invalid input");
-                                }
-                            }
-                            setModalOpen(false);
-                        }}>
-                            <CheckCircleIcon />
-                        </IconButton>
-                        <IconButton variant='soft' onClick={() => setModalOpen(false)}>
-                            <CancelIcon />
-                        </IconButton>
-                    </Sheet>
-                </Sheet>
-            </Modal>
-
         </Box>
     )
 }

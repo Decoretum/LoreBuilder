@@ -1,4 +1,4 @@
-import { Alert, Box, Button, FormControl, FormLabel, IconButton, Input, Textarea, Typography } from "@mui/joy";
+import { Alert, Box, Button, FormControl, FormLabel, IconButton, Input, Modal, Sheet, Textarea, Typography } from "@mui/joy";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
@@ -12,6 +12,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WarningIcon from '@mui/icons-material/Warning';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
@@ -92,18 +94,17 @@ export default function CharacterPersonalAttributes ()
     }
 
     function trackAccessoryWeaponChange() : void {
-        console.log(accessorySelected)
-        for (var a of accessory.keys()) {
-            if (a === accessorySelected[0]) {
-                // Identify presence of change
-                var hasChanged = equipmentValue[0] !== accessory.get(a)![0]
-                    || equipmentValue[1] !== accessory.get(a)![1];
-                if (hasChanged) {
-                    setSaveButton("w-[10vw]");
-                } else {
-                    setSaveButton("hidden");
-                }
-            }
+        // Identify presence of change
+        console.log(pointer)
+        var item = pointer.split("/")[1] == "accessory" ? accessory.get(accessorySelected[0]) : (pointer.split("/")[1] == "mainhand" ? mainHandweapon.get(mainHandWeaponSelected[0]) : null)
+        var itemOfInterestName = item![0];
+        var itemOfInterestDescription = item![1];
+        var hasChanged = equipmentValue[0] !== itemOfInterestName
+            || equipmentValue[1] !== itemOfInterestDescription;
+        if (hasChanged) {
+            setSaveButton("w-[10vw]");
+        } else {
+            setSaveButton("hidden");
         }
     }
 
@@ -139,12 +140,12 @@ export default function CharacterPersonalAttributes ()
         return true;
     }
 
-    function saveNewMainhandWeapon() : boolean {
+    function saveNewWeapon(category: string, edit? : boolean) : boolean {
         // Validate weapon data
         var validationResult = validateItem();
         if (!validationResult) return false;
 
-        StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
+        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
 
@@ -347,6 +348,15 @@ export default function CharacterPersonalAttributes ()
             }
     }, [accessorySelected])
 
+    // Track current weapon (mainhand/offhand) selected
+    useEffect(() => {
+        if (mainHandweapon.size > 0) {
+            var weapon : string[] = mainHandweapon.get(mainHandWeaponSelected[0])!;
+            setEquipmentValue([weapon[0], weapon[1]]);
+            console.log(weapon)
+        }
+    }, [mainHandWeaponSelected])
+
     // Track changes when editing selected weapon or accessory
     useEffect(() => {
         if (pointer.split("/")[2] == "edit") {
@@ -507,10 +517,10 @@ export default function CharacterPersonalAttributes ()
                                         setModalText={setModalText}
                                         toggled={toggled}
                                         setToggled={setToggled}
-                                        setMainhandWeaponSelected={setMainhandWeaponSelected}
+                                        setWeaponSelected={setMainhandWeaponSelected}
                                         openAlert={openAlert}
                                         map={mainHandweapon}
-                                        saveNewMainhandWeapon={saveNewMainhandWeapon}
+                                        saveNewWeapon={saveNewWeapon}
                                         setMap={setMainhandWeapon}
                                         pointer={pointer}
                                         pointerFunction={handlePointerChange} 
@@ -609,7 +619,7 @@ export default function CharacterPersonalAttributes ()
                                 <>
                                     <FormControl>
                                         <Box className="flex flex-col gap-1">
-                                        <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite' }}>Accessory's Name</FormLabel>
+                                        <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite' }}>{inventoryText}'s Name</FormLabel>
                                             <Input
                                                 value={equipmentValue[0]}
                                                 size="lg"
@@ -632,7 +642,7 @@ export default function CharacterPersonalAttributes ()
                                     color: 'antiquewhite',
                                     marginTop: 
                                         pointer.indexOf("armor/accessory") != -1 
-                                        && pointer != "armor/accessory" 
+                                        || pointer.indexOf("weapon/") != -1 
                                         ? "2vh" : "" 
                                 }}>
                                             {inventoryText}'s Description
@@ -719,6 +729,68 @@ export default function CharacterPersonalAttributes ()
                         {alertText}
                 </Alert>
                 </Box> 
+
+                {/* Modal */}
+                <Modal 
+                    open={modalOpen} 
+                    onClose={() => setModalOpen(false)}
+                    className='flex flex-col justify-center items-center'
+                >
+                    <Sheet variant='soft' className='flex flex-col items-center min-w-[20vw] max-w-[20vw] p-5 rounded-lg'>
+                        <Sheet variant='soft' className='m-auto p-3 text-center'>
+                            <Typography> {modalText} </Typography>
+                        </Sheet>
+                        <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
+                            <IconButton variant='soft' onClick={() => {
+                                if (modalText == `Are you sure you want to set your ${inventoryText}?`) {
+                                    var bool : boolean = saveAccessory();
+                                    if (bool) {
+                                        setToggled(false);
+                                        handlePointerChange("armor/accessory");
+                                    } else {
+                                        openAlert("One more of the fields have invalid input");
+                                    }
+                                } 
+                                else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
+                                    setToggled(false);
+                                    handlePointerChange("armor");
+                                } 
+                                else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
+                                    setToggled(false);
+                                    handlePointerChange("armor/accessory");
+                                } else if  (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
+                                    handlePointerChange("armor/accessory");
+                                    setToggled(false);
+                                    deleteAccessory();
+                                }
+                                else {
+                                    // Saving changes
+                                    console.log("Saving changes")
+                                    var savingAccessory = pointer.split("/")[0] == "armor";
+                                    var bool : boolean = savingAccessory 
+                                        ? saveAccessory(true) 
+                                        : saveNewWeapon(pointer.split("/")[1] == "mainhand" ? "mainhand" : "offhand", true);
+                                    if (bool) {
+                                        if (savingAccessory) handlePointerChange("armor/accessory");
+                                        else {
+                                            if (pointer.split("/")[1] == "mainhand") handlePointerChange("weapon/mainhand");
+                                            else handlePointerChange("weapon/offhand");
+                                        }
+                                    } else {
+                                        openAlert("One more of the fields have invalid input");
+                                    }
+                                }
+                                setModalOpen(false);
+                            }}>
+                                <CheckCircleIcon />
+                            </IconButton>
+                            <IconButton variant='soft' onClick={() => setModalOpen(false)}>
+                                <CancelIcon />
+                            </IconButton>
+                        </Sheet>
+                    </Sheet>
+                </Modal>
+
 
                 <div className='absolute w-[100%] bottom-5'>
                     <div className='arrow-container-multibox'>
