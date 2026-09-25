@@ -2,7 +2,7 @@ import { Alert, Box, Button, FormControl, FormLabel, IconButton, Input, Modal, S
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
-import { MainhandWeaponContainer } from "../../Components/Widgets/MainhandWeaponContainer.tsx";
+import { WeaponContainer } from "../../Components/Widgets/WeaponContainer.tsx";
 import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
@@ -19,7 +19,8 @@ import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
 import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 import AccessoryTest from "../../Test/AccessoryTest.tsx"
-import WeaponTest from "../../Test/WeaponTest.tsx";
+import WeaponTestMainhand from "../../Test/WeaponTestMainhand.tsx";
+import WeaponTestOffhand from "../../Test/WeaponTestOffhand.tsx";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -47,8 +48,8 @@ export default function CharacterPersonalAttributes ()
 
     // Weapon-related Components
     // For selected Weapon: id, name, description, imgPath
-    const [mainHandweapon, setMainhandWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
-    const [mainHandWeaponSelected, setMainhandWeaponSelected] = useState<Array<string>>([]);
+    const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
+    const [weaponSelected, setWeaponSelected] = useState<Array<string>>([]);
 
     // Used by both accessory and weapon components
     const [modalOpen, setModalOpen] = useState(false);
@@ -96,7 +97,7 @@ export default function CharacterPersonalAttributes ()
     function trackAccessoryWeaponChange() : void {
         // Identify presence of change
         console.log(pointer)
-        var item = pointer.split("/")[1] == "accessory" ? accessory.get(accessorySelected[0]) : (pointer.split("/")[1] == "mainhand" ? mainHandweapon.get(mainHandWeaponSelected[0]) : null)
+        var item = pointer.split("/")[1] == "accessory" ? accessory.get(accessorySelected[0]) : weapon.get(weaponSelected[0])
         var itemOfInterestName = item![0];
         var itemOfInterestDescription = item![1];
         var hasChanged = equipmentValue[0] !== itemOfInterestName
@@ -144,13 +145,15 @@ export default function CharacterPersonalAttributes ()
         // Validate weapon data
         var validationResult = validateItem();
         if (!validationResult) return false;
-
-        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], "none"));        
-        setAccessory(prevMap => {
+        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? (category == "mainhand" ? weaponSelected[0] : undefined) : "none"));        
+        setWeapon(prevMap => {
             const newMap = new Map(prevMap);
 
             // Fetch UUID
-            const reduxMap : Map<string, string> = store.getState().char.attributes.equipment.weaponMainhand;
+            const reduxMap : Map<string, string> = category == "mainhand"
+                ? store.getState().char.attributes.equipment.weaponMainHand
+                : store.getState().char.attributes.equipment.weaponOffHand;
+            
             let uuid = "";
             for (const key of reduxMap.keys()) {
                 if (reduxMap.get(key)![0] == equipmentValue[0]) {
@@ -253,23 +256,31 @@ export default function CharacterPersonalAttributes ()
                     console.log(merged);
                 }
                 break;
+            case "weapon/offhand":
             case "weapon/mainhand":
                 setEquipmentValue(["", ""]);
                 var testing = true;
-                console.log("ano")
                 if (testing) {
-                    var storeData : any = WeaponTest();
-                    var existingData = store.getState().char.attributes.equipment.weaponMainHand;
+                    var storeData : any = null;
+                    var existingData = null;
+                    if (img == "weapon/mainhand") {
+                        storeData = WeaponTestMainhand();
+                        existingData = store.getState().char.attributes.equipment.weaponMainHand;
+                        setPointer("weapon/mainhand");
+                        setInventoryText("Mainhand Weapon");      
+                        setEquipmentType("weaponMainHand");                                     } 
+                    else {
+                        storeData = WeaponTestOffhand();
+                        existingData = store.getState().char.attributes.equipment.weaponOffHand;
+                        setPointer("weapon/offhand");
+                        setInventoryText("Offhand Weapon") 
+                        setEquipmentType("weaponOffHand");
+                    }
                     var merged: Map<string, string[]> = new Map([...storeData, ...existingData]);
-                    setPointer("weapon/mainhand");
-                    setInventoryText("Mainhand Weapon");
-                    setEquipmentType("weaponMainHand");
-                    setMainhandWeapon(merged);
+                    setWeapon(merged);
     
                     // Right Pane: 
                     setImg(`/attributes/${img.substring(6)}.png`);
-                    console.log(merged);
-                    console.log(storeData)
                 }
                 break;
         }
@@ -291,6 +302,9 @@ export default function CharacterPersonalAttributes ()
                 setInventoryText(invText);
                 setPointer("armor");    
             }
+        }
+        else if (pointer.split("/").length >= 2 && pointer.indexOf("weapon") != -1) {
+            setPointer("weapon");
         }
         else {
             setPointer("general");
@@ -324,7 +338,6 @@ export default function CharacterPersonalAttributes ()
 
     useEffect(() => {
         console.log(pointer)
-        // console.log(equipmentValue)
         if (pointer.indexOf("armor/") != -1 || pointer.indexOf("weapon/") != -1) {
             if (pointer.split("/")[2] == "new") {
                 setEquipmentValue(["", ""]);
@@ -350,12 +363,12 @@ export default function CharacterPersonalAttributes ()
 
     // Track current weapon (mainhand/offhand) selected
     useEffect(() => {
-        if (mainHandweapon.size > 0) {
-            var weapon : string[] = mainHandweapon.get(mainHandWeaponSelected[0])!;
-            setEquipmentValue([weapon[0], weapon[1]]);
-            console.log(weapon)
+        if (weapon.size > 0) {
+            var currentWeapon : string[] = weapon.get(weaponSelected[0])!;
+            setEquipmentValue([currentWeapon[0], currentWeapon[1]]);
+            console.log(currentWeapon)
         }
-    }, [mainHandWeaponSelected])
+    }, [weaponSelected])
 
     // Track changes when editing selected weapon or accessory
     useEffect(() => {
@@ -480,7 +493,7 @@ export default function CharacterPersonalAttributes ()
                         : pointer.indexOf("weapon") != -1 ? (
                         <>
                         {/* For weapon */}
-                            {pointer.indexOf("weapon/mainhand") != -1 && 
+                            {pointer.split("/").length >= 2 && pointer.split("/")[1].indexOf("hand") != -1 && 
                                 (
                                 <>
                                     <Box className='flex flex-col items-center'>
@@ -510,18 +523,18 @@ export default function CharacterPersonalAttributes ()
                                         </Typography>
                                     </Box>
     
-                                    <MainhandWeaponContainer
+                                    <WeaponContainer
                                         modalOpen={modalOpen}
                                         modalText={modalText}
                                         setModalOpen={setModalOpen}
                                         setModalText={setModalText}
                                         toggled={toggled}
                                         setToggled={setToggled}
-                                        setWeaponSelected={setMainhandWeaponSelected}
+                                        setWeaponSelected={setWeaponSelected}
                                         openAlert={openAlert}
-                                        map={mainHandweapon}
+                                        map={weapon}
                                         saveNewWeapon={saveNewWeapon}
-                                        setMap={setMainhandWeapon}
+                                        setMap={setWeapon}
                                         pointer={pointer}
                                         pointerFunction={handlePointerChange} 
                                     />                                        
@@ -567,7 +580,9 @@ export default function CharacterPersonalAttributes ()
                                                     Mainhand
                                             </Typography>
                                         </Box>
-                                        <Box className='flex flex-col gap-2 items-center'>
+                                        <Box className='flex flex-col gap-2 items-center cursor-pointer'
+                                            onClick={() => clickImage("weapon/offhand")}
+                                        >
                                             <img src='/attributes/weapons/shield.png' width = {90} className='rounded-lg' />
                                             <Typography variant='plain' level='h4'
                                                 sx= {{
@@ -657,7 +672,6 @@ export default function CharacterPersonalAttributes ()
                                         if (pointer.split("/")[2] != "new" && pointer.split("/")[2] != "edit") {
                                             StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
                                         } else if (pointer.split("/")[2] == "edit") {
-                                            // console.log("just editing")
                                             trackAccessoryWeaponChange();
                                         }
                                     }}
@@ -743,10 +757,21 @@ export default function CharacterPersonalAttributes ()
                         <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
                             <IconButton variant='soft' onClick={() => {
                                 if (modalText == `Are you sure you want to set your ${inventoryText}?`) {
-                                    var bool : boolean = saveAccessory();
+                                    var bool : boolean | null = null; 
+                                    var isAccessory : boolean = pointer.split("/")[1] == "accessory"; 
+                                    var isMainhand : boolean = pointer.split("/")[1] == "mainhand";
+                                    
+                                    if (isAccessory) saveAccessory();
+                                    else if (pointer.split("/")[0] == "weapon") {
+                                        if (isMainhand) bool = saveNewWeapon("mainhand");
+                                        else bool = saveNewWeapon("offhand");
+                                    }
+
                                     if (bool) {
                                         setToggled(false);
-                                        handlePointerChange("armor/accessory");
+                                        handlePointerChange(
+                                            isAccessory ? "armor/accessory" : (isMainhand ? "weapon/mainhand" : "weapon/offhand")
+                                            );
                                     } else {
                                         openAlert("One more of the fields have invalid input");
                                     }
@@ -757,8 +782,16 @@ export default function CharacterPersonalAttributes ()
                                 } 
                                 else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
                                     setToggled(false);
-                                    handlePointerChange("armor/accessory");
-                                } else if  (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
+                                    if (inventoryText == "Mainhand Weapon") {
+                                        handlePointerChange("weapon/mainhand");
+                                    }
+                                    else if (inventoryText == "Offhand Weapon") {
+                                        handlePointerChange("weapon/offhand");
+                                    }
+                                    else if (pointer.split("/")[1] == "accessory") {
+                                        handlePointerChange("armor/accessory");
+                                    }
+                                } else if (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
                                     handlePointerChange("armor/accessory");
                                     setToggled(false);
                                     deleteAccessory();
@@ -767,7 +800,7 @@ export default function CharacterPersonalAttributes ()
                                     // Saving changes
                                     console.log("Saving changes")
                                     var savingAccessory = pointer.split("/")[0] == "armor";
-                                    var bool : boolean = savingAccessory 
+                                    var bool : boolean | null = savingAccessory 
                                         ? saveAccessory(true) 
                                         : saveNewWeapon(pointer.split("/")[1] == "mainhand" ? "mainhand" : "offhand", true);
                                     if (bool) {
