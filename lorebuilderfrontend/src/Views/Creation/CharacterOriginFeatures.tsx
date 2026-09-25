@@ -15,8 +15,6 @@ import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
 
-import CircularProgress from '@mui/joy/CircularProgress';
-
 type comp  = {
     class: 'attributes' | 'origins',
     field: string
@@ -88,14 +86,17 @@ export default function CharacterOriginFeatures () {
         let storeStrength = store.getState().char!.attributes.strength;
         let storeMagic = store.getState().char!.attributes.magic;
 
-        if (storeSkills !== '' || null)
+        if (storeSkills !== '' || undefined)
         setSkills(storeSkills);
+        else setSkills("");
 
-        if (storeStrength !== '' || null)
+        if (storeStrength !== '' || undefined)
         setStrength(storeStrength);
+        else setStrength("");
 
-        if (storeMagic !== '' || null)
+        if (storeMagic !== '' || undefined)
         setMagic(storeMagic);
+        else setMagic("");
     }, [])
 
 
@@ -140,7 +141,7 @@ export default function CharacterOriginFeatures () {
                                 }
                                 endDecorator = {
                                     <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    {skills.length} character(s)
+                                    {skills?.length} character(s)
                                     </Typography>
                                 }
                                 sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
@@ -165,7 +166,7 @@ export default function CharacterOriginFeatures () {
                                 }
                                 endDecorator = {
                                     <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    {strength.length} character(s)
+                                    {strength?.length} character(s)
                                     </Typography>
                                 }
                                 sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
@@ -190,7 +191,7 @@ export default function CharacterOriginFeatures () {
                             }
                             endDecorator = {
                                 <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                {magic.length} character(s)
+                                {magic?.length} character(s)
                                 </Typography>
                             }
                             sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}

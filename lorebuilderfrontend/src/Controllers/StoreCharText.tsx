@@ -104,16 +104,16 @@ export default function StoreCharText (textType : string, text : string, equipme
                 var eProp : string = equipmentObject["equipmentType"];
                 var eTitle : string = equipmentObject["equipmentValue"][0];
                 var eVal : string = equipmentObject["equipmentValue"][1];
+
+                var uuid = equipmentObject.equipmentValue[0];
+                var name = equipmentObject.equipmentValue[1];
+                var desc = equipmentObject.equipmentValue[2];
+                var imgPath = equipmentObject.equipmentValue[3] ?? null;
+
                 console.log(equipmentObject)
+                // Accessories
                 if (equipmentObject.equipmentType == "accessories") {
-                    var uuid = equipmentObject.equipmentValue[0];
-                    var name = equipmentObject.equipmentValue[1];
-                    var desc = equipmentObject.equipmentValue[2];
-                    var imgPath = equipmentObject.equipmentValue[3] ?? null;
-                    
                     var hm : Map<string, Array<string>> = store.getState().char.attributes.equipment.accessories;
-                    
-                    console.log(hm)
                     
                     if (uuid == "none") {
                         var random = crypto.randomUUID();
@@ -144,18 +144,55 @@ export default function StoreCharText (textType : string, text : string, equipme
                     })
                 }
 
-                else 
-                store.dispatch({
-                    type: "char/editAttributes",
-                    payload: {
-                        attributes: {
-                            equipment: {
-                                ...state.char.attributes.equipment,
-                                equipmentObject
+                // Weapons
+                else {
+                    var isMainhand = equipmentObject.equipmentType == "mainhand";
+                    var hm : Map<string, Array<string>> = isMainhand
+                    ? store.getState().char.attributes.equipment.weaponMainHand
+                    : store.getState().char.attributes.equipment.weaponOffHand;
+                
+                    if (uuid == "none") {
+                        var random = crypto.randomUUID();
+                        uuid = random;
+                        hm.set(uuid, [name, desc, imgPath]);
+                    } else {
+                        // Adding and Editing
+                        if (text == "edit")
+                        hm.set(uuid, [name, desc, imgPath]);
+
+                        // Deleting
+                        else if (text == "delete") {
+                            hm.delete(uuid);
+                        }                        
+                    }
+
+                    if (isMainhand) {
+                        store.dispatch({
+                            type: "char/editAttributes",
+                            payload: {
+                                attributes: {
+                                    equipment: {
+                                        ...state.char.attributes.equipment,
+                                        weaponMainHand: hm 
+                                    }
+                                }
                             }
+                        })
+                        }
+                    else {
+                        store.dispatch({
+                            type: "char/editAttributes",
+                            payload: {
+                                attributes: {
+                                    equipment: {
+                                        ...state.char.attributes.equipment,
+                                        weaponOffHand: hm 
+                                    }
+                                }
+                            }
+                        })
                         }
                     }
-                })
                 }
             break;
     }

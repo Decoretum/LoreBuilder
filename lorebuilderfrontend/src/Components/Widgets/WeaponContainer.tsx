@@ -151,7 +151,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                                 <IconButton
                                     color='success'
                                     onClick={() => {
-                                        setModalText("Are you sure you want to set your accessory?");
+                                        setModalText(`Are you sure you want to set your ${props.pointer == "weapon/mainhand/new" ? "Mainhand Weapon" : "Offhand Weapon"}?`);
                                         props.setModalOpen(true);
                                     }}
                                     >
@@ -160,7 +160,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                                 <IconButton 
                                 color='danger'
                                 onClick={(event) => {
-                                    setModalText("Are you sure you want to discard your accessory?");
+                                    setModalText(`Are you sure you want to discard your ${props.pointer == "weapon/mainhand/new" ? "Mainhand Weapon" : "Offhand Weapon"}?`);
                                     props.setModalOpen(true);
                                     }
                                 }> 
@@ -174,7 +174,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     )
 }
 
-export function MainhandWeaponContainer(props : propsType) {
+export function WeaponContainer(props : propsType) {
     var hm= props.map;
     var openAlert : Function = props.openAlert;
     const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
@@ -185,7 +185,7 @@ export function MainhandWeaponContainer(props : propsType) {
     const setModalOpen = props.setModalOpen;
     const modalText = props.modalText;
     const setModalText = props.setModalText;
-    // console.log(hm)
+    console.log(props)
     useEffect(() => {
 
     });

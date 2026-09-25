@@ -8,8 +8,8 @@ export default function EquipmentDictionary() {
         ["Chestwear", "chestGear"],
         ["Legwear", "leggingGear"],
         ["Accessory", "accessories"],
-        // weaponMainHand: [""],
-        // weaponOffHand: [""]
+        ["Mainhand Weapon", "mainhand"],
+        ["Offhand Weapon", "offhand"],
     ])
 
     return hm;
