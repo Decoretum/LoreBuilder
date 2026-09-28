@@ -30,8 +30,10 @@ export function Characters () {
 
                     { characters.length === 0 ? (
                         <>
-                            <Box className='flex flex-col'>
-                                <Box className='w-[50%] ml-[9.5vw] p-5' sx = {{ backdropFilter: 'blur(2px)' }}>
+                            <Box className='flex flex-col items-center justify-center'>
+                                <Box className='w-[50%] p-5' 
+                                    sx = {{ backdropFilter: 'blur(2px)' }}
+                                >
                                     <Link to='/characters/creation/origins'>
                                         <Box className='p-2 bg-white w-[8vw] rounded-lg m-auto p-6'>
                                             <img src='/book.gif' width={50} height={50} className='m-auto' />
@@ -43,7 +45,7 @@ export function Characters () {
                                 </Box>  
 
                                 <Box className='mt-[3vh]'>
-                                    <Button color='warning' variant='soft' className='w-[13%]' onClick={() => GoBack('/', nav)}>
+                                    <Button color='warning' variant='soft' className='w-[3vw]' onClick={() => GoBack('/', nav)}>
                                         <ArrowBack />
                                     </Button> 
                                 </Box>

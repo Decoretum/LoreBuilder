@@ -4,7 +4,7 @@
 }
 
 #root {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -38,13 +38,23 @@
   }
 }
 
-.arrow-container {
+/* .arrow-container {
+  position: relative;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  gap: 60vw;
+  justify-content: center;
   align-items: center;
+} */
+
+.arrow-container {
+  position: relative;
+  display: flex;
   width: 90%;
   margin-left: 4vw;
-  position: relative;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
 }
 
 .arrow-container-multibox {
@@ -78,11 +88,13 @@ justify-content: center;
 }
 
 .container-div-background{ 
+  margin: auto;
   display: flex;
   height: 110vh;
   width: 90vw; 
   align-items: center;
   justify-content: center;
+  align-self: center;
   border-radius: 20px;
   background-image: url('/backgrounds/gamingbackground.gif');
   background-size: cover;
@@ -104,10 +116,12 @@ justify-content: center;
     background-repeat: no-repeat;
     background-position: center;
     z-index: 2;
-    }
+  }
 
     .container-div-past{ 
       position: relative;
+      align-items: center;
+      justify-content: center;
       height: 110vh;
       width: 90vw; 
       border-radius: 20px;
@@ -116,7 +130,7 @@ justify-content: center;
       background-repeat: no-repeat;
       background-position: center;
       z-index: 2;
-      }
+    }
 
     .container-div-features{ 
       position: relative;
@@ -128,7 +142,8 @@ justify-content: center;
       background-repeat: no-repeat;
       background-position: center;
       z-index: 2;
-      }
+      margin:auto;
+    }
 
       .container-div-personalattributes{ 
         position: relative;
@@ -141,5 +156,4 @@ justify-content: center;
         background-position: center;
         z-index: 2;
         justify-content: center;
-
-        }
+      }

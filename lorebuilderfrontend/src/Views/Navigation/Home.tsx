@@ -10,10 +10,10 @@ export function Home () {
         <>
             <div className='container-div-background'>
                 <Box className='flex flex-col z-2'>
-                    <Box className='mb-[15vh] ml-[6vw]'>
+                    <Box className='mb-[15vh]'>
                         <Typography level='h1' sx = {{ backdropFilter: 'blur(3px)', width: '16vw', fontFamily: 'PixelFont' }}> LoreBuilder </Typography>
                     </Box>
-                    <Box className='flex flex-row'>
+                    <Box className='flex flex-row gap-6'>
                         <Link to='/characters' className='font-normal'>
                             <Card variant='soft'>
                                 <img src='/priest.png' width={50} height={50} className='m-auto l-50% r-%50' />
@@ -21,13 +21,11 @@ export function Home () {
                             </Card>
                         </Link>
                         
-                        
-                        <Card variant='outlined' className='ml-10'>
+                        <Card variant='outlined'>
                             <img src='/feather.png' width={50} height={50} className='m-auto l-50% r-%50' />
                             <Typography level='body-md' sx= {{fontFamily: 'PixelFont'}}> Personal Notes </Typography>
                         </Card>
                     </Box>
-
                 </Box>
             </div>
         </>

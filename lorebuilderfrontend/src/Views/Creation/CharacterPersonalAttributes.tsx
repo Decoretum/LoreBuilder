@@ -424,7 +424,7 @@ export default function CharacterPersonalAttributes ()
                                 ( 
                                 <>
                                     <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
-                                    <Box className='flex flex-col items-center border gap-5'>
+                                    <Box className='flex flex-col items-center gap-5'>
                                         <img src={img} width = {100} className='z-10' />
                                         <Input size='lg' variant='plain' 
                                         placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
@@ -472,7 +472,7 @@ export default function CharacterPersonalAttributes ()
                                         <img src='/attributes/helm.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/helm")}} />
                                         <img src='/attributes/chest.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/chest")}} />
                                         <img src='/attributes/leggings.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leggings")}} />
-                                        <img src='/attributes/boots/37.png' width = {70} className='z-10 ml-[2vw] mt-[1vh] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
+                                        <img src='/attributes/boots/37.png' width = {70} className='z-10 ml-[1vw] mt-[1vh] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
                                     </Box>
 
                                     {/* right gauntlet, accessories */}
@@ -565,7 +565,7 @@ export default function CharacterPersonalAttributes ()
                                         }}> 
                                             Select a Weapon Type
                                     </Typography>
-                                    <Box className='flex flex-row gap-12 mt-[13vh] items-center'>
+                                    <Box className='flex flex-row gap-[6vw] mt-[13vh] items-center'>
                                         <Box className='flex flex-col gap-2 items-center cursor-pointer'
                                             onClick={() => clickImage("weapon/mainhand")}
                                         >
@@ -599,32 +599,38 @@ export default function CharacterPersonalAttributes ()
                         </>
                         )
                         : (
-                            <>
-                                <Typography variant="plain" level='h3' sx= {{ fontFamily: 'PixelFont', marginLeft: '10vw',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', padding: '5px', color: 'lightsalmon' }}> 
-                                        Choose an equipment category
-                                </Typography>
+                            <Box className='flex flex-col items-center'>
+                                <Box className=''>
+                                    <Typography variant="plain" level='h3' sx= {{ fontFamily: 'PixelFont',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', color: 'lightsalmon' }}> 
+                                            Choose an equipment category
+                                    </Typography>
+                                </Box>
 
-                                <Box className='flex flex-row w-[40vw] h-[30vh] ml-[5vw] items-center'>
-                                    <Box className='flex flex-col'>
-                                        <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
-                                            Armor
-                                        </Typography>
-                                        <img src='/attributes/armor.png' onClick = {() => setPointer('armor')} width = {100} className='ml-[5.3vw] cursor-pointer' />
+                                <Box className='flex flex-row w-[40vw] h-[30vh] justify-center'>
+                                    <Box className='flex flex-col w-[50%] h-full'>
+                                        <Box className='h-[50%] flex items-end justify-center'>
+                                            <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', color: 'black', textAlign: 'center' }}> 
+                                                Armor
+                                            </Typography>
+                                        </Box>
+                                        <Box className='m-auto'>
+                                            <img src='/attributes/armor.png' onClick = {() => setPointer('armor')}  className='cursor-pointer h-[100px]' />
+                                        </Box>
                                     </Box>
 
-                                    <Box className='flex flex-col -mt-[5vh]'>
-                                        <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', padding: '5px', marginLeft: '2vw', color: 'black' }}> 
-                                            Weapons
-                                        </Typography>
-                                        <img src='/attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")} width = {100} className='ml-[5.3vw] mt-[5vh] -rotate-90 cursor-pointer' />
+                                    <Box className='flex flex-col w-[50%] h-full'>
+                                        <Box className='h-[50%] flex items-end justify-center'>
+                                            <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', color: 'black', textAlign: 'center' }}> 
+                                                Weapons
+                                            </Typography>
+                                        </Box>
+                                        <Box className='m-auto'>
+                                            <img src='/attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")}  className='-rotate-90 cursor-pointer h-[40px]' />
+                                        </Box>
                                     </Box>
                                 </Box>
-                            </>
+                            </Box>
                         )}
-
-
-                        
-                        
                     </Box>
 
                     {/* Right Pane  */}

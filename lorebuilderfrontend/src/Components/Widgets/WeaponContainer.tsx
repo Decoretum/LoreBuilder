@@ -128,8 +128,10 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
             <Box className='min-w-[8vw]' data-id={props.id}>
                 <Card variant='soft' color='success' sx={{ }}>
                     { !toggled ? (
-                        <Box className='font-PixelFont'>
-                            Add One
+                        <Box className='font-PixelFont flex flex-row justify-center items-center gap-2'>
+                            <Box>
+                                <Typography>Add One</Typography>
+                            </Box>
                             <IconButton  
                             variant="soft"
                             color='success'                             
@@ -141,9 +143,9 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                             );
                                     setToggled(!toggled);
                                 }}>
-                            <ControlPointIcon 
-                                className='cursor-pointer' 
-                            />
+                                <ControlPointIcon 
+                                    className='cursor-pointer' 
+                                />
                             </IconButton>
                         </Box>
                     ) : (
