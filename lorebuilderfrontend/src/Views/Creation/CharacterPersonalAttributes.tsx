@@ -145,7 +145,8 @@ export default function CharacterPersonalAttributes ()
         // Validate weapon data
         var validationResult = validateItem();
         if (!validationResult) return false;
-        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? (category == "mainhand" ? weaponSelected[0] : undefined) : "none"));        
+        console.log(weaponSelected);
+        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? weaponSelected[0] : "none"));        
         setWeapon(prevMap => {
             const newMap = new Map(prevMap);
 
@@ -153,7 +154,7 @@ export default function CharacterPersonalAttributes ()
             const reduxMap : Map<string, string> = category == "mainhand"
                 ? store.getState().char.attributes.equipment.weaponMainHand
                 : store.getState().char.attributes.equipment.weaponOffHand;
-            
+            console.log(reduxMap)
             let uuid = "";
             for (const key of reduxMap.keys()) {
                 if (reduxMap.get(key)![0] == equipmentValue[0]) {
@@ -346,8 +347,6 @@ export default function CharacterPersonalAttributes ()
         } else {
             setRightPaneHidden(true);
         }
-        // console.log(rightPaneHidden)
-        
     }, [pointer])
     
     // Track current accessory selected
@@ -629,7 +628,7 @@ export default function CharacterPersonalAttributes ()
                     </Box>
 
                     {/* Right Pane  */}
-                    <div className={`${rightPaneHidden  || pointer == "armor/accessory" ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[2vh] mr-[2vw]"}`}>
+                    <div className={`${rightPaneHidden  || pointer == "armor/accessory" || pointer ==  "weapon/mainhand" || pointer == "weapon/offhand"  ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[2vh] mr-[2vw]"}`}>
                             { (pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit" ) && (
                                 <>
                                     <FormControl>
