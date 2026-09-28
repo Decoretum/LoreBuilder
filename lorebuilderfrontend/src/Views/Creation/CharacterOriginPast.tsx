@@ -47,10 +47,9 @@ export default function CharacterOriginPast () {
 
     return (
         <>
-            <div className='container-div-past'>
-                <Box className='flex flex-col'>
+            <Box className='container-div-past'>
                     {/* The images and textareas */}
-                    <Box className='flex flex-row mt-40'>
+                    <Box className='flex flex-row items-center p-8'>
                         <img src='/past2gif.gif' width={400} height={200} className='m-auto mr-8 grid rounded-md' />                
                         <Box sx={{
                             width: '50%',
@@ -61,7 +60,6 @@ export default function CharacterOriginPast () {
                             flexDirection: 'column',
                             gap: 2,
                             marginRight: '2vw',
-                            marginTop: '-10vh'
                         }}>
                             <Typography level='h3' className=''> What is your story? </Typography>
 
@@ -98,7 +96,6 @@ export default function CharacterOriginPast () {
                             flexDirection: 'column',
                             gap: 2,
                             marginRight: '2vw',
-                            marginTop: '-10vh'
                         }}>
                             <Typography level='h3' className=''> What makes you, You? </Typography>
 
@@ -128,7 +125,7 @@ export default function CharacterOriginPast () {
                         </Box>
                     </Box>
                     
-                    <Box className='flex flex-row mt-24'>
+                    <Box className='w-full absolute bottom-8'>
                         <div className='arrow-container'>
                             <Button onClick = {() => GoBack('/characters/creation/origins', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
                                 <ArrowBackIcon />
@@ -141,11 +138,7 @@ export default function CharacterOriginPast () {
                             </Button>
                         </div>
                     </Box>
-                </Box>
-                    
-
-                
-            </div>            
+            </Box>            
         </>
     )
 }

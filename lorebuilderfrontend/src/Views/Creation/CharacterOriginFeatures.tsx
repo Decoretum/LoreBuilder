@@ -103,105 +103,103 @@ export default function CharacterOriginFeatures () {
 
     return (
         <>
-            <div className='container-div-features'>
-            <Box className='flex flex-col'>
-                {/* The images and textareas */}
-                <Box className='flex flex-row mt-40' sx = {{ minHeight: 450 }}>
-                    <Box className='ml-20' sx = {{ width: 400 }}>
-                        <img onLoad={imageLoad} src={img} width={width} height={height} className={`m-auto mr-8 grid rounded-md`} />                
-                    </Box>
+            <Box className='container-div-features'>
+                    {/* The images and textareas */}
+                    <Box className='flex flex-row p-8 items-center justify-center' sx = {{ minHeight: 600 }}>
+                        <Box className='ml-20' sx = {{ width: 400 }}>
+                            <img onLoad={imageLoad} src={img} width={width} height={height} className={`m-auto mr-8 grid rounded-md`} />                
+                        </Box>
 
-                    <Tabs
-                    onChange = {changeImage}
-                    aria-label="Vertical tabs"
-                    orientation="vertical"
-                    sx={{ width: 500, height: 320, marginLeft: '3vw', borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
-                    >
-                        <TabList>
-                            <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
-                            <Tab variant='plain' data-value = '/strength.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
-                            <Tab variant='plain' data-value = '/pastgif.gif' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
-                        </TabList>
+                        <Tabs
+                            onChange = {changeImage}
+                            aria-label="Vertical tabs"
+                            orientation="vertical"
+                            sx={{ width: 500, height: 320, marginLeft: '3vw', borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
+                        >
+                            <TabList>
+                                <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
+                                <Tab variant='plain' data-value = '/strength.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
+                                <Tab variant='plain' data-value = '/pastgif.gif' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
+                            </TabList>
 
-                        <TabPanel value={0}>
-                            <Textarea
-                                placeholder="Type in here…"
-                                value={skills}
-                                onChange={(event) => {
-                                    setSkills(event.target.value);
-                                    StoreCharText('/attributes/skills', event.target.value);
-                                
-                                }}
-                                minRows={2}
-                                maxRows={4}
-                                startDecorator = {
-                                    <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                        <Hint props = 'skills' />
-                                    </Box>
-                                }
-                                endDecorator = {
-                                    <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    {skills?.length} character(s)
-                                    </Typography>
-                                }
-                                sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
+                            <TabPanel value={0}>
+                                <Textarea
+                                    placeholder="Type in here…"
+                                    value={skills}
+                                    onChange={(event) => {
+                                        setSkills(event.target.value);
+                                        StoreCharText('/attributes/skills', event.target.value);
+                                    
+                                    }}
+                                    minRows={2}
+                                    maxRows={4}
+                                    startDecorator = {
+                                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                            <Hint props = 'skills' />
+                                        </Box>
+                                    }
+                                    endDecorator = {
+                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                        {skills?.length} character(s)
+                                        </Typography>
+                                    }
+                                    sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
+                                    />
+                            </TabPanel>
+                        
+                            <TabPanel value={1}>
+                                <Textarea
+                                    placeholder="Type in here…"
+                                    value={strength}
+                                    onChange={(event) => {
+                                        setStrength(event.target.value);
+                                        StoreCharText('/attributes/strength', event.target.value);
+                                    
+                                    }}
+                                    minRows={2}
+                                    maxRows={4}
+                                    startDecorator = {
+                                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                            <Hint props = 'strength' />
+                                        </Box>
+                                    }
+                                    endDecorator = {
+                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                        {strength?.length} character(s)
+                                        </Typography>
+                                    }
+                                    sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
                                 />
-                        </TabPanel>
-                    
-                        <TabPanel value={1}>
-                            <Textarea
+                            </TabPanel>
+
+                            <TabPanel value={2}>
+                                <Textarea
                                 placeholder="Type in here…"
-                                value={strength}
+                                value={magic}
                                 onChange={(event) => {
-                                    setStrength(event.target.value);
-                                    StoreCharText('/attributes/strength', event.target.value);
+                                    setMagic(event.target.value);
+                                    StoreCharText('/attributes/magic', event.target.value);
                                 
                                 }}
                                 minRows={2}
                                 maxRows={4}
                                 startDecorator = {
                                     <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                        <Hint props = 'strength' />
+                                        <Hint props = 'magic' />
                                     </Box>
                                 }
                                 endDecorator = {
                                     <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                    {strength?.length} character(s)
+                                    {magic?.length} character(s)
                                     </Typography>
                                 }
                                 sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                            />
-                        </TabPanel>
-
-                        <TabPanel value={2}>
-                            <Textarea
-                            placeholder="Type in here…"
-                            value={magic}
-                            onChange={(event) => {
-                                setMagic(event.target.value);
-                                StoreCharText('/attributes/magic', event.target.value);
-                            
-                            }}
-                            minRows={2}
-                            maxRows={4}
-                            startDecorator = {
-                                <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                    <Hint props = 'magic' />
-                                </Box>
-                            }
-                            endDecorator = {
-                                <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                {magic?.length} character(s)
-                                </Typography>
-                            }
-                            sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
-                            />
-                        </TabPanel>
-                    </Tabs>
-
-                </Box>
-                
-                <Box className={`flex flex-row`} sx = {{ marginTop: arrowHeight }}>
+                                />
+                            </TabPanel>
+                        </Tabs>
+                    </Box>
+                    
+                <Box className='w-full absolute bottom-8' sx = {{ marginTop: arrowHeight }}>
                     <div className='arrow-container'>
                         <Button onClick = {() => GoBack('/characters/creation/origins/past', nav)} sx={{ outline: 'none !important'}} variant='soft'>
                             <ArrowBackIcon />
@@ -214,8 +212,7 @@ export default function CharacterOriginFeatures () {
                         </Button>
                     </div>
                 </Box>
-            </Box>
-            </div>            
+            </Box>            
         </>
     )
 }

@@ -10,11 +10,11 @@ interface LayoutProps {
 export function Layout({ children } : LayoutProps) : JSX.Element {
   return (
     <div>
-      <Sidebar />
       <main>
+        <Sidebar />
         { children }
+        <Footer />
       </main>
-      <Footer />
     </div>
   );
 }

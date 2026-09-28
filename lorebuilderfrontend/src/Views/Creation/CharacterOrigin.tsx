@@ -44,11 +44,10 @@ export default function CharacterOrigin () {
 
     return (
         <>
-            <div className='container-div-past'>
-                <Box className='flex flex-col'>
+            <Box className='container-div-past'>
                     {/* The images and textareas */}
-                    <Box className='flex flex-row mt-40'>
-                        <img src='/characterorigin.gif' width={330} height={300} className='m-auto -mt-4 mr-11 grid rounded-md' />                
+                    <Box className='flex flex-row items-center p-8'>
+                        <img src='/characterorigin.gif' width={330} height={300} className='m-auto mr-11 grid rounded-md' />                
                         <Box sx={{
                             width: '50%',
                             height: '57%',
@@ -58,32 +57,31 @@ export default function CharacterOrigin () {
                             flexDirection: 'column',
                             gap: 2,
                             marginRight: '2vw',
-                            marginTop: '-10vh'
                         }}>
-                        <Typography level='h3' className=''> What are you at the present? </Typography>
+                            <Typography level='h3' className=''> What are you at the present? </Typography>
 
-                        <Textarea
-                        placeholder="Type in here…"
-                        value={present}
-                        onChange={(event) => {
-                            setPresent(event.target.value);
-                            StoreCharText('/origins/present', event.target.value);
-                        
-                        }}
-                        minRows={2}
-                        maxRows={4}
-                        startDecorator = {
-                            <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                <Hint props = 'present' />
-                            </Box>
-                        }
-                        endDecorator = {
-                            <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                            {present.length} character(s)
-                            </Typography>
-                        }
-                        sx={{ minWidth: 300, minHeight: 400 }}
-                        />
+                            <Textarea
+                            placeholder="Type in here…"
+                            value={present}
+                            onChange={(event) => {
+                                setPresent(event.target.value);
+                                StoreCharText('/origins/present', event.target.value);
+                            
+                            }}
+                            minRows={2}
+                            maxRows={4}
+                            startDecorator = {
+                                <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                    <Hint props = 'present' />
+                                </Box>
+                            }
+                            endDecorator = {
+                                <Typography level="body-xs" sx={{ ml: 'auto' }}>
+                                {present.length} character(s)
+                                </Typography>
+                            }
+                            sx={{ minWidth: 300, minHeight: 400 }}
+                            />
                         </Box>
 
                         <Box sx={{
@@ -95,7 +93,6 @@ export default function CharacterOrigin () {
                             flexDirection: 'column',
                             gap: 2,
                             marginRight: '2vw',
-                            marginTop: '-10vh'
                         }}>
                         <Typography level='h3' className=''> Describe your physical self </Typography>
 
@@ -124,23 +121,22 @@ export default function CharacterOrigin () {
                         />
                         </Box>
                     </Box>
-                </Box>
                     
                 {/* Arrow buttons and prompt */}
-                <Box className='flex flex-row mt-14'>
-                        <div className='arrow-container'>
-                            <Button onClick = {() => GoBack('/characters', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
-                                <ArrowBackIcon />
-                            </Button>
+                <Box className='w-full absolute bottom-8'>
+                    <div className='arrow-container'>
+                        <Button onClick = {() => GoBack('/characters', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowBackIcon />
+                        </Button>
 
-                            { NavigationValidator(binary, resetBinary) }
+                        { NavigationValidator(binary, resetBinary) }
 
-                            <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/past')} className='ml-45' sx={{ outline: 'none !important'}} variant='soft'>
-                                <ArrowForwardIcon />
-                            </Button>
-                        </div>
+                        <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/past')} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                            <ArrowForwardIcon />
+                        </Button>
+                    </div>
                 </Box>               
-            </div>            
+            </Box>            
         </>
     )
 }
