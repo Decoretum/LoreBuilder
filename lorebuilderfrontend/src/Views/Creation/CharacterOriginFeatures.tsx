@@ -47,10 +47,12 @@ export default function CharacterOriginFeatures () {
         setImageLoading(true);
     }
     
-
     function changeImage(event : SyntheticEvent) {
+        // @ts-expect-error
         let imgName = event.target.getAttribute('data-value')
+        
         if (imgName === null)
+        // @ts-expect-error    
         imgName = event.target.parentElement.getAttribute('data-value');
   
         setImg(imgName);
@@ -103,23 +105,24 @@ export default function CharacterOriginFeatures () {
 
     return (
         <>
-            <Box className='container-div-features'>
+            <Box className='container-div-features justify-center'>
                     {/* The images and textareas */}
                     <Box className='flex flex-row p-8 items-center justify-center' sx = {{ minHeight: 600 }}>
                         <Box className='ml-20' sx = {{ width: 400 }}>
                             <img onLoad={imageLoad} src={img} width={width} height={height} className={`m-auto mr-8 grid rounded-md`} />                
                         </Box>
-
+                        
                         <Tabs
+                            // @ts-expect-error
                             onChange = {changeImage}
                             aria-label="Vertical tabs"
                             orientation="vertical"
                             sx={{ width: 500, height: 320, marginLeft: '3vw', borderRadius: '10px', marginRight: '6vw', backgroundColor: 'rgba(30, 40, 30, 0.85)' }}
                         >
                             <TabList>
-                                <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Skills </span> </Tab>
-                                <Tab variant='plain' data-value = '/strength.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Strength </span> </Tab>
-                                <Tab variant='plain' data-value = '/pastgif.gif' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <span className='text-red-50'> Magic </span> </Tab>
+                                <Tab variant='plain' data-value = '/skills.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <Typography sx={{ color: 'white', fontFamily: 'PixelFont' }}> Skills </Typography> </Tab>
+                                <Tab variant='plain' data-value = '/strength.png' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <Typography sx={{ color: 'white', fontFamily: 'PixelFont' }}> Strength </Typography> </Tab>
+                                <Tab variant='plain' data-value = '/pastgif.gif' sx = {{ '--variant-plainHoverBg': '#70a35b', '&.Mui-selected': {backgroundColor: 'oklch(40.5% 0.101 131.063)', outline: 'none'} }}> <Typography sx={{ color: 'white', fontFamily: 'PixelFont' }}> Magic </Typography> </Tab>
                             </TabList>
 
                             <TabPanel value={0}>

@@ -4,7 +4,6 @@
 }
 
 #root {
-  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -79,6 +78,35 @@
   color: #888;
 }
 
+.longer-frame {
+  display: flex;
+  background-image: url('/assets/pixilframe.png');
+  background-size: 430px;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 20px;
+  z-index: 2;
+  width: auto;
+  height: auto;
+  padding: 1%;
+  justify-content: center;
+  align-items: center;
+}
+
+.frame {
+  display: flex;
+  background-image: url('/assets/pixilframe.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 2;
+  width: auto;
+  height: auto;
+  padding: 1%;
+  justify-content: center;
+  align-items: center;
+}
+
 .container-div{ 
 display: flex;
 height: 70vh;
@@ -119,6 +147,7 @@ justify-content: center;
   }
 
     .container-div-past{ 
+      display: flex;
       position: relative;
       align-items: center;
       justify-content: center;
@@ -133,6 +162,7 @@ justify-content: center;
     }
 
     .container-div-features{ 
+      display: flex;
       position: relative;
       height: 110vh;
       width: 90vw; 

@@ -17,46 +17,45 @@ export function Sidebar () {
                 </Button>
             </div>
 
-        <Drawer open={open} 
-        size='sm'
-        variant='soft' 
-        anchor='left' 
-        onMouseOver={() => {}}
-        onMouseLeave={() => setOpen(false)}
-        onClose={() => setOpen(false)}
-        >
-            <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
-                <List>
-                    {['Home', 'Create Character', 'Send email', 'Drafts'].map((text) => (
-                        
-                    <Link to={text === 'Create Character' ? 'characters/creation/origins' : 
-                    text === 'Home' ? '/' : text} className='font-normal'>
-                    <ListItem key={text} 
-                    onMouseOver={() => setKey(text)}
-                    onMouseLeave={() => setKey('')}
-                    sx = {{backgroundColor: key === text ? '#5C6C60' : hoverBgColor}}>
-                        <Typography variant='plain' level='body-md'>
-                            <span className='text-gray-50 font-PixelFont'>
-                            {text}
-                            </span>
-                        </Typography>
-                    </ListItem>
-                    </Link>
-                    ))}
-                </List>
+            <Drawer open={open} 
+            size='sm'
+            variant='soft' 
+            anchor='left' 
+            onMouseOver={() => {}}
+            onMouseLeave={() => setOpen(false)}
+            onClose={() => setOpen(false)}
+            >
+                <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
+                    <List>
+                        {['Home', 'Create Character', 'Send email', 'Drafts'].map((text) => (
+                            
+                        <Link to={text === 'Create Character' ? 'characters/creation/origins' : 
+                        text === 'Home' ? '/' : text} className='font-normal'>
+                        <ListItem key={text} 
+                        onMouseOver={() => setKey(text)}
+                        onMouseLeave={() => setKey('')}
+                        sx = {{backgroundColor: key === text ? '#5C6C60' : hoverBgColor}}>
+                            <Typography variant='plain' level='body-md'>
+                                <span className='text-gray-50 font-PixelFont'>
+                                {text}
+                                </span>
+                            </Typography>
+                        </ListItem>
+                        </Link>
+                        ))}
+                    </List>
 
-            <Divider />
+                <Divider />
 
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text) => (
-                    <ListItem key={text}>
-                        <ListItemButton>{text}</ListItemButton>
-                    </ListItem>
-                    ))}
-                </List>
-            </Box>
-        </Drawer>
-
+                    <List>
+                        {['All mail', 'Trash', 'Spam'].map((text) => (
+                        <ListItem key={text}>
+                            <ListItemButton>{text}</ListItemButton>
+                        </ListItem>
+                        ))}
+                    </List>
+                </Box>
+            </Drawer>
         </>
     )
 }

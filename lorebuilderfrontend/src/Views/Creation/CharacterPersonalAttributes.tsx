@@ -404,15 +404,16 @@ export default function CharacterPersonalAttributes ()
                                         Inventory 
                                     </Typography>
                                 </Box>
-                                <Typography variant="plain" level='h2' className='rounded-b-lg'
-                                sx= {{ 
-                                    fontFamily: 'PixelFont',
-                                    marginTop: '-7vh', backdropFilter: 'blur(2px)', 
-                                    minWidth: '18vw', padding: '5px', 
-                                    marginLeft: '2vw', color: pointer == "armor" ? "#F8E16C" : '#E1AD01'
-                                }}> 
-                                    { inventoryText }
-                                </Typography>
+                                <Box className='longer-frame mt-[-7vh]'>
+                                    <Typography variant="plain" level='h2' className='rounded-b-lg'
+                                        sx= {{ 
+                                        fontFamily: 'PixelFont',
+                                        minWidth: '18vw',
+                                        color: pointer == "armor" ? "#3B200B" : '#6A3F36'
+                                    }}> 
+                                        { inventoryText }
+                                    </Typography>
+                                </Box>
                             </Box>
 
                             {/* Rest of the Inventory */}
@@ -433,7 +434,7 @@ export default function CharacterPersonalAttributes ()
                                             setEquipmentValue([event.target.value, equipmentValue[1]]);
                                             StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
                                         }}
-                                        sx={{ backgroundColor: "floralwhite" }}
+                                        sx={{ backgroundColor: "floralwhite", fontFamily: "PixelFont" }}
                                         />
                                     </Box> 
                                 </>
@@ -609,9 +610,11 @@ export default function CharacterPersonalAttributes ()
                                 <Box className='flex flex-row w-[40vw] h-[30vh] justify-center'>
                                     <Box className='flex flex-col w-[50%] h-full'>
                                         <Box className='h-[50%] flex items-end justify-center'>
-                                            <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', color: 'black', textAlign: 'center' }}> 
-                                                Armor
-                                            </Typography>
+                                            <Box className='frame'>
+                                                <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', borderRadius: '12px', width: '14vw', color: 'black', textAlign: 'center' }}> 
+                                                    Armor
+                                                </Typography>
+                                            </Box>
                                         </Box>
                                         <Box className='m-auto'>
                                             <img src='/attributes/armor.png' onClick = {() => setPointer('armor')}  className='cursor-pointer h-[100px]' />
@@ -620,9 +623,11 @@ export default function CharacterPersonalAttributes ()
 
                                     <Box className='flex flex-col w-[50%] h-full'>
                                         <Box className='h-[50%] flex items-end justify-center'>
-                                            <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', backdropFilter: 'blur(2px)', borderRadius: '12px', width: '14vw', color: 'black', textAlign: 'center' }}> 
-                                                Weapons
-                                            </Typography>
+                                            <Box className='frame'>
+                                                <Typography variant="plain" level='h4' sx= {{ fontFamily: 'PixelFont', borderRadius: '12px', width: '14vw', color: 'black', textAlign: 'center' }}> 
+                                                    Weapons
+                                                </Typography>
+                                            </Box>
                                         </Box>
                                         <Box className='m-auto'>
                                             <img src='/attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")}  className='-rotate-90 cursor-pointer h-[40px]' />
