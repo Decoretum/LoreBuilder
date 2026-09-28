@@ -34,6 +34,8 @@ type AdditionalBoxPropsType = {
 }
 
 type  WeaponContainerPropsType = {
+    clicked: string,
+    setClicked: Function,
     id: string,
     name: string,
     imgPath: string,
@@ -50,6 +52,8 @@ function handleClick (
     id: string | Number | undefined, 
     pointerFunction: Function, 
     pointer: string, 
+    setClicked?: Function,
+    clicked?: string,
     setWeaponSelected?: Function,
     toggled?: boolean
     ) {
@@ -57,7 +61,9 @@ function handleClick (
     console.log(id)
     console.log(toggled)
     var weaponCategory = pointer.split("/")[1];
-    console.log(weaponCategory)
+
+    if (setClicked != undefined) setClicked(id!);
+
     if (id == 0) {
         if (pointer.split("/")[2] == "new") pointerFunction(`weapon/${weaponCategory}`);
         else pointerFunction(`weapon/${weaponCategory}/new`);
@@ -65,6 +71,11 @@ function handleClick (
         if (toggled) {
             console.log("Check your shit")
             return;
+        } else {
+            if ((pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit") && clicked == id) {
+                pointerFunction(`weapon/${weaponCategory}`);
+                return;
+            }
         }
         setWeaponSelected!([id]);
         pointerFunction(`weapon/${weaponCategory}/edit`);
@@ -81,14 +92,7 @@ function Container(props: WeaponContainerPropsType){
                         <Box 
                         className='bg-[#ADCAD6] rounded-lg p-2 cursor-pointer'
                         onClick={() => {
-                                // props.setAccessorySelected(props.id); 
-                                handleClick(
-                                    props.id, 
-                                    props.pointerFunction, 
-                                    props.pointer, 
-                                    props.setWeaponSelected, 
-                                    props.toggled
-                                ); 
+                                handleClick(props.id, props.pointerFunction, props.pointer, props.setClicked, props.clicked, props.setWeaponSelected, props.toggled); 
                             }}>
                         
                             <Typography 
@@ -177,7 +181,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
 export function WeaponContainer(props : propsType) {
     var hm= props.map;
     var openAlert : Function = props.openAlert;
-    const [clicked, setClicked] = useState<Map<number, boolean>>(new Map<0, false>);
+    const [clicked, setClicked] = useState("");
     const prompt = "The Accessory name and/or description may be invalid";
     const toggled = props.toggled;
     const setToggled = props.setToggled;
@@ -195,6 +199,8 @@ export function WeaponContainer(props : propsType) {
                [...hm].map(([key, value], id) => (
                     <Container 
                         modalOpen={modalOpen} 
+                        clicked={clicked} 
+                        setClicked={setClicked} 
                         setModalOpen={setModalOpen} 
                         toggled={toggled} 
                         setToggled={setToggled} 

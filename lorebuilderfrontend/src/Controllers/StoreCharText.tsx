@@ -150,7 +150,7 @@ export default function StoreCharText (textType : string, text : string, equipme
                     var hm : Map<string, Array<string>> = isMainhand
                     ? store.getState().char.attributes.equipment.weaponMainHand
                     : store.getState().char.attributes.equipment.weaponOffHand;
-                
+                    console.log(text)
                     if (uuid == "none") {
                         var random = crypto.randomUUID();
                         uuid = random;
