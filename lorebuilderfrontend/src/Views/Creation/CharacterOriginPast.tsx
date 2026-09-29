@@ -117,7 +117,7 @@ export default function CharacterOriginPast () {
                             }
                             endDecorator = {
                             <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                                {personality.length} character(s)
+                                {personality?.length} character(s)
                             </Typography>
                             }
                             sx={{ minWidth: 300, minHeight: 400 }}

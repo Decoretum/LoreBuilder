@@ -119,7 +119,10 @@ function Container(props: AccessoryContainerPropsType){
 }
 
 function AdditionalBox(props: AdditionalBoxPropsType) {
+    // @ts-expect-error
     let toggled : boolean = props.toggleArray[0];
+    // @ts-expect-error
+
     let setToggled : Function = props.toggleArray[1];
     let setModalText : Function = props.setModalText;
     // useEffect(() => {
@@ -156,7 +159,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                                 <IconButton
                                     color='success'
                                     onClick={() => {
-                                        setModalText("Are you sure you want to set your accessory?");
+                                        setModalText("Are you sure you want to set your Accessory?");
                                         props.setModalOpen(true);
                                     }}
                                     >
@@ -164,8 +167,8 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                                 </IconButton>
                                 <IconButton 
                                 color='danger'
-                                onClick={(event) => {
-                                    setModalText("Are you sure you want to discard your accessory?");
+                                onClick={() => {
+                                    setModalText("Are you sure you want to discard your Accessory?");
                                     props.setModalOpen(true);
                                     }
                                 }> 
@@ -215,7 +218,17 @@ export function AccessoryContainer(props : propsType) {
                 ))
             }                
             
-            <AdditionalBox setModalText={setModalText} toggleArray={[toggled, setToggled]} setModalOpen={setModalOpen} saveNewAccessory={props.saveAccessory} map={hm} id={0} pointer={props.pointer} pointerFunction={props.pointerFunction} />
+            <AdditionalBox 
+                setModalText={setModalText} 
+                toggleArray={[toggled, setToggled]} 
+                setModalOpen={setModalOpen} 
+                saveNewAccessory={props.saveAccessory} 
+                // @ts-expect-error
+                map={hm} 
+                id={0} 
+                pointer={props.pointer} 
+                pointerFunction={props.pointerFunction} 
+            />
         </Box>
     )
 }
