@@ -771,7 +771,7 @@ export default function CharacterPersonalAttributes ()
                                     var isAccessory : boolean = pointer.split("/")[1] == "accessory"; 
                                     var isMainhand : boolean = pointer.split("/")[1] == "mainhand";
                                     
-                                    if (isAccessory) saveAccessory();
+                                    if (isAccessory) bool = saveAccessory();
                                     else if (pointer.split("/")[0] == "weapon") {
                                         if (isMainhand) bool = saveNewWeapon("mainhand");
                                         else bool = saveNewWeapon("offhand");
@@ -808,7 +808,7 @@ export default function CharacterPersonalAttributes ()
                                 }
                                 else {
                                     // Saving changes
-                                    console.log("Saving changes")
+                                    console.log(inventoryText)
                                     var savingAccessory = pointer.split("/")[0] == "armor";
                                     var bool : boolean | null = savingAccessory 
                                         ? saveAccessory(true) 
@@ -827,7 +827,7 @@ export default function CharacterPersonalAttributes ()
                             }}>
                                 <CheckCircleIcon />
                             </IconButton>
-                            <IconButton variant='soft' onClick={() => setModalOpen(false)}>
+                            <IconButton variant='soft' onClick={() => {setModalOpen(false)}}>
                                 <CancelIcon />
                             </IconButton>
                         </Sheet>

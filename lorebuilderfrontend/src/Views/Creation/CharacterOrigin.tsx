@@ -114,7 +114,7 @@ export default function CharacterOrigin () {
                         }
                         endDecorator = {
                         <Typography level="body-xs" sx={{ ml: 'auto' }}>
-                            {physical.length} character(s)
+                            {physical?.length} character(s)
                         </Typography>
                         }
                         sx={{ minWidth: 300, minHeight: 400 }}
