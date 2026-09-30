@@ -1,6 +1,5 @@
 import { Grid, Typography } from "@mui/joy";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 export function Footer () {
     const [color, setColor] = useState('text-cyan-200')
@@ -14,11 +13,11 @@ export function Footer () {
                     </Grid>
 
                     <Grid className='w-50 ml-60'>
-                        <Link to='https://github.com/Decoretum/' target='_blank' onMouseLeave={() => setColor('text-cyan-200')} onMouseOver={() => {setColor('text-sky-300')}}>
-                            <Typography variant='plain' level="body-sm font-PixelFont">
+                        <a href='https://github.com/Decoretum/' target='_blank' onMouseLeave={() => setColor('text-cyan-200')} onMouseOver={() => {setColor('text-sky-300')}}>
+                            <Typography variant='plain' sx = {{ fontFamily: 'PixelFont' }}>
                                 <span className={color}>Gael's Github</span>
                             </Typography>
-                        </Link>
+                        </a>
                     </Grid>
                 </Grid>
         </div>
