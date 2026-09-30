@@ -144,13 +144,14 @@ export default function StoreCharText (textType : string, text : string, equipme
                     })
                 }
 
-                // Weapons
+                // Weapons and Armors
                 else {
                     var isMainhand = equipmentObject.equipmentType == "mainhand";
+                    var isOffhand = equipmentObject.equipmentType == "offhand";
                     var hm : Map<string, Array<string>> = isMainhand
                     ? store.getState().char.attributes.equipment.weaponMainHand
                     : store.getState().char.attributes.equipment.weaponOffHand;
-                    console.log(text)
+
                     if (uuid == "none") {
                         var random = crypto.randomUUID();
                         uuid = random;
@@ -179,7 +180,7 @@ export default function StoreCharText (textType : string, text : string, equipme
                             }
                         })
                         }
-                    else {
+                    else if (isOffhand) {
                         store.dispatch({
                             type: "char/editAttributes",
                             payload: {
@@ -187,10 +188,25 @@ export default function StoreCharText (textType : string, text : string, equipme
                                     equipment: {
                                         ...state.char.attributes.equipment,
                                         weaponOffHand: hm 
+                                        }
                                     }
                                 }
-                            }
-                        })
+                            })
+                        }
+                    
+                    // Armor
+                    else {
+                        store.dispatch({
+                            type: "char/editAttributes",
+                            payload: {
+                                attributes: {
+                                    equipment: {
+                                        ...state.char.attributes.equipment,
+                                        equipmentObject
+                                        }
+                                    }
+                                }
+                            })
                         }
                     }
                 }

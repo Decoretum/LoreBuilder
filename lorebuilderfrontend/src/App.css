@@ -109,8 +109,8 @@
 
 .container-div{ 
 display: flex;
-height: 70vh;
-width: 90vw; 
+height: 80%;
+width: 40%; 
 align-items: center;
 justify-content: center;
 }
