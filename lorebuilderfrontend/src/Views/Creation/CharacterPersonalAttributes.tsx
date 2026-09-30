@@ -40,18 +40,20 @@ export default function CharacterPersonalAttributes ()
     const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
     const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
+    // Armor-related States
+    const [viewingAccessory, setViewingAccessory] = useState(false);
 
-    // Accessory-related Components
+    // Accessory-related States
     // For selected accessory: id, name, description, imgPath
     const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["","", ""]>);
     const [accessorySelected, setAccessorySelected] = useState<Array<string>>([]);
 
-    // Weapon-related Components
+    // Weapon-related States
     // For selected Weapon: id, name, description, imgPath
     const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
     const [weaponSelected, setWeaponSelected] = useState<Array<string>>([]);
 
-    // Used by both accessory and weapon components
+    // Used by both accessory and weapon States
     const [modalOpen, setModalOpen] = useState(false);
     const [modalText, setModalText] = useState("");
     const [saveButton, setSaveButton] = useState("hidden");
@@ -294,12 +296,15 @@ export default function CharacterPersonalAttributes ()
             setPointer("general");
         }
         else if (pointer.indexOf("armor/") == 0) {
-            console.log(pointer)
-            console.log(toggled)
             if (pointer == "armor/accessory/new" && toggled) {
                 setModalOpen(true);
                 setModalText("You still have an accessory in-progress. Go back to Armor overview?");
-            } else {
+            } else if (pointer == "armor/accessory") {
+                setViewingAccessory(false);
+                setPointer("armor");
+            }
+            else {
+                setViewingAccessory(false);
                 setInventoryText(invText);
                 setPointer("armor");    
             }
@@ -340,6 +345,11 @@ export default function CharacterPersonalAttributes ()
     useEffect(() => {
         console.log(pointer)
         if (pointer.indexOf("armor/") != -1 || pointer.indexOf("weapon/") != -1) {
+            if (pointer.split("/").length >= 2 && pointer.split("/")[1] == "accessory") {
+                setViewingAccessory(true);
+                console.log("viewing armor")
+            }
+            
             if (pointer.split("/")[2] == "new") {
                 setEquipmentValue(["", ""]);
             }
@@ -379,17 +389,17 @@ export default function CharacterPersonalAttributes ()
     return (
         <>
             <div className='container-div-personalattributes'>
-                <Box className={`flex flex-row ${rightPaneHidden ? "justify-center items-center" : ""}`}>
+                <Box className={`relative flex flex-row h-[100%] ${viewingAccessory ? "" : "justify-center items-center gap-[5%]"}`}>
                 
                     {/* Left Pane */}
-                    <Box className='h-[100%] relative' hidden = {false}>
+                    <Box className='h-[70%] relative' hidden = {false}>
                         
                         {/* For Armor */}
                         { pointer.indexOf('armor') != -1 ? 
                         (
                         <>
-                            <Box className='flex flex-col items-center'>
-                                <Box className='flex flex-row w-[40vw] h-[30vh] ml-[14vw] items-center'>
+                            <Box className='flex flex-col items-center justify-center h-[30vh] gap-[62px]'>
+                                <Box className='flex flex-row w-[100%] h-[100%] justify-center items-center'>
                                     <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                         <ArrowBackIcon />
                                     </Button>
@@ -639,11 +649,15 @@ export default function CharacterPersonalAttributes ()
                     </Box>
 
                     {/* Right Pane  */}
-                    <div className={`${rightPaneHidden  || pointer == "armor/accessory" || pointer ==  "weapon/mainhand" || pointer == "weapon/offhand"  ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[2vh] mr-[2vw]"}`}>
+                    <div className={`${rightPaneHidden  
+                        ||  pointer == "armor/accessory" 
+                        || pointer ==  "weapon/mainhand" 
+                        || pointer == "weapon/offhand"  
+                        ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[6vh] mr-[2vw]"}`}
+                    >
                             { (pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit" ) && (
-                                <>
+                                <Box className="flex flex-col gap-1">
                                     <FormControl>
-                                        <Box className="flex flex-col gap-1">
                                         <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite' }}>{inventoryText}'s Name</FormLabel>
                                             <Input
                                                 value={equipmentValue[0]}
@@ -654,9 +668,8 @@ export default function CharacterPersonalAttributes ()
                                                     trackAccessoryWeaponChange();
                                                     }}
                                             />
-                                        </Box>
                                     </FormControl>
-                                </>
+                                </Box>
                             ) }
 
                             { pointer != "armor/accessory" && pointer != "weapon/mainhand" && pointer != "weapon/offhand" && (
@@ -692,10 +705,10 @@ export default function CharacterPersonalAttributes ()
                                             <Hint props = 'skills' />
                                         </Box>
                                     }
-                                    endDecorator = {""
-                                        // <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
-                                        // {skills.length} character(s)
-                                        // </Typography>
+                                    endDecorator = {
+                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                        {equipmentValue[1]?.length} character(s)
+                                        </Typography>
                                     }
                                     sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
                                 />
@@ -731,6 +744,10 @@ export default function CharacterPersonalAttributes ()
                             )}
                                 </Box>
                             )}             
+                            
+                            <Box className='translate-y-[5vh]'>
+                                <img src="/dreams1.png" width={150}/>
+                            </Box>
                             </Box>
                         ) }
                     </div>
@@ -788,6 +805,7 @@ export default function CharacterPersonalAttributes ()
                                 } 
                                 else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
                                     setToggled(false);
+                                    setViewingAccessory(false);
                                     handlePointerChange("armor");
                                 } 
                                 else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
