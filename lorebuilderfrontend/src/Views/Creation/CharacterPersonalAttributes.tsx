@@ -40,6 +40,12 @@ export default function CharacterPersonalAttributes ()
     const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
     const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
+    
+    // Image Files
+    // TODO: Populate these when loading the database and state
+    const [file, setFile] = useState(new Map<string, string>());
+    const [populated, setPopulated] = useState(false);
+
     // Armor-related States
     const [viewingAccessory, setViewingAccessory] = useState(false);
 
@@ -52,6 +58,7 @@ export default function CharacterPersonalAttributes ()
     // For selected Weapon: id, name, description, imgPath
     const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
     const [weaponSelected, setWeaponSelected] = useState<Array<string>>([]);
+    const [viewingWeapon, setViewingWeapon] = useState(false);
 
     // Used by both accessory and weapon States
     const [modalOpen, setModalOpen] = useState(false);
@@ -296,7 +303,7 @@ export default function CharacterPersonalAttributes ()
             setPointer("general");
         }
         else if (pointer.indexOf("armor/") == 0) {
-            if (pointer == "armor/accessory/new" && toggled) {
+            if ((pointer == "armor/accessory/new" && toggled) || (pointer == "armor/accessory/edit")) {
                 setModalOpen(true);
                 setModalText("You still have an accessory in-progress. Go back to Armor overview?");
             } else if (pointer == "armor/accessory") {
@@ -309,8 +316,20 @@ export default function CharacterPersonalAttributes ()
                 setPointer("armor");    
             }
         }
-        else if (pointer.split("/").length >= 2 && pointer.indexOf("weapon") != -1) {
-            setPointer("weapon");
+        else if (pointer.indexOf("weapon") != -1) {
+            if (pointer.split("/").length >= 2) {
+                if ((pointer.split("/")[2] == "new" && toggled) || (pointer.split("/")[2] == "edit")) {
+                    setModalOpen(true);
+                    setModalText("You still have a weapon in-progress. Go back to Weapon overview?");
+                }
+                setViewingWeapon(false);
+                setPointer("weapon");
+            }
+            else if (pointer == "weapon/mainhand" || pointer == "weapon/offhand") {
+                setViewingWeapon(false);
+                setPointer("weapon");
+            }
+            else if (pointer == "weapon") setPointer("general");
         }
         else {
             setPointer("general");
@@ -348,6 +367,10 @@ export default function CharacterPersonalAttributes ()
             if (pointer.split("/").length >= 2 && pointer.split("/")[1] == "accessory") {
                 setViewingAccessory(true);
                 console.log("viewing armor")
+            }
+
+            else if (pointer.split("/").length >= 2 && pointer.split("/")[0] == "weapon") {
+                setViewingWeapon(true);
             }
             
             if (pointer.split("/")[2] == "new") {
@@ -389,7 +412,7 @@ export default function CharacterPersonalAttributes ()
     return (
         <>
             <div className='container-div-personalattributes'>
-                <Box className={`relative flex flex-row h-[100%] ${viewingAccessory ? "" : "justify-center items-center gap-[5%]"}`}>
+                <Box className={`relative flex flex-row h-[100%] ${viewingAccessory || viewingWeapon ? "" : "justify-center items-center gap-[5%]"}`}>
                 
                     {/* Left Pane */}
                     <Box className='h-[70%] relative' hidden = {false}>
@@ -567,15 +590,16 @@ export default function CharacterPersonalAttributes ()
                                             Weapons 
                                         </Typography>
                                     </Box>
-                                    <Typography variant="plain" level='h2' className='rounded-b-lg'
-                                        sx= {{ 
-                                            fontFamily: 'PixelFont',
-                                            marginTop: '-7vh', backdropFilter: 'blur(4px)', 
-                                            width: '14vw', padding: '5px', 
-                                            marginLeft: '2vw', color: '#E1AD01'
-                                        }}> 
-                                            Select a Weapon Type
-                                    </Typography>
+                                    <Box className='longer-frame mt-[-7vh]'>
+                                        <Typography variant="plain" level='h2' className='rounded-b-lg'
+                                            sx= {{ 
+                                                fontFamily: 'PixelFont',
+                                                width: '14vw', padding: '5px', 
+                                                color: '#6b2a24'
+                                            }}> 
+                                                Select a Weapon Type
+                                        </Typography>
+                                    </Box>
                                     <Box className='flex flex-row gap-[6vw] mt-[13vh] items-center'>
                                         <Box className='flex flex-col gap-2 items-center cursor-pointer'
                                             onClick={() => clickImage("weapon/mainhand")}
@@ -611,8 +635,8 @@ export default function CharacterPersonalAttributes ()
                         )
                         : (
                             <Box className='flex flex-col items-center'>
-                                <Box className=''>
-                                    <Typography variant="plain" level='h3' sx= {{ fontFamily: 'PixelFont',  marginTop: '30vh', backdropFilter: 'blur(5px)', borderRadius: '14px', width: '22vw', color: 'lightsalmon' }}> 
+                                <Box className='longer-frame bg-size-[10px] mt-[30vh]'>
+                                    <Typography variant="plain" level='h3' sx= {{ fontFamily: 'PixelFont',  width: '20vw', color: '#7b0801' }}> 
                                             Choose an equipment category
                                     </Typography>
                                 </Box>
@@ -678,6 +702,7 @@ export default function CharacterPersonalAttributes ()
                                 <FormLabel sx= {{ 
                                     fontWeight: 'bold', 
                                     color: 'antiquewhite',
+                                    fontFamily: 'PixelFont',
                                     marginTop: 
                                         pointer.indexOf("armor/accessory") != -1 
                                         || pointer.indexOf("weapon/") != -1 
@@ -687,7 +712,6 @@ export default function CharacterPersonalAttributes ()
                                 </FormLabel>
                                 <Textarea
                                     variant='outlined'
-                                    color='primary'
                                     placeholder="Type in here…"
                                     value={equipmentValue[1]}
                                     onChange={(event) => {
@@ -706,7 +730,7 @@ export default function CharacterPersonalAttributes ()
                                         </Box>
                                     }
                                     endDecorator = {
-                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'green' }}>
+                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'antiquewhite', fontFamily: 'PixelFont' }}>
                                         {equipmentValue[1]?.length} character(s)
                                         </Typography>
                                     }
@@ -746,7 +770,45 @@ export default function CharacterPersonalAttributes ()
                             )}             
                             
                             <Box className='translate-y-[5vh]'>
-                                <img src="/dreams1.png" width={150}/>
+                                <Box
+                                    className="border-2 border-dashed rounded-lg text-center"
+                                    onDragOver={(e) => {
+                                        e.preventDefault();
+                                    }}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+
+                                        const file = e.dataTransfer.files[0];
+                                        console.log(file)
+
+                                        if (!file) return;
+
+                                        if (!file.type.startsWith('image/')) {
+                                            console.log('Not an image');
+                                            return;
+                                        }
+
+                                        const reader = new FileReader();
+
+                                        reader.onload = () => {
+                                            setFile((oldMap) => {
+                                                var fileBuffer : string = reader.result as string;
+                                                const newMap = new Map(oldMap);
+                                                newMap.set("image", fileBuffer);
+                                                return newMap;
+                                            });
+                                        };
+
+                                        reader.readAsDataURL(file);
+                                    }}
+                                >
+                                    <Typography>
+                                        Drag and drop an image here
+                                    </Typography>
+                                    <Box>
+                                        <img src={file.get("image")} width={210} />
+                                    </Box>
+                                </Box>                            
                             </Box>
                             </Box>
                         ) }
@@ -808,6 +870,11 @@ export default function CharacterPersonalAttributes ()
                                     setViewingAccessory(false);
                                     handlePointerChange("armor");
                                 } 
+                                else if (modalText == "You still have a weapon in-progress. Go back to Weapon overview?") {
+                                    setToggled(false);
+                                    setViewingWeapon(false);
+                                    handlePointerChange("weapon");
+                                }
                                 else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
                                     setToggled(false);
                                     if (inventoryText == "Mainhand Weapon") {

@@ -1,6 +1,8 @@
 import { Button, Tooltip } from "@mui/joy";
-
-export default function Hint (props = {props}) {
+type propType = {
+    props: string
+}
+export default function Hint (props : propType) {
     let val = '';
     switch (props.props)
     {
@@ -17,7 +19,7 @@ export default function Hint (props = {props}) {
             val = 'Describe your restrained and unhinged self, unbeknownst to the concept of akwardness';
             break;
         case 'skills':
-            val = 'What can you do, for real?';
+            val = 'Describe your gear';
             break;
         case 'strength':
             val = 'What sets you apart from the others? What empowers you and drives you forward?';
@@ -28,7 +30,7 @@ export default function Hint (props = {props}) {
     }
 
     return (
-        <Tooltip title = {val} variant='soft'>
+        <Tooltip title = {val} variant='soft' sx = {{ fontFamily: 'PixelFont' }}>
             <Button variant="soft" color="neutral" sx={{ ml: 'auto' }}>
             ?
             </Button>
