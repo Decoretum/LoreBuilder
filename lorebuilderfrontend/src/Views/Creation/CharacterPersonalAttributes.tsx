@@ -790,27 +790,44 @@ export default function CharacterPersonalAttributes ()
                                         }
 
                                         const reader = new FileReader();
+                                        var objectURL = window.URL.createObjectURL(file);
 
-                                        reader.onload = () => {
-                                            console.log(equipmentType)
-                                            console.log(equipmentValue)
-                                            var fileBuffer : string = reader.result as string;
-                                            // Update React State
-                                            setEquipmentValue((oldArr) => {
-                                                var newArr = Array.from(oldArr);
-                                                newArr[newArr.length - 1] = fileBuffer;
-                                                console.log(newArr)
-                                                return newArr;
-                                            });
+                                        // reader.onload = () => {
+                                        //     console.log(equipmentType)
+                                        //     console.log(equipmentValue)
+                                        //     var fileBuffer : string = reader.result as string;
+                                        //     // Update React State
+                                        //     setEquipmentValue((oldArr) => {
+                                        //         var newArr = Array.from(oldArr);
+                                        //         newArr[newArr.length - 1] = fileBuffer;
+                                        //         console.log(newArr)
+                                        //         return newArr;
+                                        //     });
 
-                                            // Update Redux State
-                                            if (equipmentType == "accessories") saveAccessory(true);
-                                            else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
-                                            else if (equipmentType == "offhand") saveNewWeapon("offhand");
-                                            else StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], fileBuffer])); 
-                                        };
+                                        //     // Update Redux State
+                                        //     if (equipmentType == "accessories") saveAccessory(true);
+                                        //     else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
+                                        //     else if (equipmentType == "offhand") saveNewWeapon("offhand");
+                                        //     else StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], fileBuffer])); 
+                                        // };
 
-                                        reader.readAsDataURL(file);
+                                        // reader.readAsDataURL(file);
+
+                                        // Update React State
+                                        setEquipmentValue((oldArr) => {
+                                            var newArr = Array.from(oldArr);
+                                            newArr[newArr.length - 1] = objectURL;
+                                            console.log(newArr)
+                                            return newArr;
+                                        });
+                                        
+                                        // Update Redux State
+                                        if (equipmentType == "accessories") saveAccessory(true);
+                                        else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
+                                        else if (equipmentType == "offhand") saveNewWeapon("offhand");
+                                        else StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], objectURL])); 
+
+
                                     }}
                                 >
                                     <Typography>
