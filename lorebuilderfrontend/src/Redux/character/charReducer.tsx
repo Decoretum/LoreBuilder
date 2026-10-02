@@ -62,11 +62,11 @@ let initialState = {
             leftArmGear: ['', ''],
             rightArmGear: ['', ''],
             accessories: new Map<string, Array<string>>(),
-            headGear: ['', ''],
-            chestGear: ['', ''],
-            backGear: ['', ''],
-            leggingGear: ['', ''],
-            footGear: ['', '']
+            headGear: ['', '', ''],
+            chestGear: ['', '', ''],
+            backGear: ['', '', ''],
+            leggingGear: ['', '', ''],
+            footGear: ['', '', '']
         },
         physicalInfo: '',
 

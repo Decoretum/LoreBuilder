@@ -39,7 +39,7 @@ export default function CharacterPersonalAttributes ()
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
-    const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", ""]);
+    const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", "", ""]);
     
     // Image Files
     // TODO: Populate these when loading the database and state
@@ -82,8 +82,8 @@ export default function CharacterPersonalAttributes ()
         return {
             equipmentType: EquipmentDictionary().get(equipmentType)!,
             equipmentValue: uuid != null || uuid != undefined 
-            ? [uuid, equipmentValue[0], equipmentValue[1]] 
-            : [equipmentValue[0], equipmentValue[1]]
+            ? [uuid, equipmentValue[0], equipmentValue[1], equipmentValue[2]] 
+            : [equipmentValue[0], equipmentValue[1], equipmentValue[2]]
         }
     }
 
@@ -124,14 +124,14 @@ export default function CharacterPersonalAttributes ()
             prevMap.delete(accessorySelected[0]);
             return prevMap;
         });
-        setEquipmentValue(["", ""]);
+        setEquipmentValue(["", "", ""]);
     }
 
     function saveAccessory(edit?: boolean) : boolean {
         // Validate accessory data
         var validationResult = validateItem();
         if (!validationResult) return false;
-        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? accessorySelected[0] : "none"));        
+        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], equipmentValue[2]], edit ? accessorySelected[0] : "none"));        
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
 
@@ -146,7 +146,7 @@ export default function CharacterPersonalAttributes ()
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             return newMap;
         })
-        setEquipmentValue(["", ""]);
+        setEquipmentValue(["", "", ""]);
         return true;
     }
 
@@ -173,7 +173,7 @@ export default function CharacterPersonalAttributes ()
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             return newMap;
         })
-        setEquipmentValue(["", ""]);
+        setEquipmentValue(["", "", ""]);
         return true;
     }
 
@@ -190,7 +190,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.headGear;
                 setEquipmentType("headGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 break;
             case "armor/leftarm":
                 setPointer(img);
@@ -198,7 +198,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/glove.png`);
                 var storeData = store.getState().char.attributes.equipment.leftArmGear;
                 setEquipmentType("leftArmGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 break;
             case "armor/rightarm":
                 setPointer(img);
@@ -206,7 +206,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/glove.png`);
                 var storeData = store.getState().char.attributes.equipment.rightArmGear;
                 setEquipmentType("rightArmGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 console.log(storeData)
                 break;
             case "armor/backwear":
@@ -215,7 +215,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.backGear;
                 setEquipmentType("backGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 break;
             case "armor/chest":
                 setPointer("armor/chest");
@@ -227,7 +227,7 @@ export default function CharacterPersonalAttributes ()
                 //     headGear: ["Helmet Title", storeData]
                 //  }));
                 setEquipmentType("chestGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 break;
             case "armor/leggings":
                 setPointer("armor/leggings");
@@ -235,7 +235,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.leggingGear;
                 setEquipmentType("leggingGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 break;
             case "armor/foot":
                 setPointer("armor/foot");
@@ -243,14 +243,14 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/boots/37.png`);
                 var storeData = store.getState().char.attributes.equipment.footGear;
                 setEquipmentType("footGear");
-                setEquipmentValue([storeData[0], storeData[1]]);
+                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 break;
             case "armor/ring":
                 // Special Case
                 // Left Pane: Show Container full of accessories
                 // Retrieve images from FileSystem and store it within repo FS
                 // var storeData = store.getState().char.attributes.equipment.accessories;
-                setEquipmentValue(["", ""]);
+                setEquipmentValue(["", "", ""]);
                 var testing = true;
                 if (testing) {
                     var storeData : any = AccessoryTest();
@@ -268,7 +268,7 @@ export default function CharacterPersonalAttributes ()
                 break;
             case "weapon/offhand":
             case "weapon/mainhand":
-                setEquipmentValue(["", ""]);
+                setEquipmentValue(["", "", ""]);
                 var testing = true;
                 if (testing) {
                     var storeData : any = null;
@@ -362,7 +362,8 @@ export default function CharacterPersonalAttributes ()
     }, [])
 
     useEffect(() => {
-        console.log(pointer)
+        console.log("Current Pointer: " + pointer)
+        console.log("Current Equipment Data: " + equipmentValue);
         if (pointer.indexOf("armor/") != -1 || pointer.indexOf("weapon/") != -1) {
             if (pointer.split("/").length >= 2 && pointer.split("/")[1] == "accessory") {
                 setViewingAccessory(true);
@@ -374,7 +375,7 @@ export default function CharacterPersonalAttributes ()
             }
             
             if (pointer.split("/")[2] == "new") {
-                setEquipmentValue(["", ""]);
+                setEquipmentValue(["", "", ""]);
             }
             setRightPaneHidden(false);
         } else {
@@ -388,7 +389,7 @@ export default function CharacterPersonalAttributes ()
         console.log(accessory)
         if (accessory.size > 0) {
             var acc : string[] = accessory.get(accessorySelected[0])!;
-            setEquipmentValue([acc[0], acc[1]]);
+            setEquipmentValue([acc[0], acc[1], acc[2]]);
             console.log(acc)
             }
     }, [accessorySelected])
@@ -397,7 +398,7 @@ export default function CharacterPersonalAttributes ()
     useEffect(() => {
         if (weapon.size > 0) {
             var currentWeapon : string[] = weapon.get(weaponSelected[0])!;
-            setEquipmentValue([currentWeapon[0], currentWeapon[1]]);
+            setEquipmentValue([currentWeapon[0], currentWeapon[1], currentWeapon[2]]);
             console.log(currentWeapon)
         }
     }, [weaponSelected])
@@ -464,8 +465,8 @@ export default function CharacterPersonalAttributes ()
                                         placeholder={`${pointer.substring(6, 7).toUpperCase()}${pointer.substring(7)} Name`} 
                                         value={equipmentValue[0]}
                                         onChange={(event) => {
-                                            setEquipmentValue([event.target.value, equipmentValue[1]]);
-                                            StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1]]));
+                                            setEquipmentValue([event.target.value, equipmentValue[1], equipmentValue[2]]);
+                                            StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1], equipmentValue[2]]));
                                         }}
                                         sx={{ backgroundColor: "floralwhite", fontFamily: "PixelFont" }}
                                         />
@@ -688,7 +689,7 @@ export default function CharacterPersonalAttributes ()
                                                 size="lg"
                                                 sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
                                                 onChange={(event) => {
-                                                    setEquipmentValue([event.target.value, equipmentValue[1]]);
+                                                    setEquipmentValue([event.target.value, equipmentValue[1], equipmentValue[2]]);
                                                     trackAccessoryWeaponChange();
                                                     }}
                                             />
@@ -715,9 +716,9 @@ export default function CharacterPersonalAttributes ()
                                     placeholder="Type in here…"
                                     value={equipmentValue[1]}
                                     onChange={(event) => {
-                                        setEquipmentValue([equipmentValue[0], event.target.value]);
+                                        setEquipmentValue([equipmentValue[0], event.target.value, equipmentValue[2]]);
                                         if (pointer.split("/")[2] != "new" && pointer.split("/")[2] != "edit") {
-                                            StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value]));
+                                            StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value, equipmentValue[2]]));
                                         } else if (pointer.split("/")[2] == "edit") {
                                             trackAccessoryWeaponChange();
                                         }
@@ -769,9 +770,9 @@ export default function CharacterPersonalAttributes ()
                                 </Box>
                             )}             
                             
-                            <Box className='translate-y-[5vh]'>
+                            <Box className='translate-y-[1vh]'>
                                 <Box
-                                    className="border-2 border-dashed rounded-lg text-center"
+                                    className="border-2 border-dashed rounded-lg text-center max-w-[15vw]"
                                     onDragOver={(e) => {
                                         e.preventDefault();
                                     }}
@@ -791,12 +792,22 @@ export default function CharacterPersonalAttributes ()
                                         const reader = new FileReader();
 
                                         reader.onload = () => {
-                                            setFile((oldMap) => {
-                                                var fileBuffer : string = reader.result as string;
-                                                const newMap = new Map(oldMap);
-                                                newMap.set("image", fileBuffer);
-                                                return newMap;
+                                            console.log(equipmentType)
+                                            console.log(equipmentValue)
+                                            var fileBuffer : string = reader.result as string;
+                                            // Update React State
+                                            setEquipmentValue((oldArr) => {
+                                                var newArr = Array.from(oldArr);
+                                                newArr[newArr.length - 1] = fileBuffer;
+                                                console.log(newArr)
+                                                return newArr;
                                             });
+
+                                            // Update Redux State
+                                            if (equipmentType == "accessories") saveAccessory(true);
+                                            else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
+                                            else if (equipmentType == "offhand") saveNewWeapon("offhand");
+                                            else StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], fileBuffer])); 
                                         };
 
                                         reader.readAsDataURL(file);
@@ -806,7 +817,14 @@ export default function CharacterPersonalAttributes ()
                                         Drag and drop an image here
                                     </Typography>
                                     <Box>
-                                        <img src={file.get("image")} width={210} />
+                                        {equipmentValue[equipmentValue.length - 1] !== "" && (
+                                            <img 
+                                                src={equipmentValue[equipmentValue.length - 1]} 
+                                                className='object-scale-down' 
+                                                onError={(e) => console.log(equipmentValue)}
+                                                onLoad={(e) => console.log(equipmentValue)}
+                                            />
+                                        )}
                                     </Box>
                                 </Box>                            
                             </Box>
