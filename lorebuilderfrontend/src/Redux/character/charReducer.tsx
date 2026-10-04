@@ -7,16 +7,16 @@ export type stateTypeOrigins = {
     }
 
 type equipmentType = {
-    weaponMainHand: Array<string>, // array = [name, description, image]
-    weaponOffHand: Array<string>, // array = [name, description, image]
-    leftArmGear: Array<string>, // array = [name, description, image]
-    rightArmGear: Array<string>, // array = [name, description, image]
-    accessories: Array<object>, // Hashmap<id, [accessoryName, description, image]>
-    headGear: Array<string>, // array = [name, description, image]
-    chestGear: Array<string>, // array = [name, description, image]
-    backGear: Array<string>, // array = [name, description, image]
-    leggingGear: Array<string>, // array = [name, description, image]
-    footGear: Array<string> // array = [name, description, image],
+    weaponMainHand: Array<string>, // array = [name, description, imagePath]
+    weaponOffHand: Array<string>, // array = [name, description, imagePath]
+    leftArmGear: Array<string>, // array = [name, description, imagePath]
+    rightArmGear: Array<string>, // array = [name, description, imagePath]
+    accessories: Array<object>, // Hashmap<id, [accessoryName, description, imagePath]>
+    headGear: Array<string>, // array = [name, description, imagePath]
+    chestGear: Array<string>, // array = [name, description, imagePath]
+    backGear: Array<string>, // array = [name, description, imagePath]
+    leggingGear: Array<string>, // array = [name, description, imagePath]
+    footGear: Array<string> // array = [name, description, imagePath],
 }
 
 export type accessoryType = Map<string, Array<string>>;

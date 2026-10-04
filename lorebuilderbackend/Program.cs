@@ -1,0 +1,38 @@
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+
+// Adding CORS Policy
+var crossApplicationUsagePolicy = "_crossApplicationUsagePolicy";
+builder.Services.AddCors(options => {
+    options.AddPolicy(
+        name: crossApplicationUsagePolicy,
+        builder => {
+            builder.WithOrigins("http://localhost:5173");
+            Console.WriteLine("App: Enabled CORS from .NET to React-Electron");
+        }
+    );
+
+});
+var app = builder.Build();
+
+app.UseCors(crossApplicationUsagePolicy);
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+app.UseHttpsRedirection();
+app.MapControllers();
+app.UseStaticFiles();
+app.Run();
+
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+{
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}

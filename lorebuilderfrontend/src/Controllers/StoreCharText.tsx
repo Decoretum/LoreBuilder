@@ -101,10 +101,6 @@ export default function StoreCharText (textType : string, text : string, equipme
             // 4th Page
         case "/attributes/equipment":
             if (equipmentObject != undefined) {
-                var eProp : string = equipmentObject["equipmentType"];
-                var eTitle : string = equipmentObject["equipmentValue"][0];
-                var eVal : string = equipmentObject["equipmentValue"][1];
-
                 var uuid = equipmentObject.equipmentValue[0];
                 var name = equipmentObject.equipmentValue[1];
                 var desc = equipmentObject.equipmentValue[2];

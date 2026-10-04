@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
 import { WeaponContainer } from "../../Components/Widgets/WeaponContainer.tsx";
 import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
+import fs from 'fs';
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
@@ -39,12 +40,15 @@ export default function CharacterPersonalAttributes ()
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
-    const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", "", ""]);
     
     // Image Files
     // TODO: Populate these when loading the database and state
-    const [file, setFile] = useState(new Map<string, string>());
-    const [populated, setPopulated] = useState(false);
+    // Flow: Fetch Image Path from Redux -> Create a Blob URL from image path -> display in frontend
+    const [img, setImg] = useState("");
+
+    // General 
+    // uuid, name, description, imagePath
+    const [equipmentValue, setEquipmentValue] = useState<Array<string>>(["", "", ""]);
 
     // Armor-related States
     const [viewingAccessory, setViewingAccessory] = useState(false);
@@ -65,7 +69,6 @@ export default function CharacterPersonalAttributes ()
     const [modalText, setModalText] = useState("");
     const [saveButton, setSaveButton] = useState("hidden");
 
-    const [img, setImg] = useState("");
     const nav = useNavigate();
     const storeFields : stateArr  = [
         {'class' : 'attributes', 'field' : 'skills'}, 
@@ -85,6 +88,12 @@ export default function CharacterPersonalAttributes ()
             ? [uuid, equipmentValue[0], equipmentValue[1], equipmentValue[2]] 
             : [equipmentValue[0], equipmentValue[1], equipmentValue[2]]
         }
+    }
+
+    async function previewImage() {
+        var blob = await fs.openAsBlob(equipmentValue[2]);
+        var objectURL = window.URL.createObjectURL(blob);
+        setImg(objectURL);
     }
 
     function validateItem() : boolean {
@@ -788,29 +797,29 @@ export default function CharacterPersonalAttributes ()
                                             console.log('Not an image');
                                             return;
                                         }
+                                        
+                                        var filePath = file.name;
 
-                                        const reader = new FileReader();
+                                        // reader.readAsDataURL(file);
 
-                                        reader.onload = () => {
-                                            console.log(equipmentType)
-                                            console.log(equipmentValue)
-                                            var fileBuffer : string = reader.result as string;
-                                            // Update React State
-                                            setEquipmentValue((oldArr) => {
-                                                var newArr = Array.from(oldArr);
-                                                newArr[newArr.length - 1] = fileBuffer;
-                                                console.log(newArr)
-                                                return newArr;
-                                            });
+                                        // Update React State
+                                        setEquipmentValue((oldArr) => {
+                                            var newArr = Array.from(oldArr);
+                                            newArr[newArr.length - 1] = filePath;
+                                            console.log(newArr)
+                                            return newArr;
+                                        });
+                                        
+                                        // Update Redux State
+                                        if (equipmentType == "accessories") saveAccessory(true);
+                                        else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
+                                        else if (equipmentType == "offhand") saveNewWeapon("offhand");
+                                        else { 
+                                            StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], filePath]))
+                                        }; 
 
-                                            // Update Redux State
-                                            if (equipmentType == "accessories") saveAccessory(true);
-                                            else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
-                                            else if (equipmentType == "offhand") saveNewWeapon("offhand");
-                                            else StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], fileBuffer])); 
-                                        };
-
-                                        reader.readAsDataURL(file);
+                                        // Preview Image
+                                        previewImage();
                                     }}
                                 >
                                     <Typography>
@@ -819,7 +828,7 @@ export default function CharacterPersonalAttributes ()
                                     <Box>
                                         {equipmentValue[equipmentValue.length - 1] !== "" && (
                                             <img 
-                                                src={equipmentValue[equipmentValue.length - 1]} 
+                                                src={img} 
                                                 className='object-scale-down' 
                                                 onError={(e) => console.log(equipmentValue)}
                                                 onLoad={(e) => console.log(equipmentValue)}
