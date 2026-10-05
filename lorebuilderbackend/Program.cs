@@ -11,7 +11,9 @@ builder.Services.AddCors(options => {
     options.AddPolicy(
         name: crossApplicationUsagePolicy,
         builder => {
-            builder.WithOrigins("http://localhost:5173");
+            builder.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
             Console.WriteLine("App: Enabled CORS from .NET to React-Electron");
         }
     );
@@ -27,7 +29,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
 app.UseStaticFiles();
 app.Run();

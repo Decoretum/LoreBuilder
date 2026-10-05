@@ -17,7 +17,7 @@
     "productName": "LoreBuilder",
     "files": [
       "dist/**/*",
-      "dist-electron/**/*"
+      "electron/**/*"
     ],
     "win": {
       "target": "nsis"

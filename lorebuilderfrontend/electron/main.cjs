@@ -1,14 +1,16 @@
 const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
+const fs = require("fs");
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 1280,
-        height: 800,
-        webPreferences: {
-            contextIsolation: true,
-            nodeIntegration: false
-        },
+            width: 1280,
+            height: 800,
+            webPreferences: {
+                preload: path.join(__dirname, "preload.cjs"),
+                contextIsolation: true,
+                nodeIntegration: false
+            },
         icon: path.join(__dirname, "../public/assets/wizard.ico")
     });
 

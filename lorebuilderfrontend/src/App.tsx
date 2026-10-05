@@ -1,6 +1,3 @@
-import { useState,  createContext } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import './index.css'
 
@@ -12,7 +9,6 @@ import { Login } from './Views/Navigation/Login.tsx'
 import { Home } from './Views/Navigation/Home.tsx'
 import { Characters } from './Views/Navigation/Characters.tsx'
 import { Layout } from './Views/Recurring/Layout.tsx'
-import store from './Redux/store.tsx'
 
 // Pages
 import CharacterOrigin  from './Views/Creation/CharacterOrigin.tsx'

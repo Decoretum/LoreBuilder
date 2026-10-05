@@ -22,6 +22,7 @@ import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
 import AccessoryTest from "../../Test/AccessoryTest.tsx"
 import WeaponTestMainhand from "../../Test/WeaponTestMainhand.tsx";
 import WeaponTestOffhand from "../../Test/WeaponTestOffhand.tsx";
+import { instance } from "../../Services/AxiosInstance.tsx";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -45,6 +46,7 @@ export default function CharacterPersonalAttributes ()
     // TODO: Populate these when loading the database and state
     // Flow: Fetch Image Path from Redux -> Create a Blob URL from image path -> display in frontend
     const [img, setImg] = useState("");
+    const [previewImg, setPreviewImg] = useState("");
 
     // General 
     // uuid, name, description, imagePath
@@ -90,10 +92,26 @@ export default function CharacterPersonalAttributes ()
         }
     }
 
-    async function previewImage() {
-        var blob = await fs.openAsBlob(equipmentValue[2]);
-        var objectURL = window.URL.createObjectURL(blob);
-        setImg(objectURL);
+    async function previewImage(filePath: string) {
+        var fileByteArray = await instance.post(
+            `api/ImageController/GetByteArray`,
+            { filePath: filePath }
+        );
+        
+        // Get Decoded Base 64 string from C#
+        var decodedBase64String = window.atob(fileByteArray.data);
+        var unsignedint8Array = new Uint8Array(decodedBase64String.length);
+
+        for (var i = 0; i <= decodedBase64String.length - 1; i++) {
+            unsignedint8Array[i] = decodedBase64String.charCodeAt(i);
+        }
+
+        var blob = new Blob(
+            [unsignedint8Array],
+            { type: "image/png" }
+        )
+
+        setPreviewImg(URL.createObjectURL(blob));
     }
 
     function validateItem() : boolean {
@@ -200,6 +218,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.headGear;
                 setEquipmentType("headGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
+                previewImage(storeData[2]);
                 break;
             case "armor/leftarm":
                 setPointer(img);
@@ -207,7 +226,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/glove.png`);
                 var storeData = store.getState().char.attributes.equipment.leftArmGear;
                 setEquipmentType("leftArmGear");
-                setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
+                previewImage(storeData[2]);                
                 break;
             case "armor/rightarm":
                 setPointer(img);
@@ -217,6 +236,7 @@ export default function CharacterPersonalAttributes ()
                 setEquipmentType("rightArmGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
                 console.log(storeData)
+                previewImage(storeData[2]);
                 break;
             case "armor/backwear":
                 setPointer("armor/backwear");
@@ -225,6 +245,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.backGear;
                 setEquipmentType("backGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
+                previewImage(storeData[2]);
                 break;
             case "armor/chest":
                 setPointer("armor/chest");
@@ -237,6 +258,7 @@ export default function CharacterPersonalAttributes ()
                 //  }));
                 setEquipmentType("chestGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
+                previewImage(storeData[2]);
                 break;
             case "armor/leggings":
                 setPointer("armor/leggings");
@@ -245,6 +267,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.leggingGear;
                 setEquipmentType("leggingGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
+                previewImage(storeData[2]);
                 break;
             case "armor/foot":
                 setPointer("armor/foot");
@@ -253,6 +276,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.footGear;
                 setEquipmentType("footGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
+                previewImage(storeData[2]);
                 break;
             case "armor/ring":
                 // Special Case
@@ -273,6 +297,8 @@ export default function CharacterPersonalAttributes ()
                     // Right Pane: 
                     setImg(`/attributes/${img.substring(6)}.png`);
                     console.log(merged);
+
+                    previewImage(storeData[2]);
                 }
                 break;
             case "weapon/offhand":
@@ -343,6 +369,7 @@ export default function CharacterPersonalAttributes ()
         else {
             setPointer("general");
         }
+        setPreviewImg("");
     }
 
     function resetBinary() {
@@ -418,6 +445,9 @@ export default function CharacterPersonalAttributes ()
             trackAccessoryWeaponChange();
         }
     }, [equipmentValue])
+
+    // Track Current Preview Image
+    useEffect(() => {URL.revokeObjectURL(previewImg)}, [previewImg])
 
     return (
         <>
@@ -781,7 +811,7 @@ export default function CharacterPersonalAttributes ()
                             
                             <Box className='translate-y-[1vh]'>
                                 <Box
-                                    className="border-2 border-dashed rounded-lg text-center max-w-[15vw]"
+                                    className={previewImg == "" ? `border-2 border-dashed rounded-lg text-center max-w-[15vw]` : "max-w-[15vw]"}
                                     onDragOver={(e) => {
                                         e.preventDefault();
                                     }}
@@ -789,7 +819,6 @@ export default function CharacterPersonalAttributes ()
                                         e.preventDefault();
 
                                         const file = e.dataTransfer.files[0];
-                                        console.log(file)
 
                                         if (!file) return;
 
@@ -798,15 +827,19 @@ export default function CharacterPersonalAttributes ()
                                             return;
                                         }
                                         
-                                        var filePath = file.name;
-
-                                        // reader.readAsDataURL(file);
+                                        // @ts-expect-error
+                                        const filePath = window.electronAPI.getFilePath(file);
+                                        console.log(filePath)
 
                                         // Update React State
                                         setEquipmentValue((oldArr) => {
                                             var newArr = Array.from(oldArr);
                                             newArr[newArr.length - 1] = filePath;
                                             console.log(newArr)
+   
+                                            // Preview Image
+                                            previewImage(filePath);
+
                                             return newArr;
                                         });
                                         
@@ -817,21 +850,17 @@ export default function CharacterPersonalAttributes ()
                                         else { 
                                             StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], filePath]))
                                         }; 
-
-                                        // Preview Image
-                                        previewImage();
                                     }}
                                 >
                                     <Typography>
-                                        Drag and drop an image here
+                                        {previewImg == "" ? "Drag and drop an image here" : ""}
                                     </Typography>
                                     <Box>
-                                        {equipmentValue[equipmentValue.length - 1] !== "" && (
+                                        {previewImg !== "" && (
                                             <img 
-                                                src={img} 
+                                                src={previewImg} 
                                                 className='object-scale-down' 
-                                                onError={(e) => console.log(equipmentValue)}
-                                                onLoad={(e) => console.log(equipmentValue)}
+                                                onChange={() => console.log("Image changed")}                                           
                                             />
                                         )}
                                     </Box>
