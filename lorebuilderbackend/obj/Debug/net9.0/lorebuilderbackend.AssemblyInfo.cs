@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("lorebuilderbackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9a2e6a364000afbaf871f6696c45aeb89897d2e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68b780e3dd23423e26d719642933be29f6f3b3d8")]
 [assembly: System.Reflection.AssemblyProductAttribute("lorebuilderbackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("lorebuilderbackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
