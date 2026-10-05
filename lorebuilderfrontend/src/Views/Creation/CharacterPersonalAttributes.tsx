@@ -93,6 +93,7 @@ export default function CharacterPersonalAttributes ()
     }
 
     async function previewImage(filePath: string) {
+        if (filePath == "") return;
         var fileByteArray = await instance.post(
             `api/ImageController/GetByteArray`,
             { filePath: filePath }
@@ -507,7 +508,7 @@ export default function CharacterPersonalAttributes ()
                                             setEquipmentValue([event.target.value, equipmentValue[1], equipmentValue[2]]);
                                             StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [event.target.value, equipmentValue[1], equipmentValue[2]]));
                                         }}
-                                        sx={{ backgroundColor: "floralwhite", fontFamily: "PixelFont" }}
+                                        sx={{ backgroundColor: "floralwhite", fontFamily: "PixelFont", '--Input-focusedThickness': '0px' }}
                                         />
                                     </Box> 
                                 </>
@@ -751,7 +752,7 @@ export default function CharacterPersonalAttributes ()
                                             {inventoryText}'s Description
                                 </FormLabel>
                                 <Textarea
-                                    variant='outlined'
+                                    variant='soft'
                                     placeholder="Type in here…"
                                     value={equipmentValue[1]}
                                     onChange={(event) => {
@@ -770,11 +771,20 @@ export default function CharacterPersonalAttributes ()
                                         </Box>
                                     }
                                     endDecorator = {
-                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'antiquewhite', fontFamily: 'PixelFont' }}>
+                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'black', fontFamily: 'PixelFont' }}>
                                         {equipmentValue[1]?.length} character(s)
                                         </Typography>
                                     }
-                                    sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: "black" }}
+                                    sx={{ 
+                                        '--Textarea-focusedThickness': '0px',
+                                        minWidth: 350, height: 280, 
+                                        backgroundColor: 'antiquewhite', 
+                                        color: "black",
+                                        backgroundImage: 'url("/assets/pixilframe.png")',
+                                        backgroundRepeat: 'no-repeat',
+                                        backgroundSize: '800px',
+                                        backgroundPosition: 'center'
+                                    }}
                                 />
                             </FormControl>
 
@@ -811,7 +821,7 @@ export default function CharacterPersonalAttributes ()
                             
                             <Box className='translate-y-[1vh]'>
                                 <Box
-                                    className={previewImg == "" ? `border-2 border-dashed rounded-lg text-center max-w-[15vw]` : "max-w-[15vw]"}
+                                    className={previewImg === "" ? `border-2 border-dashed rounded-lg text-center max-w-[15vw] p-4` : "max-w-[15vw]"}
                                     onDragOver={(e) => {
                                         e.preventDefault();
                                     }}
@@ -829,7 +839,6 @@ export default function CharacterPersonalAttributes ()
                                         
                                         // @ts-expect-error
                                         const filePath = window.electronAPI.getFilePath(file);
-                                        console.log(filePath)
 
                                         // Update React State
                                         setEquipmentValue((oldArr) => {
@@ -852,14 +861,15 @@ export default function CharacterPersonalAttributes ()
                                         }; 
                                     }}
                                 >
-                                    <Typography>
+                                    <Typography
+                                        sx= {{ color: 'antiquewhite' }}>
                                         {previewImg == "" ? "Drag and drop an image here" : ""}
                                     </Typography>
-                                    <Box>
+                                    <Box className=''>
                                         {previewImg !== "" && (
                                             <img 
                                                 src={previewImg} 
-                                                className='object-scale-down' 
+                                                className='max-w-[300px] max-h-[300px] w-auto h-auto' 
                                                 onChange={() => console.log("Image changed")}                                           
                                             />
                                         )}
