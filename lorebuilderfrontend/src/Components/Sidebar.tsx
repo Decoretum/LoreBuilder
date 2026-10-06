@@ -27,33 +27,40 @@ export function Sidebar () {
             >
                 <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
                     <List>
-                        {['Home', 'Create Character', 'Send email', 'Drafts'].map((text) => (
+                        {[{text: 'Home', art: '/assets/gaelmade/pixil-house.png'}, {text: 'Create Character'}, {text:'Send email'}, {text: 'Drafts'}].map((obj) => (
                             
-                        <Link to={text === 'Create Character' ? 'characters/creation/origins' : 
-                        text === 'Home' ? '/' : text} className='font-normal'>
-                        <ListItem key={text} 
-                        onMouseOver={() => setKey(text)}
-                        onMouseLeave={() => setKey('')}
-                        sx = {{backgroundColor: key === text ? '#5C6C60' : hoverBgColor}}>
-                            <Typography variant='plain' level='body-md'>
-                                <span className='text-gray-50 font-PixelFont'>
-                                {text}
-                                </span>
-                            </Typography>
-                        </ListItem>
+                        <Link 
+                            to={obj.text === 'Create Character' ? 'characters/creation/origins' : 
+                            obj.text === 'Home' ? '/' : obj.text} 
+                            className='font-normal'
+                        >
+                            <ListItem key={obj.text} 
+                                onMouseOver={() => setKey(obj.text)}
+                                onMouseLeave={() => setKey('')}
+                                sx = {{backgroundColor: key === obj.text ? '#5C6C60' : hoverBgColor}}
+                            >
+                                <Typography variant='plain' level='body-md'>
+                                    <span className='text-gray-50 font-PixelFont'>
+                                    {obj.text}
+                                    </span>
+                                </Typography>
+                                { obj.art !== undefined && (
+                                    <img src={obj.art} className='max-w-[50px] max-y-[50px]' />
+                                ) }
+                            </ListItem>
                         </Link>
                         ))}
                     </List>
 
                 <Divider />
 
-                    <List>
+                    {/* <List>
                         {['All mail', 'Trash', 'Spam'].map((text) => (
                         <ListItem key={text}>
                             <ListItemButton>{text}</ListItemButton>
                         </ListItem>
                         ))}
-                    </List>
+                    </List> */}
                 </Box>
             </Drawer>
         </>

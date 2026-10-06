@@ -19,13 +19,16 @@ export default function Hint (props : propType) {
             val = 'Describe your restrained and unhinged self, unbeknownst to the concept of akwardness';
             break;
         case 'skills':
-            val = 'Describe your gear';
+            val = 'What can you do?';
             break;
         case 'strength':
             val = 'What sets you apart from the others? What empowers you and drives you forward?';
             break;
         case 'magic':
             val = 'Are you capable of otherworldly feats?';
+            break;
+        case 'gear':
+            val = 'Describe your gear'
             break;
     }
 

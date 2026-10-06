@@ -80,7 +80,7 @@
 
 .longer-frame {
   display: flex;
-  background-image: url('/assets/pixilframe.png');
+  background-image: url('/assets/gaelmade/pixilframe.png');
   background-size: 430px;
   background-repeat: no-repeat;
   background-position: center;
@@ -95,7 +95,7 @@
 
 .frame {
   display: flex;
-  background-image: url('/assets/pixilframe.png');
+  background-image: url('/assets/gaelmade/pixilframe.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
