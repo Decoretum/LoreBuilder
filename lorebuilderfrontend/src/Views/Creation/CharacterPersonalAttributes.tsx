@@ -767,7 +767,7 @@ export default function CharacterPersonalAttributes ()
                                     maxRows={4}
                                     startDecorator = {
                                         <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                            <Hint props = 'skills' />
+                                            <Hint props = 'gear' />
                                         </Box>
                                     }
                                     endDecorator = {
@@ -776,6 +776,7 @@ export default function CharacterPersonalAttributes ()
                                         </Typography>
                                     }
                                     sx={{ 
+                                        fontFamily: 'PixelFont',
                                         '--Textarea-focusedThickness': '0px',
                                         minWidth: 350, height: 280, 
                                         backgroundColor: 'antiquewhite', 
@@ -862,7 +863,7 @@ export default function CharacterPersonalAttributes ()
                                     }}
                                 >
                                     <Typography
-                                        sx= {{ color: 'antiquewhite' }}>
+                                        sx= {{ color: 'antiquewhite', fontFamily: 'PixelFont' }}>
                                         {previewImg == "" ? "Drag and drop an image here" : ""}
                                     </Typography>
                                     <Box className=''>
