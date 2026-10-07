@@ -1,5 +1,5 @@
 $frontend = Start-Process powershell -ArgumentList "-Command", "cd .\lorebuilderfrontend; npm run dev" -PassThru
-$backend = Start-Process powershell -ArgumentList "-Command", "cd .\lorebuilderbackend; dotnet run" -PassThru
+$backend = Start-Process powershell -ArgumentList "-Command", "cd .\lorebuilderbackend; dotnet watch" -PassThru
 
 try {
     while (!$frontend.HasExited -and !$backend.HasExited) {

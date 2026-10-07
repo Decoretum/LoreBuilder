@@ -8,10 +8,19 @@ namespace Controller;
 public class ImageController 
 {
     [HttpPost("GetByteArray")]
-    public byte[] extractFileByteArray([FromBody] ImageDTO dto) 
+    public string extractFileByteArray([FromBody] ImageDTO dto) 
     {
-        Console.WriteLine($"Received filename: {dto.filePath}");
-        byte[] bytes = File.ReadAllBytes(dto.filePath);
-        return bytes;
+        var parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
+        var userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
+
+        if (dto.transactionType == "upload") {
+            Console.WriteLine($"Received file byte array: {dto.fileName}");
+            var file = Convert.FromBase64String(dto.fileData);
+            File.WriteAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}", file);
+            return "";
+        } else {
+            var file = Convert.ToBase64String(File.ReadAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}"));
+            return file;
+        }
     }
 }

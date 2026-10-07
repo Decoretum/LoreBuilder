@@ -1,9 +1,39 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Add the Directories
+var parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
+var userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
+if (!Directory.Exists(userEquipmentImageDirectory)) {
+    Directory.CreateDirectory(userEquipmentImageDirectory);
+}
+
+// Equipment
+var equipment = new string[] 
+{
+    "headGear",
+    "rightArmGear",
+    "leftArmGear",
+    "chestGear",
+    "leggingGear",
+    "backGear",
+    "footGear",
+    "accessories",
+    "weaponMainHand",
+    "weaponOffHand"
+
+};
+
+foreach (var e in equipment) {
+    if (!Directory.Exists($"{userEquipmentImageDirectory}\\{e}")) {
+        Directory.CreateDirectory($"{userEquipmentImageDirectory}\\{e}");
+    }
+}
+
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();
+builder.Services.AddControllers();  
 
 // Adding CORS Policy
 var crossApplicationUsagePolicy = "_crossApplicationUsagePolicy";
