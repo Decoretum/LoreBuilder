@@ -92,27 +92,72 @@ export default function CharacterPersonalAttributes ()
         }
     }
 
-    async function previewImage(filePath: string) {
-        if (filePath == "") return;
-        var fileByteArray = await instance.post(
-            `api/ImageController/GetByteArray`,
-            { filePath: filePath }
-        );
-        
-        // Get Decoded Base 64 string from C#
-        var decodedBase64String = window.atob(fileByteArray.data);
-        var unsignedint8Array = new Uint8Array(decodedBase64String.length);
+    async function previewImage({fileName, equipmentType} : {fileName: string, equipmentType: string}, file?: File) {
+        if (fileName == "") return;
 
-        for (var i = 0; i <= decodedBase64String.length - 1; i++) {
-            unsignedint8Array[i] = decodedBase64String.charCodeAt(i);
+        var reader = new FileReader();
+
+        // Upload and Save File
+        if (file !== undefined) {
+            reader.readAsArrayBuffer(file!);
+            var byteArray : Uint8Array | undefined;;
+            reader.onloadend = (event: ProgressEvent<FileReader>) => {
+                byteArray = new Uint8Array(event.target?.result as ArrayBuffer);
+                var blob = new Blob(
+                    [byteArray],
+                    { type: "image/png" }
+                )
+
+                // Convert byte array to base 64 string
+                var b64encode = window.btoa(
+                    Array.from(byteArray, (n: number) => {return String.fromCharCode(n)}).join('')
+                );
+                
+                setPreviewImg(URL.createObjectURL(blob));
+
+                // Save file to Directory
+                // TODO: Add UI reactive elements to this request
+                var request = instance.post(
+                    'api/ImageController/GetByteArray',
+                    {
+                        fileName: file?.name,
+                        fileData: b64encode,
+                        imageCategory: equipmentType,
+                        transactionType: "upload"
+                    }
+                )  
+            }
         }
 
-        var blob = new Blob(
-            [unsignedint8Array],
-            { type: "image/png" }
-        )
+        // Retrieve File From File System
+        else {
+            console.log(fileName)
+            console.log(equipmentType)
+            var fileName = fileName;
+            if (fileName !== "") {
+                var request = await instance.post(
+                    'api/ImageController/GetByteArray',
+                    {
+                        fileName: fileName,
+                        fileData: "",
+                        imageCategory: equipmentType,
+                        transactionType: "retrieve"
+                    }
+                )  
+                var byteCharacterString = window.atob(request.data as string);
+                var uInt8ByteArray = new Uint8Array(byteCharacterString.length);
+                for (let i = 0; i <= uInt8ByteArray.length - 1; i++) {
+                    uInt8ByteArray[i] = byteCharacterString.charCodeAt(i);
+                }
 
-        setPreviewImg(URL.createObjectURL(blob));
+                var blob = new Blob(
+                    [uInt8ByteArray],
+                    { type: "image/png" }
+                )
+                var objectURL = URL.createObjectURL(blob);
+                setPreviewImg(objectURL);
+            }
+        }
     }
 
     function validateItem() : boolean {
@@ -133,7 +178,6 @@ export default function CharacterPersonalAttributes ()
 
     function trackAccessoryWeaponChange() : void {
         // Identify presence of change
-        console.log(pointer)
         var item = pointer.split("/")[1] == "accessory" ? accessory.get(accessorySelected[0]) : weapon.get(weaponSelected[0])
         var itemOfInterestName = item![0];
         var itemOfInterestDescription = item![1];
@@ -182,7 +226,6 @@ export default function CharacterPersonalAttributes ()
         // Validate weapon data
         var validationResult = validateItem();
         if (!validationResult) return false;
-        console.log(weaponSelected);
         StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? weaponSelected[0] : "none"));        
         setWeapon(prevMap => {
             const newMap = new Map(prevMap);
@@ -191,7 +234,6 @@ export default function CharacterPersonalAttributes ()
             const reduxMap : Map<string, string> = category == "mainhand"
                 ? store.getState().char.attributes.equipment.weaponMainHand
                 : store.getState().char.attributes.equipment.weaponOffHand;
-            console.log(reduxMap)
             let uuid = "";
             for (const key of reduxMap.keys()) {
                 if (reduxMap.get(key)![0] == equipmentValue[0]) {
@@ -210,7 +252,6 @@ export default function CharacterPersonalAttributes ()
     }
 
     function clickImage (img: string) : void {
-        console.log(img)
         switch(img){
             case "armor/helm":
                 setPointer(img); 
@@ -219,7 +260,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.headGear;
                 setEquipmentType("headGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
-                previewImage(storeData[2]);
+                previewImage({fileName : storeData[2], equipmentType : "headGear"});
                 break;
             case "armor/leftarm":
                 setPointer(img);
@@ -227,7 +268,7 @@ export default function CharacterPersonalAttributes ()
                 setImg(`/attributes/glove.png`);
                 var storeData = store.getState().char.attributes.equipment.leftArmGear;
                 setEquipmentType("leftArmGear");
-                previewImage(storeData[2]);                
+                previewImage({fileName: storeData[2], equipmentType : "leftArmGear"});                
                 break;
             case "armor/rightarm":
                 setPointer(img);
@@ -236,8 +277,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.rightArmGear;
                 setEquipmentType("rightArmGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
-                console.log(storeData)
-                previewImage(storeData[2]);
+                previewImage({fileName : storeData[2], equipmentType : "rightArmGear"});
                 break;
             case "armor/backwear":
                 setPointer("armor/backwear");
@@ -246,20 +286,16 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.backGear;
                 setEquipmentType("backGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
-                previewImage(storeData[2]);
+                previewImage({fileName : storeData[2], equipmentType : "backGear"});
                 break;
             case "armor/chest":
                 setPointer("armor/chest");
                 setInventoryText("Chestwear");
                 setImg(`/attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.chestGear;
-                //  setEquipment(oldEq => ({
-                //     ...oldEq,
-                //     headGear: ["Helmet Title", storeData]
-                //  }));
                 setEquipmentType("chestGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
-                previewImage(storeData[2]);
+                previewImage({fileName : storeData[2], equipmentType : "chestGear"});
                 break;
             case "armor/leggings":
                 setPointer("armor/leggings");
@@ -268,7 +304,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.leggingGear;
                 setEquipmentType("leggingGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
-                previewImage(storeData[2]);
+                previewImage({fileName : storeData[2], equipmentType : "leggingGear"});
                 break;
             case "armor/foot":
                 setPointer("armor/foot");
@@ -277,7 +313,7 @@ export default function CharacterPersonalAttributes ()
                 var storeData = store.getState().char.attributes.equipment.footGear;
                 setEquipmentType("footGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
-                previewImage(storeData[2]);
+                previewImage({fileName : storeData[2], equipmentType : "footGear"});
                 break;
             case "armor/ring":
                 // Special Case
@@ -297,7 +333,6 @@ export default function CharacterPersonalAttributes ()
     
                     // Right Pane: 
                     setImg(`/attributes/${img.substring(6)}.png`);
-                    console.log(merged);
 
                     previewImage(storeData[2]);
                 }
@@ -399,12 +434,11 @@ export default function CharacterPersonalAttributes ()
     }, [])
 
     useEffect(() => {
-        console.log("Current Pointer: " + pointer)
-        console.log("Current Equipment Data: " + equipmentValue);
+        // console.log("Current Pointer: " + pointer)
+        // console.log("Current Equipment Data: " + equipmentValue);
         if (pointer.indexOf("armor/") != -1 || pointer.indexOf("weapon/") != -1) {
             if (pointer.split("/").length >= 2 && pointer.split("/")[1] == "accessory") {
                 setViewingAccessory(true);
-                console.log("viewing armor")
             }
 
             else if (pointer.split("/").length >= 2 && pointer.split("/")[0] == "weapon") {
@@ -422,12 +456,9 @@ export default function CharacterPersonalAttributes ()
     
     // Track current accessory selected
     useEffect(() => {
-        console.log(accessorySelected);  
-        console.log(accessory)
         if (accessory.size > 0) {
             var acc : string[] = accessory.get(accessorySelected[0])!;
             setEquipmentValue([acc[0], acc[1], acc[2]]);
-            console.log(acc)
             }
     }, [accessorySelected])
 
@@ -436,7 +467,6 @@ export default function CharacterPersonalAttributes ()
         if (weapon.size > 0) {
             var currentWeapon : string[] = weapon.get(weaponSelected[0])!;
             setEquipmentValue([currentWeapon[0], currentWeapon[1], currentWeapon[2]]);
-            console.log(currentWeapon)
         }
     }, [weaponSelected])
 
@@ -834,21 +864,20 @@ export default function CharacterPersonalAttributes ()
                                         if (!file) return;
 
                                         if (!file.type.startsWith('image/')) {
-                                            console.log('Not an image');
                                             return;
                                         }
                                         
                                         // @ts-expect-error
+                                        // Modify C# to create new directory with file data from React
                                         const filePath = window.electronAPI.getFilePath(file);
 
                                         // Update React State
                                         setEquipmentValue((oldArr) => {
                                             var newArr = Array.from(oldArr);
-                                            newArr[newArr.length - 1] = filePath;
-                                            console.log(newArr)
+                                            newArr[newArr.length - 1] = file.name;
    
-                                            // Preview Image
-                                            previewImage(filePath);
+                                            // Save and Preview Image
+                                            previewImage({fileName: file.name, equipmentType: equipmentType}, file);
 
                                             return newArr;
                                         });
@@ -858,7 +887,7 @@ export default function CharacterPersonalAttributes ()
                                         else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
                                         else if (equipmentType == "offhand") saveNewWeapon("offhand");
                                         else { 
-                                            StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], filePath]))
+                                            StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], file.name]))
                                         }; 
                                     }}
                                 >
@@ -871,7 +900,7 @@ export default function CharacterPersonalAttributes ()
                                             <img 
                                                 src={previewImg} 
                                                 className='max-w-[300px] max-h-[300px] w-auto h-auto' 
-                                                onChange={() => console.log("Image changed")}                                           
+                                                onChange={() =>{}}                                           
                                             />
                                         )}
                                     </Box>
@@ -960,7 +989,6 @@ export default function CharacterPersonalAttributes ()
                                 }
                                 else {
                                     // Saving changes
-                                    console.log(inventoryText)
                                     var savingAccessory = pointer.split("/")[0] == "armor";
                                     var bool : boolean | null = savingAccessory 
                                         ? saveAccessory(true) 
