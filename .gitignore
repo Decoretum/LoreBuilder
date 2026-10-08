@@ -1,6 +1,8 @@
 node_modules
+equipment
 lorebuilderfrontend/dist
 lorebuilderbackend/bin
 lorebuilderbackend/obj
 lorebuilderbackend/obj/debug
+
 
