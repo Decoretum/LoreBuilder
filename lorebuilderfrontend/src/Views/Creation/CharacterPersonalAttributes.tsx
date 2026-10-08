@@ -23,6 +23,7 @@ import AccessoryTest from "../../Test/AccessoryTest.tsx"
 import WeaponTestMainhand from "../../Test/WeaponTestMainhand.tsx";
 import WeaponTestOffhand from "../../Test/WeaponTestOffhand.tsx";
 import { instance } from "../../Services/AxiosInstance.tsx";
+import { CircularProgress } from "@mui/material";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -47,6 +48,7 @@ export default function CharacterPersonalAttributes ()
     // Flow: Fetch Image Path from Redux -> Create a Blob URL from image path -> display in frontend
     const [img, setImg] = useState("");
     const [previewImg, setPreviewImg] = useState("");
+    const [imageLoading ,setImageLoading] = useState(false);
 
     // General 
     // uuid, name, description, imagePath
@@ -93,15 +95,15 @@ export default function CharacterPersonalAttributes ()
     }
 
     async function previewImage({fileName, equipmentType} : {fileName: string, equipmentType: string}, file?: File) {
-        if (fileName == "") return;
-
-        var reader = new FileReader();
+        if (fileName == "" || fileName == undefined) return;
 
         // Upload and Save File
         if (file !== undefined) {
-            reader.readAsArrayBuffer(file!);
+            setImageLoading(true);
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file);
             var byteArray : Uint8Array | undefined;;
-            reader.onloadend = (event: ProgressEvent<FileReader>) => {
+            reader.onloadend = async (event: ProgressEvent<FileReader>) => {
                 byteArray = new Uint8Array(event.target?.result as ArrayBuffer);
                 var blob = new Blob(
                     [byteArray],
@@ -113,11 +115,9 @@ export default function CharacterPersonalAttributes ()
                     Array.from(byteArray, (n: number) => {return String.fromCharCode(n)}).join('')
                 );
                 
-                setPreviewImg(URL.createObjectURL(blob));
-
                 // Save file to Directory
                 // TODO: Add UI reactive elements to this request
-                var request = instance.post(
+                var request = await instance.post(
                     'api/ImageController/GetByteArray',
                     {
                         fileName: file?.name,
@@ -125,14 +125,19 @@ export default function CharacterPersonalAttributes ()
                         imageCategory: equipmentType,
                         transactionType: "upload"
                     }
-                )  
-            }
+                )
+                if (request.status == 200) {
+                    setImageLoading(false);
+                    setPreviewImg(window.URL.createObjectURL(blob));            }
+                }
         }
 
         // Retrieve File From File System
         else {
             console.log(fileName)
             console.log(equipmentType)
+            // Set a loading UI
+            setImageLoading(true);
             var fileName = fileName;
             if (fileName !== "") {
                 var request = await instance.post(
@@ -154,8 +159,12 @@ export default function CharacterPersonalAttributes ()
                     [uInt8ByteArray],
                     { type: "image/png" }
                 )
-                var objectURL = URL.createObjectURL(blob);
-                setPreviewImg(objectURL);
+
+                if (request.status == 200) {
+                    var objectURL = window.URL.createObjectURL(blob);
+                    setImageLoading(false);
+                    setPreviewImg(objectURL);
+                }
             }
         }
     }
@@ -406,6 +415,7 @@ export default function CharacterPersonalAttributes ()
             setPointer("general");
         }
         setPreviewImg("");
+        setImageLoading(false);
     }
 
     function resetBinary() {
@@ -478,7 +488,11 @@ export default function CharacterPersonalAttributes ()
     }, [equipmentValue])
 
     // Track Current Preview Image
-    useEffect(() => {URL.revokeObjectURL(previewImg)}, [previewImg])
+    useEffect(() => {
+        return () => {
+            window.URL.revokeObjectURL(previewImg);
+        }
+    }, [previewImg])
 
     return (
         <>
@@ -768,69 +782,69 @@ export default function CharacterPersonalAttributes ()
                             ) }
 
                             { pointer != "armor/accessory" && pointer != "weapon/mainhand" && pointer != "weapon/offhand" && (
-                            <Box className='flex flex-col gap-2 items-center'>
-                            <FormControl>
-                                <FormLabel sx= {{ 
-                                    fontWeight: 'bold', 
-                                    color: 'antiquewhite',
-                                    fontFamily: 'PixelFont',
-                                    marginTop: 
-                                        pointer.indexOf("armor/accessory") != -1 
-                                        || pointer.indexOf("weapon/") != -1 
-                                        ? "2vh" : "" 
-                                }}>
-                                            {inventoryText}'s Description
-                                </FormLabel>
-                                <Textarea
-                                    variant='soft'
-                                    placeholder="Type in here…"
-                                    value={equipmentValue[1]}
-                                    onChange={(event) => {
-                                        setEquipmentValue([equipmentValue[0], event.target.value, equipmentValue[2]]);
-                                        if (pointer.split("/")[2] != "new" && pointer.split("/")[2] != "edit") {
-                                            StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value, equipmentValue[2]]));
-                                        } else if (pointer.split("/")[2] == "edit") {
-                                            trackAccessoryWeaponChange();
-                                        }
-                                    }}
-                                    minRows={2}
-                                    maxRows={4}
-                                    startDecorator = {
-                                        <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
-                                            <Hint props = 'gear' />
-                                        </Box>
-                                    }
-                                    endDecorator = {
-                                        <Typography level="body-xs" sx={{ ml: 'auto', color: 'black', fontFamily: 'PixelFont' }}>
-                                        {equipmentValue[1]?.length} character(s)
-                                        </Typography>
-                                    }
-                                    sx={{ 
+                            <Box className='flex flex-col gap-2 items-center justify-center'>
+                                <FormControl>
+                                    <FormLabel sx= {{ 
+                                        fontWeight: 'bold', 
+                                        color: 'antiquewhite',
                                         fontFamily: 'PixelFont',
-                                        '--Textarea-focusedThickness': '0px',
-                                        minWidth: 350, height: 280, 
-                                        backgroundColor: 'antiquewhite', 
-                                        color: "black",
-                                        backgroundImage: 'url("/assets/pixilframe.png")',
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundSize: '800px',
-                                        backgroundPosition: 'center'
-                                    }}
-                                />
-                            </FormControl>
+                                        marginTop: 
+                                            pointer.indexOf("armor/accessory") != -1 
+                                            || pointer.indexOf("weapon/") != -1 
+                                            ? "2vh" : "" 
+                                    }}>
+                                                {inventoryText}'s Description
+                                    </FormLabel>
+                                    <Textarea
+                                        variant='soft'
+                                        placeholder="Type in here…"
+                                        value={equipmentValue[1]}
+                                        onChange={(event) => {
+                                            setEquipmentValue([equipmentValue[0], event.target.value, equipmentValue[2]]);
+                                            if (pointer.split("/")[2] != "new" && pointer.split("/")[2] != "edit") {
+                                                StoreCharText("/attributes/equipment", event.target.value, handleEquipmentChange(inventoryText, [equipmentValue[0], event.target.value, equipmentValue[2]]));
+                                            } else if (pointer.split("/")[2] == "edit") {
+                                                trackAccessoryWeaponChange();
+                                            }
+                                        }}
+                                        minRows={2}
+                                        maxRows={4}
+                                        startDecorator = {
+                                            <Box sx={{ display: 'flex', gap: 0.5, flex: 1 }}>
+                                                <Hint props = 'gear' />
+                                            </Box>
+                                        }
+                                        endDecorator = {
+                                            <Typography level="body-xs" sx={{ ml: 'auto', color: 'black', fontFamily: 'PixelFont' }}>
+                                            {equipmentValue[1]?.length} character(s)
+                                            </Typography>
+                                        }
+                                        sx={{ 
+                                            fontFamily: 'PixelFont',
+                                            '--Textarea-focusedThickness': '0px',
+                                            minWidth: 350, height: 280, 
+                                            backgroundColor: 'antiquewhite', 
+                                            color: "black",
+                                            backgroundImage: 'url("/assets/pixilframe.png")',
+                                            backgroundRepeat: 'no-repeat',
+                                            backgroundSize: '800px',
+                                            backgroundPosition: 'center'
+                                        }}
+                                    />
+                                </FormControl>
 
-                            { pointer.split("/")[2] == "edit" && (
+                                { pointer.split("/")[2] == "edit" && (
                                 <Box className='flex flex-row gap-8'>
-                                <IconButton 
-                                    variant='soft' 
-                                    color='danger'
-                                    onClick={() => { 
-                                        setModalOpen(true);
-                                        setModalText("Are you sure you want to delete this accessory?");
-                                    }
-                                }>
-                                    <DeleteIcon />
-                                </IconButton>
+                                    <IconButton 
+                                        variant='soft' 
+                                        color='danger'
+                                        onClick={() => { 
+                                            setModalOpen(true);
+                                            setModalText("Are you sure you want to delete this accessory?");
+                                        }
+                                    }>
+                                        <DeleteIcon />
+                                    </IconButton>
 
                                 { saveButton != "hidden" && (
                                     <Button 
@@ -850,9 +864,8 @@ export default function CharacterPersonalAttributes ()
                                 </Box>
                             )}             
                             
-                            <Box className='translate-y-[1vh]'>
                                 <Box
-                                    className={previewImg === "" ? `border-2 border-dashed rounded-lg text-center max-w-[15vw] p-4` : "max-w-[15vw]"}
+                                    className={`flex flex-row items-start justify-center translate-y-[1vh] ${previewImg === "" ? "border-2 border-dashed rounded-lg text-center max-w-[15vw] p-4" : "max-w-[15vw]"}`}
                                     onDragOver={(e) => {
                                         e.preventDefault();
                                     }}
@@ -867,15 +880,11 @@ export default function CharacterPersonalAttributes ()
                                             return;
                                         }
                                         
-                                        // @ts-expect-error
-                                        // Modify C# to create new directory with file data from React
-                                        const filePath = window.electronAPI.getFilePath(file);
-
                                         // Update React State
                                         setEquipmentValue((oldArr) => {
                                             var newArr = Array.from(oldArr);
                                             newArr[newArr.length - 1] = file.name;
-   
+
                                             // Save and Preview Image
                                             previewImage({fileName: file.name, equipmentType: equipmentType}, file);
 
@@ -891,21 +900,42 @@ export default function CharacterPersonalAttributes ()
                                         }; 
                                     }}
                                 >
+                                    {previewImg === "" && !imageLoading && (
                                     <Typography
-                                        sx= {{ color: 'antiquewhite', fontFamily: 'PixelFont' }}>
-                                        {previewImg == "" ? "Drag and drop an image here" : ""}
+                                        sx= {{ color: 'antiquewhite', fontFamily: 'PixelFont' }}
+                                    >
+                                        Drag and drop an image here
                                     </Typography>
-                                    <Box className=''>
-                                        {previewImg !== "" && (
-                                            <img 
-                                                src={previewImg} 
-                                                className='max-w-[300px] max-h-[300px] w-auto h-auto' 
-                                                onChange={() =>{}}                                           
-                                            />
-                                        )}
+                                    )}
+
+                                    {(previewImg?.length === 63) && (
+                                    <Box className='flex flex-row gap-2 items-center'>
+                                        <img 
+                                            src={previewImg} 
+                                            className='max-w-[250px] max-h-[250px] w-auto h-auto object-contain' 
+
+                                        />
+                                        <IconButton 
+                                            className="max-h-[10px]"
+                                            variant="soft"
+                                            color='warning'
+                                            sx = {{ outline: 'none !important' }}
+                                            onClick={() => { 
+                                                setModalOpen(true);
+                                                setModalText("Are you sure you want to remove this image?");
+                                            }
+                                        }
+
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
                                     </Box>
+                                    )}
+
+                                    {imageLoading && (
+                                    <CircularProgress color='info' />
+                                    )}
                                 </Box>                            
-                            </Box>
                             </Box>
                         ) }
                     </div>
