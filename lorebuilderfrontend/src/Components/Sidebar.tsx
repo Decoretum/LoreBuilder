@@ -1,6 +1,6 @@
 import Drawer from '@mui/joy/Drawer';
 import Button from '@mui/joy/Button';
-import { Box, Divider, Grid, List, ListItem, ListItemButton, Typography } from '@mui/joy';
+import { Box, Divider, List, ListItem, Typography } from '@mui/joy';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ export function Sidebar () {
             >
                 <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
                     <List>
-                        {[{text: 'Home', art: '/assets/gaelmade/pixil-house.png'}, {text: 'Create Character'}, {text:'Send email'}, {text: 'Drafts'}].map((obj) => (
+                        {[{text: 'Home', art: './assets/gaelmade/pixil-house.png'}, {text: 'Create Character'}, {text:'Send email'}, {text: 'Drafts'}].map((obj) => (
                             
                         <Link 
                             to={obj.text === 'Create Character' ? 'characters/creation/origins' : 

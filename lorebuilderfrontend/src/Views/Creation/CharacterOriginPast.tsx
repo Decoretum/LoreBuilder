@@ -50,7 +50,7 @@ export default function CharacterOriginPast () {
             <Box className='container-div-past'>
                     {/* The images and textareas */}
                     <Box className='flex flex-row items-center p-8'>
-                        <img src='/past2gif.gif' width={400} height={200} className='m-auto mr-8 grid rounded-md' />                
+                        <img src='./past2gif.gif' width={400} height={200} className='m-auto mr-8 grid rounded-md' />                
                         <Box sx={{
                             width: '50%',
                             height: '57%',

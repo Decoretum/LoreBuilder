@@ -19,8 +19,6 @@ export function Characters () {
     return (
         <>
             <div className='container-div-background'>
-                {/* <img src='/cozybackground_upscaled.png' width = {1000} height = {800} className='z-1 fixed' /> */}
-
                 <Box sx={{
                     width: '100%',
                     maxWidth: 500,
@@ -36,7 +34,7 @@ export function Characters () {
                                 >
                                     <Link to='/characters/creation/origins'>
                                         <Box className='p-2 bg-white w-[8vw] rounded-lg m-auto p-6'>
-                                            <img src='/book.gif' width={50} height={50} className='m-auto' />
+                                            <img src='./book.gif' width={50} height={50} className='m-auto' />
                                         </Box>
                                         <Box className='mt-[5vh]'>
                                             <Typography level='body-lg' variant='plain' sx = {{ color: 'black', fontFamily: 'PixelFont' }}> No Characters present. Build your first character! </Typography>

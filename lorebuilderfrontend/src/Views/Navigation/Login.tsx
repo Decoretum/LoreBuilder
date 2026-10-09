@@ -22,7 +22,7 @@ export function Login () {
     return (
         <>
             <div className='container-div'>
-                <img src = "/vg.jpeg" width = {500} height = {300} className='fixed m-auto l-50% r-%50' />
+                <img src = "./vg.jpeg" width = {500} height = {300} className='fixed m-auto l-50% r-%50' />
                 <Card variant={'soft'} className="relative">
                     <Typography level='title-lg'> Sign up </Typography> 
                     <Stack direction='column' spacing={2}>

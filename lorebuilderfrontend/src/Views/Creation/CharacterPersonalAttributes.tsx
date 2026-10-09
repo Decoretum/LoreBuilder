@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import{ equipmentObject } from "../../Controllers/StoreCharText.tsx"
 import { WeaponContainer } from "../../Components/Widgets/WeaponContainer.tsx";
 import { AccessoryContainer } from "../../Components/Widgets/AccessoryContainer.tsx";
-import fs from 'fs';
 import store from '../../Redux/store.tsx'
 import Hint from '../../Components/Hint.tsx'
 import StoreCharText from '../../Controllers/StoreCharText.tsx'
@@ -126,7 +125,9 @@ export default function CharacterPersonalAttributes ()
                         transactionType: "upload"
                     }
                 )
+                
                 if (request.status == 200) {
+                    console.log("Backend FS Operation Complete")
                     setImageLoading(false);
                     setPreviewImg(window.URL.createObjectURL(blob));            }
                 }
@@ -159,9 +160,9 @@ export default function CharacterPersonalAttributes ()
                     [uInt8ByteArray],
                     { type: "image/png" }
                 )
-
                 if (request.status == 200) {
                     var objectURL = window.URL.createObjectURL(blob);
+                    console.log("ObjectURL after retrieving from C#: " + objectURL)
                     setImageLoading(false);
                     setPreviewImg(objectURL);
                 }
@@ -265,7 +266,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/helm":
                 setPointer(img); 
                 setInventoryText("Helmet");
-                setImg(`/attributes/${img.substring(6)}.png`);
+                setImg(`./attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.headGear;
                 setEquipmentType("headGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
@@ -274,7 +275,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/leftarm":
                 setPointer(img);
                 setInventoryText("Left Armwear");
-                setImg(`/attributes/glove.png`);
+                setImg(`./attributes/glove.png`);
                 var storeData = store.getState().char.attributes.equipment.leftArmGear;
                 setEquipmentType("leftArmGear");
                 previewImage({fileName: storeData[2], equipmentType : "leftArmGear"});                
@@ -282,7 +283,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/rightarm":
                 setPointer(img);
                 setInventoryText("Right Armwear");
-                setImg(`/attributes/glove.png`);
+                setImg(`./attributes/glove.png`);
                 var storeData = store.getState().char.attributes.equipment.rightArmGear;
                 setEquipmentType("rightArmGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
@@ -291,7 +292,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/backwear":
                 setPointer("armor/backwear");
                 setInventoryText("Backwear");
-                setImg(`/attributes/${img.substring(6)}.png`);
+                setImg(`./attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.backGear;
                 setEquipmentType("backGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
@@ -300,7 +301,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/chest":
                 setPointer("armor/chest");
                 setInventoryText("Chestwear");
-                setImg(`/attributes/${img.substring(6)}.png`);
+                setImg(`./attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.chestGear;
                 setEquipmentType("chestGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
@@ -309,7 +310,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/leggings":
                 setPointer("armor/leggings");
                 setInventoryText("Legwear");
-                setImg(`/attributes/${img.substring(6)}.png`);
+                setImg(`./attributes/${img.substring(6)}.png`);
                 var storeData = store.getState().char.attributes.equipment.leggingGear;
                 setEquipmentType("leggingGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
@@ -318,7 +319,7 @@ export default function CharacterPersonalAttributes ()
             case "armor/foot":
                 setPointer("armor/foot");
                 setInventoryText("Footwear");
-                setImg(`/attributes/boots/37.png`);
+                setImg(`./attributes/boots/37.png`);
                 var storeData = store.getState().char.attributes.equipment.footGear;
                 setEquipmentType("footGear");
                 setEquipmentValue([storeData[0], storeData[1], storeData[2]]);
@@ -341,7 +342,7 @@ export default function CharacterPersonalAttributes ()
                     setAccessory(merged);
     
                     // Right Pane: 
-                    setImg(`/attributes/${img.substring(6)}.png`);
+                    setImg(`./attributes/${img.substring(6)}.png`);
 
                     previewImage(storeData[2]);
                 }
@@ -370,7 +371,7 @@ export default function CharacterPersonalAttributes ()
                     setWeapon(merged);
     
                     // Right Pane: 
-                    setImg(`/attributes/${img.substring(6)}.png`);
+                    setImg(`./attributes/${img.substring(6)}.png`);
                 }
                 break;
         }
@@ -511,7 +512,7 @@ export default function CharacterPersonalAttributes ()
                                     <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                         <ArrowBackIcon />
                                     </Button>
-                                    <img src='/attributes/backpack2.png' width = {90} className='ml-[1vw]' />
+                                    <img src='./attributes/backpack2.png' width = {90} className='ml-[1vw]' />
                                     <Typography variant="plain" level='h2' 
                                     sx= {{ 
                                         fontFamily: 'PixelFont',
@@ -542,7 +543,7 @@ export default function CharacterPersonalAttributes ()
                                 { pointer.indexOf("armor/") != -1 && pointer.indexOf("armor/accessory") == -1 ?
                                 ( 
                                 <>
-                                    <img src='/attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
+                                    <img src='./attributes/cf2.png' width = {400} className='rounded-md absolute z-0' />
                                     <Box className='flex flex-col items-center gap-5'>
                                         <img src={img} width = {100} className='z-10' />
                                         <Input size='lg' variant='plain' 
@@ -582,22 +583,22 @@ export default function CharacterPersonalAttributes ()
                                     {/* Overview of Gears */}
                                     {/* left gauntlet, cape */}
                                     <Box className='flex flex-col ml-[1vw] mt-[15vh]'>
-                                        <img src='/attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leftarm")}} />
-                                        <img src='/attributes/backwear.png' width = {80} className='cursor-pointer rounded-md z-10 ml-[0.5vw]' onClick={() => {clickImage("armor/backwear")}} />
+                                        <img src='./attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leftarm")}} />
+                                        <img src='./attributes/backwear.png' width = {80} className='cursor-pointer rounded-md z-10 ml-[0.5vw]' onClick={() => {clickImage("armor/backwear")}} />
                                     </Box>
 
                                     {/* helmet, armor, leggings, boots */}
                                     <Box className='flex flex-col ml-[1vw]'>
-                                        <img src='/attributes/helm.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/helm")}} />
-                                        <img src='/attributes/chest.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/chest")}} />
-                                        <img src='/attributes/leggings.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leggings")}} />
-                                        <img src='/attributes/boots/37.png' width = {70} className='z-10 ml-[1vw] mt-[1vh] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
+                                        <img src='./attributes/helm.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/helm")}} />
+                                        <img src='./attributes/chest.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/chest")}} />
+                                        <img src='./attributes/leggings.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leggings")}} />
+                                        <img src='./attributes/boots/37.png' width = {70} className='z-10 ml-[1vw] mt-[1vh] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
                                     </Box>
 
                                     {/* right gauntlet, accessories */}
                                     <Box className='flex flex-col mt-[15vh] ml-[1vw]'>
-                                        <img src='/attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/rightarm")}} />
-                                        <img src='/attributes/ring.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/ring")}} />
+                                        <img src='./attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/rightarm")}} />
+                                        <img src='./attributes/ring.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/ring")}} />
                                     </Box>
                                 </>
                                 ) : 
@@ -619,7 +620,7 @@ export default function CharacterPersonalAttributes ()
                                             <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                                 <ArrowBackIcon />
                                             </Button>
-                                            <img src='/attributes/backpack2.png' width = {90} className='ml-[1vw]' />
+                                            <img src='./attributes/backpack2.png' width = {90} className='ml-[1vw]' />
                                             <Typography variant="plain" level='h2' 
                                             sx= {{ 
                                                 fontFamily: 'PixelFont',
@@ -664,7 +665,7 @@ export default function CharacterPersonalAttributes ()
                                         <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                             <ArrowBackIcon />
                                         </Button>
-                                        <img src='/attributes/weapons/celestialsword.png' width = {60} className='ml-[2vw] rounded-lg' />
+                                        <img src='./attributes/weapons/celestialsword.png' width = {60} className='ml-[2vw] rounded-lg' />
                                         <Typography variant="plain" level='h2' 
                                         sx= {{ 
                                             fontFamily: 'PixelFont',
@@ -689,7 +690,7 @@ export default function CharacterPersonalAttributes ()
                                         <Box className='flex flex-col gap-2 items-center cursor-pointer'
                                             onClick={() => clickImage("weapon/mainhand")}
                                         >
-                                        <img src='/attributes/weapons/scepter.jpg' width = {90} className='rounded-lg bg-[#F5DD90]' />
+                                        <img src='./attributes/weapons/scepter.jpg' width = {90} className='rounded-lg bg-[#F5DD90]' />
                                             <Typography variant='plain' level='h4'
                                                 sx= {{
                                                     fontFamily: 'PixelFont',
@@ -702,7 +703,7 @@ export default function CharacterPersonalAttributes ()
                                         <Box className='flex flex-col gap-2 items-center cursor-pointer'
                                             onClick={() => clickImage("weapon/offhand")}
                                         >
-                                            <img src='/attributes/weapons/shield.png' width = {90} className='rounded-lg' />
+                                            <img src='./attributes/weapons/shield.png' width = {90} className='rounded-lg' />
                                             <Typography variant='plain' level='h4'
                                                 sx= {{
                                                     fontFamily: 'PixelFont',
@@ -736,7 +737,7 @@ export default function CharacterPersonalAttributes ()
                                             </Box>
                                         </Box>
                                         <Box className='m-auto'>
-                                            <img src='/attributes/armor.png' onClick = {() => setPointer('armor')}  className='cursor-pointer h-[100px]' />
+                                            <img src='./attributes/armor.png' onClick = {() => setPointer('armor')}  className='cursor-pointer h-[100px]' />
                                         </Box>
                                     </Box>
 
@@ -749,7 +750,7 @@ export default function CharacterPersonalAttributes ()
                                             </Box>
                                         </Box>
                                         <Box className='m-auto'>
-                                            <img src='/attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")}  className='-rotate-90 cursor-pointer h-[40px]' />
+                                            <img src='./attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")}  className='-rotate-90 cursor-pointer h-[40px]' />
                                         </Box>
                                     </Box>
                                 </Box>
@@ -825,7 +826,7 @@ export default function CharacterPersonalAttributes ()
                                             minWidth: 350, height: 280, 
                                             backgroundColor: 'antiquewhite', 
                                             color: "black",
-                                            backgroundImage: 'url("/assets/pixilframe.png")',
+                                            backgroundImage: 'url("./assets/pixilframe.png")',
                                             backgroundRepeat: 'no-repeat',
                                             backgroundSize: '800px',
                                             backgroundPosition: 'center'
@@ -908,12 +909,11 @@ export default function CharacterPersonalAttributes ()
                                     </Typography>
                                     )}
 
-                                    {(previewImg?.length === 63) && (
+                                    {previewImg && (
                                     <Box className='flex flex-row gap-2 items-center'>
                                         <img 
                                             src={previewImg} 
                                             className='max-w-[250px] max-h-[250px] w-auto h-auto object-contain' 
-
                                         />
                                         <IconButton 
                                             className="max-h-[10px]"

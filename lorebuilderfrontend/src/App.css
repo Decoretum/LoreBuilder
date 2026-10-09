@@ -80,7 +80,7 @@
 
 .longer-frame {
   display: flex;
-  background-image: url('/assets/gaelmade/pixilframe.png');
+  background-image: url('../assets/gaelmade/pixilframe.png');
   background-size: 430px;
   background-repeat: no-repeat;
   background-position: center;
@@ -95,7 +95,7 @@
 
 .frame {
   display: flex;
-  background-image: url('/assets/gaelmade/pixilframe.png');
+  background-image: url('../assets/gaelmade/pixilframe.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -124,7 +124,7 @@ justify-content: center;
   justify-content: center;
   align-self: center;
   border-radius: 20px;
-  background-image: url('/backgrounds/gamingbackground.gif');
+  background-image: url('../backgrounds/gamingbackground.gif');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -139,7 +139,7 @@ justify-content: center;
     align-items: center;
     justify-content: center;
     border-radius: 20px;
-    background-image: url('/cozybackground_upscaled.png');
+    background-image: url('../cozybackground_upscaled.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -154,7 +154,7 @@ justify-content: center;
       height: 110vh;
       width: 90vw; 
       border-radius: 20px;
-      background-image: url('/cozybackground_upscaled.png');
+      background-image: url('../cozybackground_upscaled.png');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -167,7 +167,7 @@ justify-content: center;
       height: 110vh;
       width: 90vw; 
       border-radius: 20px;
-      background-image: url('/forestbackground_upscaled.png');
+      background-image: url('../forestbackground_upscaled.png');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -180,7 +180,7 @@ justify-content: center;
         height: 110vh;
         width: 90vw; 
         border-radius: 20px;
-        background-image: url('/flowyview.gif');
+        background-image: url('../flowyview.gif');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
