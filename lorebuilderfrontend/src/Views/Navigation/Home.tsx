@@ -16,7 +16,7 @@ export function Home () {
                     <Box className='flex flex-row gap-8'>
                         <Link to='/characters' className='font-normal'>
                             <Card variant='soft' className='w-full flex'>
-                                <img src='/priest.png' width={50} height={50} className='m-auto l-50% r-%50' />
+                                <img src='./priest.png' width={50} height={50} className='m-auto l-50% r-%50' />
                                 <Box className='w-full'>
                                     <Typography level='body-md' sx= {{fontFamily: 'PixelFont'}}> Build your Character </Typography>
                                 </Box>
@@ -24,7 +24,7 @@ export function Home () {
                         </Link>
                         
                         <Card variant='outlined'>
-                            <img src='/feather.png' width={50} height={50} className='m-auto l-50% r-%50' />
+                            <img src='./feather.png' width={50} height={50} className='m-auto l-50% r-%50' />
                             <Typography level='body-md' sx= {{fontFamily: 'PixelFont'}}> Personal Notes </Typography>
                         </Card>
                     </Box>

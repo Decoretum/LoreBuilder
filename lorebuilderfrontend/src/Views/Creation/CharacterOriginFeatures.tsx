@@ -28,10 +28,9 @@ export default function CharacterOriginFeatures () {
     const [binary, setBinary] = useState(0);
 
     // Image settings
-    const [img, setImg] = useState('/skills.png')
+    const [img, setImg] = useState('./skills.png')
     const [width, setWidth] = useState(400);
     const [height, setHeight] = useState(200);
-    const [imgLoading, setImageLoading] = useState(true)
 
     // Arrow group
     const [arrowHeight, setArrowHeight] = useState(5);
@@ -42,10 +41,6 @@ export default function CharacterOriginFeatures () {
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
 ]
-
-    function imageLoad() {
-        setImageLoading(true);
-    }
     
     function changeImage(event : SyntheticEvent) {
         // @ts-expect-error
@@ -55,7 +50,7 @@ export default function CharacterOriginFeatures () {
         // @ts-expect-error    
         imgName = event.target.parentElement.getAttribute('data-value');
   
-        setImg(imgName);
+        setImg(`.${imgName}`);
 
         if (imgName === '/skills.png') {
             setWidth(400);
@@ -109,7 +104,7 @@ export default function CharacterOriginFeatures () {
                     {/* The images and textareas */}
                     <Box className='flex flex-row p-8 items-center justify-center' sx = {{ minHeight: 600 }}>
                         <Box className='ml-20' sx = {{ width: 400 }}>
-                            <img onLoad={imageLoad} src={img} width={width} height={height} className={`m-auto mr-8 grid rounded-md`} />                
+                            <img src={img} width={width} height={height} className={`m-auto mr-8 grid rounded-md`} />                
                         </Box>
                         
                         <Tabs

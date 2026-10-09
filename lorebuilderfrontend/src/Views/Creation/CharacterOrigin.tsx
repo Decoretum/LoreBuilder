@@ -47,7 +47,7 @@ export default function CharacterOrigin () {
             <Box className='container-div-past'>
                     {/* The images and textareas */}
                     <Box className='flex flex-row items-center p-8'>
-                        <img src='/characterorigin.gif' width={330} height={300} className='m-auto mr-11 grid rounded-md' />                
+                        <img src='./characterorigin.gif' width={330} height={300} className='m-auto mr-11 grid rounded-md' />                
                         <Box sx={{
                             width: '50%',
                             height: '57%',

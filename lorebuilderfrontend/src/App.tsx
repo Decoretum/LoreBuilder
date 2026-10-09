@@ -1,9 +1,8 @@
 import './App.css'
 import './index.css'
 
-import React from 'react';
 // import Header from './components/Header';
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {HashRouter as Router, Routes, Route} from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Login } from './Views/Navigation/Login.tsx'
 import { Home } from './Views/Navigation/Home.tsx'

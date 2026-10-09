@@ -5,7 +5,9 @@ const fs = require("fs");
 function createWindow() {
     const win = new BrowserWindow({
             width: 1280,
+            minWidth: 1280,
             height: 800,
+            minHeight: 800,
             webPreferences: {
                 preload: path.join(__dirname, "preload.cjs"),
                 contextIsolation: true,
@@ -22,7 +24,16 @@ function createWindow() {
         return { action: 'deny' };
     })
 
-    win.loadURL('http://localhost:5173');
+    if (app.isPackaged) {
+        win.loadFile(
+            path.join(__dirname, "../dist/index.html")
+        );
+    } else {
+        win.loadURL('http://localhost:5173');
+    }
+
+    // Enable this for Dev Tools
+    // win.webContents.openDevTools();
 }
 
 app.whenReady().then(() => {
