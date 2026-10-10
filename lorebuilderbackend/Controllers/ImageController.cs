@@ -12,15 +12,26 @@ public class ImageController
     {
         var parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
         var userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
+        string stringResult;
 
         if (dto.transactionType == "upload") {
-            Console.WriteLine($"Received file byte array: {dto.fileName}");
+            stringResult = "";
+
+            // Check first if current directory has existing file
+            var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{dto.imageCategory}\\";
+            var directoryFiles = Directory.GetFiles(chosenEquipmentDirectory);
+
+            // There is an existing file for the equipment
+            if (directoryFiles.Length == 1) {
+                var oldFileName = directoryFiles[0];
+                File.Delete(directoryFiles[0]);
+                stringResult = oldFileName;
+            }
             var file = Convert.FromBase64String(dto.fileData);
             File.WriteAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}", file);
-            return "";
         } else {
-            var file = Convert.ToBase64String(File.ReadAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}"));
-            return file;
+            stringResult = Convert.ToBase64String(File.ReadAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}"));
         }
+        return stringResult;
     }
 }

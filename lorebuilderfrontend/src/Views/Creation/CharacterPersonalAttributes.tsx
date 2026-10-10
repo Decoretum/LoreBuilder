@@ -162,7 +162,6 @@ export default function CharacterPersonalAttributes ()
                 )
                 if (request.status == 200) {
                     var objectURL = window.URL.createObjectURL(blob);
-                    console.log("ObjectURL after retrieving from C#: " + objectURL)
                     setImageLoading(false);
                     setPreviewImg(objectURL);
                 }
