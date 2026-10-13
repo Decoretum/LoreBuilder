@@ -23,6 +23,7 @@ import WeaponTestMainhand from "../../Test/WeaponTestMainhand.tsx";
 import WeaponTestOffhand from "../../Test/WeaponTestOffhand.tsx";
 import { instance } from "../../Services/AxiosInstance.tsx";
 import { CircularProgress } from "@mui/material";
+import { AxiosResponse } from "axios";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -48,6 +49,7 @@ export default function CharacterPersonalAttributes ()
     const [img, setImg] = useState("");
     const [previewImg, setPreviewImg] = useState("");
     const [imageLoading ,setImageLoading] = useState(false);
+    const [imgUInt8bArray, setImgUInt8bArray] = useState(new Uint8Array());
 
     // General 
     // uuid, name, description, imagePath
@@ -93,64 +95,45 @@ export default function CharacterPersonalAttributes ()
         }
     }
 
-    async function previewImage({fileName, equipmentType} : {fileName: string, equipmentType: string}, file?: File) {
-        if (fileName == "" || fileName == undefined) return;
+    function uploadImage(file: File, equipmentType: string, b64encode: string, blob: Blob) {
+        setImageLoading(true);
+        
+        // Save file to Directory
+        // TODO: Add UI reactive elements to this request
+        var request = instance.post(
+            'api/ImageController/GetByteArray',
+            {
+                fileName: file?.name,
+                fileData: b64encode,
+                imageCategory: equipmentType,
+                transactionType: "upload"
+            }
+        )
+        
+        request.then((res: AxiosResponse) =>  {
+            console.log("Backend FS Operation Complete")
+            setImageLoading(false);
+            setPreviewImg(window.URL.createObjectURL(blob));            
+        })
+        
+    }
 
-        // Upload and Save File
-        if (file !== undefined) {
-            setImageLoading(true);
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file);
-            var byteArray : Uint8Array | undefined;;
-            reader.onloadend = async (event: ProgressEvent<FileReader>) => {
-                byteArray = new Uint8Array(event.target?.result as ArrayBuffer);
-                var blob = new Blob(
-                    [byteArray],
-                    { type: "image/png" }
-                )
+    function extractImage(fileName: string, imageCategory: string) {
+        // setImageLoading(true);
 
-                // Convert byte array to base 64 string
-                var b64encode = window.btoa(
-                    Array.from(byteArray, (n: number) => {return String.fromCharCode(n)}).join('')
-                );
-                
-                // Save file to Directory
-                // TODO: Add UI reactive elements to this request
-                var request = await instance.post(
-                    'api/ImageController/GetByteArray',
-                    {
-                        fileName: file?.name,
-                        fileData: b64encode,
-                        imageCategory: equipmentType,
-                        transactionType: "upload"
-                    }
-                )
-                
-                if (request.status == 200) {
-                    console.log("Backend FS Operation Complete")
-                    setImageLoading(false);
-                    setPreviewImg(window.URL.createObjectURL(blob));            }
-                }
-        }
+        var request = instance.post(
+            "/api/ImageController/GetByteArray",
+            {
+                transactionType: "retrieve",
+                fileName: fileName,
+                fileData: "",
+                imageCategory: imageCategory
+            }
+        );
 
-        // Retrieve File From File System
-        else {
-            console.log(fileName)
-            console.log(equipmentType)
-            // Set a loading UI
-            setImageLoading(true);
-            var fileName = fileName;
-            if (fileName !== "") {
-                var request = await instance.post(
-                    'api/ImageController/GetByteArray',
-                    {
-                        fileName: fileName,
-                        fileData: "",
-                        imageCategory: equipmentType,
-                        transactionType: "retrieve"
-                    }
-                )  
-                var byteCharacterString = window.atob(request.data as string);
+        request.then((res: AxiosResponse) => {
+            if (res.status == 200) {
+                var byteCharacterString = window.atob(res.data as string);
                 var uInt8ByteArray = new Uint8Array(byteCharacterString.length);
                 for (let i = 0; i <= uInt8ByteArray.length - 1; i++) {
                     uInt8ByteArray[i] = byteCharacterString.charCodeAt(i);
@@ -160,12 +143,51 @@ export default function CharacterPersonalAttributes ()
                     [uInt8ByteArray],
                     { type: "image/png" }
                 )
-                if (request.status == 200) {
-                    var objectURL = window.URL.createObjectURL(blob);
-                    setImageLoading(false);
-                    setPreviewImg(objectURL);
-                }
+
+                // setImageLoading(false);
+                setPreviewImg(window.URL.createObjectURL(blob));
             }
+        })
+    }
+
+    async function previewImage({fileName, equipmentType} : {fileName: string, equipmentType: string}, file?: File, creating?: boolean) {
+        if (fileName == "" || fileName == undefined) return;
+
+        // Upload and Save File
+        if (file !== undefined) {
+            setImageLoading(true);
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            var byteArray : Uint8Array | undefined;
+            reader.onloadend = async (event: ProgressEvent<FileReader>) => {
+                byteArray = new Uint8Array(event.target?.result as ArrayBuffer);
+                var blob = new Blob(
+                    [byteArray],
+                    { type: "image/png" }
+                )
+                if (creating !== undefined) {
+                    setImgUInt8bArray(byteArray);
+                    setImageLoading(false);
+                    setPreviewImg(window.URL.createObjectURL(blob));
+                    return;
+                }
+
+                // Convert byte array to base 64 string
+                var b64encode = window.btoa(
+                    Array.from(byteArray, (n: number) => {return String.fromCharCode(n)}).join('')
+                );
+
+                uploadImage(file, equipmentType, b64encode, blob);
+            }
+        }
+
+        // Retrieve File From File System
+        else {
+            console.log(fileName)
+            console.log(equipmentType)
+            // Set a loading UI
+            var fileName = fileName;
+            extractImage(fileName, equipmentType);
         }
     }
 
@@ -224,9 +246,37 @@ export default function CharacterPersonalAttributes ()
                     uuid = key;
                 }
             } 
+
+            if (equipmentValue[2] !== "") {
+                // Convert byte array to base 64 string
+                var b64encode = window.btoa(
+                    Array.from(imgUInt8bArray, (n: number) => {return String.fromCharCode(n)}).join('')
+                );
+                
+                // Save file to Directory
+                // TODO: Add UI reactive elements to this request
+                var request = instance.post(
+                    'api/ImageController/GetByteArray',
+                    {
+                        fileName: equipmentValue[2],
+                        fileData: b64encode,
+                        imageCategory: equipmentType,
+                        transactionType: "upload"
+                    }
+                )
+                
+                request.then((res) => {
+                    if (res.status == 200) {
+                        console.log("Accessory Image saved on Filesystem")
+                    }            
+                })    
+            }
+        
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             return newMap;
         })
+
+
         setEquipmentValue(["", "", ""]);
         return true;
     }
@@ -343,7 +393,7 @@ export default function CharacterPersonalAttributes ()
                     // Right Pane: 
                     setImg(`./attributes/${img.substring(6)}.png`);
 
-                    previewImage(storeData[2]);
+                    previewImage({fileName: storeData[2], equipmentType: "accessories"});
                 }
                 break;
             case "weapon/offhand":
@@ -444,8 +494,6 @@ export default function CharacterPersonalAttributes ()
     }, [])
 
     useEffect(() => {
-        // console.log("Current Pointer: " + pointer)
-        // console.log("Current Equipment Data: " + equipmentValue);
         if (pointer.indexOf("armor/") != -1 || pointer.indexOf("weapon/") != -1) {
             if (pointer.split("/").length >= 2 && pointer.split("/")[1] == "accessory") {
                 setViewingAccessory(true);
@@ -457,11 +505,14 @@ export default function CharacterPersonalAttributes ()
             
             if (pointer.split("/")[2] == "new") {
                 setEquipmentValue(["", "", ""]);
+                setPreviewImg("");
             }
             setRightPaneHidden(false);
         } else {
             setRightPaneHidden(true);
         }
+
+        
     }, [pointer])
     
     // Track current accessory selected
@@ -469,7 +520,15 @@ export default function CharacterPersonalAttributes ()
         if (accessory.size > 0) {
             var acc : string[] = accessory.get(accessorySelected[0])!;
             setEquipmentValue([acc[0], acc[1], acc[2]]);
+            setImageLoading(true);
+
+            // Obtain Image
+            if (acc[2] !== "") extractImage(acc[2], "accessories");
+            else {
+                setImageLoading(false);
+                setPreviewImg("");
             }
+        }
     }, [accessorySelected])
 
     // Track current weapon (mainhand/offhand) selected
@@ -490,7 +549,7 @@ export default function CharacterPersonalAttributes ()
     // Track Current Preview Image
     useEffect(() => {
         return () => {
-            window.URL.revokeObjectURL(previewImg);
+            if (previewImg !== "") window.URL.revokeObjectURL(previewImg);
         }
     }, [previewImg])
 
@@ -885,15 +944,19 @@ export default function CharacterPersonalAttributes ()
                                             var newArr = Array.from(oldArr);
                                             newArr[newArr.length - 1] = file.name;
 
-                                            // Save and Preview Image
+                                            // Save and Preview Image based on equipment type
+                                            if (pointer.split("/").length === 3 && pointer.split("/")[2] === "new")
+                                            previewImage({fileName: file.name, equipmentType: equipmentType}, file, true);
+
+                                            else
                                             previewImage({fileName: file.name, equipmentType: equipmentType}, file);
 
                                             return newArr;
                                         });
                                         
                                         // Update Redux State
-                                        if (equipmentType == "accessories") saveAccessory(true);
-                                        else if (equipmentType == "mainhand") saveNewWeapon("mainhand");
+                                        // if (equipmentType == "accessories") saveAccessory(true);
+                                        if (equipmentType == "mainhand") saveNewWeapon("mainhand");
                                         else if (equipmentType == "offhand") saveNewWeapon("offhand");
                                         else { 
                                             StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], file.name]))
@@ -969,7 +1032,7 @@ export default function CharacterPersonalAttributes ()
                             <Typography> {modalText} </Typography>
                         </Sheet>
                         <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
-                            <IconButton variant='soft' onClick={() => {
+                            <IconButton variant='soft' onClick={async () => {
                                 if (modalText == `Are you sure you want to set your ${inventoryText}?`) {
                                     var bool : boolean | null = null; 
                                     var isAccessory : boolean = pointer.split("/")[1] == "accessory"; 
@@ -1011,10 +1074,21 @@ export default function CharacterPersonalAttributes ()
                                     else if (pointer.split("/")[1] == "accessory") {
                                         handlePointerChange("armor/accessory");
                                     }
-                                } else if (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
+                                } 
+                                else if (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
                                     handlePointerChange("armor/accessory");
                                     setToggled(false);
                                     deleteAccessory();
+                                }
+                                else if (modalText == "Are you sure you want to remove this image?") {
+                                    var deleteRequest = await instance.delete(
+                                        `api/ImageController/DeleteImage/${equipmentType}/${equipmentValue[2]}`,
+                                    );
+                                    if (deleteRequest.status == 200) {
+                                        setModalOpen(false);
+                                        setPreviewImg("");
+                                    }
+                                    StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], ""]))
                                 }
                                 else {
                                     // Saving changes

@@ -69,7 +69,7 @@ function handleClick (
         if (pointer == "armor/accessory/new") pointerFunction("armor/accessory");
         else pointerFunction("armor/accessory/new");
     } else {
-        if (toggled) {
+        if (toggled) { 
             console.log("Check your shit")
             return;
         } else {
