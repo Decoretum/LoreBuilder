@@ -15,9 +15,11 @@ public class ImageController
     public string extractFileByteArray([FromBody] ImageDTO dto) 
     {
         string stringResult;
+        string directoryPath;
 
         if (dto.transactionType == "upload") {
             stringResult = "";
+            directoryPath = "";
 
             // Check first if current directory has existing file
             var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{dto.imageCategory}\\";
@@ -28,9 +30,12 @@ public class ImageController
                 var oldFileName = directoryFiles[0];
                 File.Delete($"{oldFileName}");
                 stringResult = oldFileName.Split("\\")[oldFileName.Split("\\").Length - 1];
+                directoryPath = $"{chosenEquipmentDirectory}\\{dto.fileName}";
+            } else if (directoryFiles.Length > 1 && noReplacementImages.Contains(dto.imageCategory)) {
+                directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.fileName}";
             }
             var file = Convert.FromBase64String(dto.fileData);
-            File.WriteAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}", file);
+            File.WriteAllBytes(directoryPath, file);
         } else {
             stringResult = Convert.ToBase64String(File.ReadAllBytes($"{userEquipmentImageDirectory}\\{dto.imageCategory}\\{dto.fileName}"));
         }
