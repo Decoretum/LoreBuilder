@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace lorebuilderbackend.DTO;
 
 public class ImageDTO
@@ -6,4 +8,5 @@ public class ImageDTO
     public string fileName { get; set; }
     public string fileData { get; set; }
     public string imageCategory { get; set; }
+    [MaybeNull] public string uuid { get; set; }
 }

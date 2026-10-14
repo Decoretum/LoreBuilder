@@ -50,6 +50,7 @@ export default function CharacterPersonalAttributes ()
     const [previewImg, setPreviewImg] = useState("");
     const [imageLoading ,setImageLoading] = useState(false);
     const [imgUInt8bArray, setImgUInt8bArray] = useState(new Uint8Array());
+    const [imageDrop, setImageDrop] = useState<File | undefined>(undefined);
 
     // General 
     // uuid, name, description, imagePath
@@ -86,6 +87,22 @@ export default function CharacterPersonalAttributes ()
         setAlertText(alertText);
     }
 
+    function handleDrop(file: File) {
+        // Save and Preview Image based on equipment type
+        if (pointer.split("/").length === 3 && pointer.split("/")[2] === "new")
+        previewImage({fileName: file?.name, equipmentType: equipmentType}, file, true);
+
+        else
+        previewImage({fileName: file?.name, equipmentType: equipmentType}, file);
+
+        // Update Redux State
+        if (equipmentType == "mainhand") saveNewWeapon("mainhand");
+        else if (equipmentType == "offhand") saveNewWeapon("offhand");
+        else { 
+            StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], file?.name]))
+        }; 
+    }
+
     function handleEquipmentChange(equipmentType: string, equipmentValue: Array<string>, uuid?: string) : equipmentObject {
         return {
             equipmentType: EquipmentDictionary().get(equipmentType)!,
@@ -119,15 +136,14 @@ export default function CharacterPersonalAttributes ()
     }
 
     function extractImage(fileName: string, imageCategory: string) {
-        // setImageLoading(true);
-
         var request = instance.post(
             "/api/ImageController/GetByteArray",
             {
                 transactionType: "retrieve",
                 fileName: fileName,
                 fileData: "",
-                imageCategory: imageCategory
+                imageCategory: imageCategory,
+                uuid: equipmentValue[2];
             }
         );
 
@@ -165,11 +181,17 @@ export default function CharacterPersonalAttributes ()
                     [byteArray],
                     { type: "image/png" }
                 )
+
+                // Creating a new accessory
                 if (creating !== undefined) {
+                    console.log("Image for new Accessory")
                     setImgUInt8bArray(byteArray);
                     setImageLoading(false);
                     setPreviewImg(window.URL.createObjectURL(blob));
                     return;
+                } else if (pointer == "armor/accessory/edit") {
+                    console.log("Saving Accessory")
+                    saveAccessory(true);
                 }
 
                 // Convert byte array to base 64 string
@@ -237,7 +259,7 @@ export default function CharacterPersonalAttributes ()
         StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], equipmentValue[2]], edit ? accessorySelected[0] : "none"));        
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
-
+            
             // Fetch UUID
             const reduxMap : Map<string, string> = store.getState().char.attributes.equipment.accessories;
             let uuid = "";
@@ -277,7 +299,7 @@ export default function CharacterPersonalAttributes ()
         })
 
 
-        setEquipmentValue(["", "", ""]);
+        // setEquipmentValue(["", "", ""]);
         return true;
     }
 
@@ -521,6 +543,7 @@ export default function CharacterPersonalAttributes ()
             var acc : string[] = accessory.get(accessorySelected[0])!;
             setEquipmentValue([acc[0], acc[1], acc[2]]);
             setImageLoading(true);
+            console.log(acc)
 
             // Obtain Image
             if (acc[2] !== "") extractImage(acc[2], "accessories");
@@ -545,6 +568,13 @@ export default function CharacterPersonalAttributes ()
             trackAccessoryWeaponChange();
         }
     }, [equipmentValue])
+
+    // Listen to the Image Drop
+    useEffect(() => {
+        console.log(`Current Image Drop: ${imageDrop?.name}`)
+        console.log(`Current pointer: ${pointer}`)
+        handleDrop(imageDrop as File);
+    }, [imageDrop]);
 
     // Track Current Preview Image
     useEffect(() => {
@@ -930,7 +960,6 @@ export default function CharacterPersonalAttributes ()
                                     }}
                                     onDrop={(e) => {
                                         e.preventDefault();
-
                                         const file = e.dataTransfer.files[0];
 
                                         if (!file) return;
@@ -943,24 +972,10 @@ export default function CharacterPersonalAttributes ()
                                         setEquipmentValue((oldArr) => {
                                             var newArr = Array.from(oldArr);
                                             newArr[newArr.length - 1] = file.name;
-
-                                            // Save and Preview Image based on equipment type
-                                            if (pointer.split("/").length === 3 && pointer.split("/")[2] === "new")
-                                            previewImage({fileName: file.name, equipmentType: equipmentType}, file, true);
-
-                                            else
-                                            previewImage({fileName: file.name, equipmentType: equipmentType}, file);
-
                                             return newArr;
                                         });
                                         
-                                        // Update Redux State
-                                        // if (equipmentType == "accessories") saveAccessory(true);
-                                        if (equipmentType == "mainhand") saveNewWeapon("mainhand");
-                                        else if (equipmentType == "offhand") saveNewWeapon("offhand");
-                                        else { 
-                                            StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], file.name]))
-                                        }; 
+                                        setImageDrop(file);
                                     }}
                                 >
                                     {previewImg === "" && !imageLoading && (
