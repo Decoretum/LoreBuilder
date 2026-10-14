@@ -11,6 +11,21 @@ public class ImageController
     private static string userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
     private static string[] noReplacementImages = new string[]{ "accessories", "mainhand", "offhand" };
 
+    // keyWord = chestGear, rightArmGear, headGear 
+    public string checkIfFileExists(string[] directoryFiles, string keyWord) {
+        var resultArr = "";
+        for (int i = 0; i <= directoryFiles.Length - 1; i++) {
+            var filePrefix = directoryFiles[i].Split("\\")[^1].Split("_")[0];
+            if (filePrefix == keyWord)
+            {
+                resultArr = directoryFiles[i];
+                break;
+            }
+
+        }
+        return resultArr;
+    }
+
     [HttpPost("GetByteArray")]
     public string extractFileByteArray([FromBody] ImageDTO dto) 
     {
@@ -29,10 +44,15 @@ public class ImageController
             if (directoryFiles.Length == 1 && !noReplacementImages.Contains(dto.imageCategory)) {
                 var oldFileName = directoryFiles[0];
                 File.Delete($"{oldFileName}");
-                stringResult = oldFileName.Split("\\")[oldFileName.Split("\\").Length - 1];
+                stringResult = oldFileName.Split("\\")[^1];
                 directoryPath = $"{chosenEquipmentDirectory}\\{dto.fileName}";
             } else if (directoryFiles.Length > 1 && noReplacementImages.Contains(dto.imageCategory)) {
+                // Check if we're replacing a file
                 directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.fileName}";
+                var fileExists = checkIfFileExists(directoryFiles, dto.imageCategory);
+                if (fileExists != "") {
+                    File.Delete(fileExists);
+                }
             }
             var file = Convert.FromBase64String(dto.fileData);
             File.WriteAllBytes(directoryPath, file);
@@ -48,7 +68,7 @@ public class ImageController
         var stringResult = string.Empty;
         var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{imageCategory}\\";
         var directoryFilesArray = Directory.GetFiles(chosenEquipmentDirectory)[0].Split("\\");
-        var directoryFileName = directoryFilesArray[directoryFilesArray.Length - 1];
+        var directoryFileName = directoryFilesArray[^1];
 
         // Validate image
         var isCorrectFile = directoryFileName == imageFileName;
