@@ -99,6 +99,7 @@ export default function StoreCharText (textType : string, text : string, equipme
             break;
         
             // 4th Page
+            // text
         case "/attributes/equipment":
             if (equipmentObject != undefined) {
                 var uuid = equipmentObject.equipmentValue[0];
@@ -106,15 +107,12 @@ export default function StoreCharText (textType : string, text : string, equipme
                 var desc = equipmentObject.equipmentValue[2];
                 var imgPath = equipmentObject.equipmentValue[3] ?? null;
 
-                console.log(equipmentObject)
                 // Accessories
                 if (equipmentObject.equipmentType == "accessories") {
                     var hm : Map<string, Array<string>> = store.getState().char.attributes.equipment.accessories;
                     
                     if (uuid == "none") {
-                        var random = crypto.randomUUID();
-                        uuid = random;
-                        hm.set(uuid, [name, desc, imgPath]);
+                        hm.set(text, [name, desc, imgPath]);
                     } else {
                         // Adding and Editing
                         if (text == "edit")

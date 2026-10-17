@@ -7,11 +7,11 @@ export type stateTypeOrigins = {
     }
 
 type equipmentType = {
-    weaponMainHand: Array<string>, // array = [name, description, imagePath]
-    weaponOffHand: Array<string>, // array = [name, description, imagePath]
+    weaponMainHand: Array<string>, // array = [name, description, imagePath, uuid]
+    weaponOffHand: Array<string>, // array = [name, description, imagePath, uuid]
     leftArmGear: Array<string>, // array = [name, description, imagePath]
     rightArmGear: Array<string>, // array = [name, description, imagePath]
-    accessories: Array<object>, // Hashmap<id, [accessoryName, description, imagePath]>
+    accessories: Array<object>, // Hashmap<id, [accessoryName, description, imagePath, uuid]>
     headGear: Array<string>, // array = [name, description, imagePath]
     chestGear: Array<string>, // array = [name, description, imagePath]
     backGear: Array<string>, // array = [name, description, imagePath]
