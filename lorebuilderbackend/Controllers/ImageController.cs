@@ -28,7 +28,7 @@ public class ImageController
     }
 
     [HttpPost("GetByteArray")]
-    public string extractFileByteArray([FromBody] ImageDTO dto) 
+    async public Task<string> extractFileByteArray([FromBody] ImageDTO dto) 
     {
         string stringResult;
         string directoryPath;
@@ -42,28 +42,34 @@ public class ImageController
             directoryPath = "";
 
             // There is an existing file for non-multi image equipment
-            if (directoryFiles.Length == 1 && !multipleImages.Contains(dto.imageCategory)) {
-                var oldFileName = directoryFiles[0];
-                File.Delete($"{oldFileName}");
-                stringResult = oldFileName.Split("\\")[^1];
+            if (!multipleImages.Contains(dto.imageCategory)) {
+                if (directoryFiles.Length == 1)
+                {
+                    var oldFileName = directoryFiles[0];
+                    File.Delete($"{oldFileName}");
+                    stringResult = oldFileName.Split("\\")[^1];
+                }
                 directoryPath = $"{chosenEquipmentDirectory}\\{dto.fileName}";
             } 
             
             // Upload for multi-image equipment 
             else if (multipleImages.Contains(dto.imageCategory)) {
                 var uuid = Guid.NewGuid().ToString();
-                directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{uuid}_{dto.fileName}";
+                Console.WriteLine(dto.uuid);
+                Console.WriteLine(dto.fileName);
+                directoryPath = $"{chosenEquipmentDirectory}\\{dto.fileName}";
                 stringResult = uuid;
                 
-                // Directory has > 1 files
-                if (dto.uuid != null) {
-                    var fileExists = checkIfFileExists(directoryFiles, dto.uuid);
-                    if (fileExists != "") {
-                        File.Delete(fileExists);
-                        directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
-                        stringResult = dto.uuid;
-                    }
-                } 
+                // Saving a new multi-image equipment
+                // TODO: Edit this to check if we are replacing
+                // if (dto.uuid != null) {
+                //     var fileExists = checkIfFileExists(directoryFiles, dto.uuid);
+                //     if (fileExists != "") {
+                //         File.Delete(fileExists);
+                //         directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
+                //         stringResult = dto.uuid;
+                //     }
+                // } 
             }
             var file = Convert.FromBase64String(dto.fileData);
             File.WriteAllBytes(directoryPath, file);
@@ -71,7 +77,7 @@ public class ImageController
             stringResult = "";
             // File retrieval for a multi-image equipment
             if (multipleImages.Contains(dto.imageCategory)) {
-                stringResult = Convert.ToBase64String(File.ReadAllBytes($"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}"));
+                stringResult = Convert.ToBase64String(File.ReadAllBytes($"{chosenEquipmentDirectory}\\{dto.fileName}"));
             } 
             else {
                 stringResult = Convert.ToBase64String(File.ReadAllBytes($"{chosenEquipmentDirectory}\\{dto.fileName}"));

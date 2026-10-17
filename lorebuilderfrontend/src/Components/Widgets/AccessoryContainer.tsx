@@ -57,11 +57,6 @@ function handleClick (
     setAccessorySelected?: Function,
     toggled?: boolean,
     ) {
-
-    console.log(pointer)
-    console.log(id)
-    console.log(toggled)
-    console.log(clicked)
     
     if (setClicked != undefined) setClicked(id!);
 
@@ -79,6 +74,7 @@ function handleClick (
                 return;
             }
         }
+        console.log("Accessory clicked: " + id);
         setAccessorySelected!([id]);
         pointerFunction("armor/accessory/edit");
     }

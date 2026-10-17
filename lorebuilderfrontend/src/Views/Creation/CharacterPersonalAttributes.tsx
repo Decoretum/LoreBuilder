@@ -60,13 +60,13 @@ export default function CharacterPersonalAttributes ()
     const [viewingAccessory, setViewingAccessory] = useState(false);
 
     // Accessory-related States
-    // For selected accessory: id, name, description, imgPath
-    const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["","", ""]>);
+    // For selected accessory: id, [name, description, imgPath, uuid]
+    const [accessory, setAccessory] = useState<Map<string, Array<string>>>(new Map<"", ["", "", "", ""]>);
     const [accessorySelected, setAccessorySelected] = useState<Array<string>>([]);
 
     // Weapon-related States
-    // For selected Weapon: id, name, description, imgPath
-    const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", ""]>);
+    // For selected Weapon: id,[ name, description, imgPath, uuid]
+    const [weapon, setWeapon] = useState<Map<string, Array<string>>>(new Map<"", ["", "", "", ""]>);
     const [weaponSelected, setWeaponSelected] = useState<Array<string>>([]);
     const [viewingWeapon, setViewingWeapon] = useState(false);
 
@@ -99,7 +99,11 @@ export default function CharacterPersonalAttributes ()
         if (equipmentType == "mainhand") saveNewWeapon("mainhand");
         else if (equipmentType == "offhand") saveNewWeapon("offhand");
         else { 
-            StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], file?.name]))
+            if (equipmentType !== "accessories") 
+            {
+                var filePath = `${equipmentType}_${accessorySelected[0]}_${equipmentValue[2]}`;
+                StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], file?.name]))
+            }
         }; 
     }
 
@@ -114,7 +118,6 @@ export default function CharacterPersonalAttributes ()
 
     function uploadImage(file: File, equipmentType: string, b64encode: string, blob: Blob) {
         setImageLoading(true);
-        
         // Save file to Directory
         // TODO: Add UI reactive elements to this request
         var request = instance.post(
@@ -127,15 +130,16 @@ export default function CharacterPersonalAttributes ()
             }
         )
         
-        request.then((res: AxiosResponse) =>  {
-            console.log("Backend FS Operation Complete")
+        request.then((res: AxiosResponse) => {
             setImageLoading(false);
             setPreviewImg(window.URL.createObjectURL(blob));            
         })
         
     }
 
-    function extractImage(fileName: string, imageCategory: string) {
+    function extractImage(fileName: string, uuid: string, imageCategory: string) {
+        console.log(fileName)
+        console.log(uuid)
         var request = instance.post(
             "/api/ImageController/GetByteArray",
             {
@@ -143,7 +147,7 @@ export default function CharacterPersonalAttributes ()
                 fileName: fileName,
                 fileData: "",
                 imageCategory: imageCategory,
-                uuid: equipmentValue[2];
+                uuid: uuid
             }
         );
 
@@ -160,12 +164,15 @@ export default function CharacterPersonalAttributes ()
                     { type: "image/png" }
                 )
 
-                // setImageLoading(false);
+                setImageLoading(false);
                 setPreviewImg(window.URL.createObjectURL(blob));
             }
         })
     }
 
+    // This is run when there is an image input
+    // creating = indicates if there is an image input for a new multi-image entity
+    // This uploads images for NON-MULTI-IMAGE equipment
     async function previewImage({fileName, equipmentType} : {fileName: string, equipmentType: string}, file?: File, creating?: boolean) {
         if (fileName == "" || fileName == undefined) return;
 
@@ -181,35 +188,35 @@ export default function CharacterPersonalAttributes ()
                     [byteArray],
                     { type: "image/png" }
                 )
+                setImgUInt8bArray(byteArray);
 
                 // Creating a new accessory
                 if (creating !== undefined) {
-                    console.log("Image for new Accessory")
-                    setImgUInt8bArray(byteArray);
                     setImageLoading(false);
                     setPreviewImg(window.URL.createObjectURL(blob));
                     return;
-                } else if (pointer == "armor/accessory/edit") {
-                    console.log("Saving Accessory")
-                    saveAccessory(true);
+                } 
+
+                setPreviewImg(window.URL.createObjectURL(blob))
+
+                var pointerArr = pointer.split("/");
+                if (pointerArr[0] !== "weapon" && pointerArr[1] !== "accessory")
+                {
+                    // Convert byte array to base 64 string
+                    var b64encode = window.btoa(
+                        Array.from(byteArray, (n: number) => {return String.fromCharCode(n)}).join('')
+                    );
+                    
+                    uploadImage(file, equipmentType, b64encode, blob);
                 }
-
-                // Convert byte array to base 64 string
-                var b64encode = window.btoa(
-                    Array.from(byteArray, (n: number) => {return String.fromCharCode(n)}).join('')
-                );
-
-                uploadImage(file, equipmentType, b64encode, blob);
             }
         }
 
         // Retrieve File From File System
         else {
-            console.log(fileName)
-            console.log(equipmentType)
             // Set a loading UI
             var fileName = fileName;
-            extractImage(fileName, equipmentType);
+            extractImage(fileName, accessorySelected[0], equipmentType);
         }
     }
 
@@ -234,8 +241,12 @@ export default function CharacterPersonalAttributes ()
         var item = pointer.split("/")[1] == "accessory" ? accessory.get(accessorySelected[0]) : weapon.get(weaponSelected[0])
         var itemOfInterestName = item![0];
         var itemOfInterestDescription = item![1];
+        var itemOfInterestFileName = item![2];
         var hasChanged = equipmentValue[0] !== itemOfInterestName
-            || equipmentValue[1] !== itemOfInterestDescription;
+            || equipmentValue[1] !== itemOfInterestDescription
+            || equipmentValue[2] !== itemOfInterestFileName;
+        console.log(equipmentValue)
+        console.log(item)
         if (hasChanged) {
             setSaveButton("w-[10vw]");
         } else {
@@ -252,11 +263,29 @@ export default function CharacterPersonalAttributes ()
         setEquipmentValue(["", "", ""]);
     }
 
-    function saveAccessory(edit?: boolean) : boolean {
+    function saveAccessory(edit?: boolean, deleteImage?: boolean) : boolean {
         // Validate accessory data
         var validationResult = validateItem();
+        var tempMap = new Map<string, string[]>();
         if (!validationResult) return false;
-        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], equipmentValue[2]], edit ? accessorySelected[0] : "none"));        
+
+        // Save UUID in Redux State
+        var uuid = edit ? accessorySelected[0] : crypto.randomUUID();
+
+        var filePath = `${equipmentType}_${accessorySelected[0]}_${equipmentValue[2]}`;
+
+        StoreCharText(
+            "/attributes/equipment", 
+            edit ? "edit" : uuid, 
+            handleEquipmentChange(
+                inventoryText, 
+                [equipmentValue[0], equipmentValue[1], filePath], 
+                edit ? accessorySelected[0] : "none"
+            ));        
+        
+        // Save UUID in DB
+
+        // Set React State
         setAccessory(prevMap => {
             const newMap = new Map(prevMap);
             
@@ -269,37 +298,50 @@ export default function CharacterPersonalAttributes ()
                 }
             } 
 
-            if (equipmentValue[2] !== "") {
-                // Convert byte array to base 64 string
-                var b64encode = window.btoa(
-                    Array.from(imgUInt8bArray, (n: number) => {return String.fromCharCode(n)}).join('')
-                );
-                
-                // Save file to Directory
-                // TODO: Add UI reactive elements to this request
-                var request = instance.post(
-                    'api/ImageController/GetByteArray',
-                    {
-                        fileName: equipmentValue[2],
-                        fileData: b64encode,
-                        imageCategory: equipmentType,
-                        transactionType: "upload"
-                    }
-                )
-                
-                request.then((res) => {
-                    if (res.status == 200) {
-                        console.log("Accessory Image saved on Filesystem")
-                    }            
-                })    
-            }
-        
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
+            tempMap = newMap;
+
+            if (deleteImage == true) {
+                console.log(tempMap.get(accessorySelected[0]))
+                console.log(equipmentValue)
+                // var deleteRequest = await instance.delete(
+                //     `api/ImageController/DeleteImage/${equipmentType}/${equipmentValue[2]}`,
+                // );
+                // if (deleteRequest.status == 200) {
+                //     setModalOpen(false);
+                // }
+            }
+
             return newMap;
         })
 
 
-        // setEquipmentValue(["", "", ""]);
+        // Check if there is a file input
+        if (equipmentValue[2] !== "" && deleteImage == undefined) {
+            // Convert byte array to base 64 string
+            var b64encode = window.btoa(
+                Array.from(imgUInt8bArray, (n: number) => {return String.fromCharCode(n)}).join('')
+            );
+            
+            // Save file to Directory
+            // TODO: Add UI reactive elements to this request
+            var request = instance.post(
+                'api/ImageController/GetByteArray',
+                {
+                    fileName: filePath,
+                    fileData: b64encode,
+                    imageCategory: equipmentType,
+                    transactionType: "upload",
+                    uuid: uuid
+                }
+            )
+            
+            request.then((res) => {
+                if (res.status == 200) {
+                }            
+            })    
+        }
+
         return true;
     }
 
@@ -538,15 +580,18 @@ export default function CharacterPersonalAttributes ()
     }, [pointer])
     
     // Track current accessory selected
+    // accessories_8505be09-b01f-4b4f-a3d5-859a911e17a5_2026-03-01_22.44.12.png_
     useEffect(() => {
         if (accessory.size > 0) {
             var acc : string[] = accessory.get(accessorySelected[0])!;
+            var filePath = `${equipmentType}_${accessorySelected[0]}_${equipmentValue[2]}`;
             setEquipmentValue([acc[0], acc[1], acc[2]]);
             setImageLoading(true);
-            console.log(acc)
+            console.log("Accessory clicked useEffect: " + accessorySelected[0])
+            console.log("file name: " + acc[2]);
 
-            // Obtain Image
-            if (acc[2] !== "") extractImage(acc[2], "accessories");
+            // Obtain Image and upload it
+            if (acc[2] !== "") extractImage(acc[2], accessorySelected[0], "accessories");
             else {
                 setImageLoading(false);
                 setPreviewImg("");
@@ -571,8 +616,6 @@ export default function CharacterPersonalAttributes ()
 
     // Listen to the Image Drop
     useEffect(() => {
-        console.log(`Current Image Drop: ${imageDrop?.name}`)
-        console.log(`Current pointer: ${pointer}`)
         handleDrop(imageDrop as File);
     }, [imageDrop]);
 
@@ -1096,13 +1139,33 @@ export default function CharacterPersonalAttributes ()
                                     deleteAccessory();
                                 }
                                 else if (modalText == "Are you sure you want to remove this image?") {
-                                    var deleteRequest = await instance.delete(
-                                        `api/ImageController/DeleteImage/${equipmentType}/${equipmentValue[2]}`,
-                                    );
-                                    if (deleteRequest.status == 200) {
-                                        setModalOpen(false);
-                                        setPreviewImg("");
+                                    setEquipmentValue((prevArr) => {
+                                        var newArr = Array.from(prevArr);
+                                        newArr[newArr.length - 1] = "";
+                                        return newArr;
+                                    })
+
+                                    if (pointer.split("/").length == 3 && pointer.split("/")[2] == "edit") 
+                                    {
+                                        if (pointer.split("/")[1] == "accessory")
+                                        {
+                                            console.log("removing image")
+                                            saveAccessory(true, true);
+                                        }
+
+                                        else
+                                        {
+                                            var deleteRequest = await instance.delete(
+                                                `api/ImageController/DeleteImage/${equipmentType}/${equipmentValue[2]}`,
+                                            );
+                                            if (deleteRequest.status == 200) {
+                                                setModalOpen(false);
+                                            }
+                                        }
+
                                     }
+
+                                    setPreviewImg("")
                                     StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], ""]))
                                 }
                                 else {
