@@ -12,7 +12,6 @@ public class ImageController
     private static string userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
     private static string[] multipleImages = new string[]{ "accessories", "mainhand", "offhand" };
 
-    // keyWord = chestGear, rightArmGear, headGear 
     // keyWord = uuid
     public string checkIfFileExists(string[] directoryFiles, string keyWord) {
         var resultArr = "";
@@ -57,27 +56,25 @@ public class ImageController
                 var uuid = Guid.NewGuid().ToString();
                 Console.WriteLine(dto.uuid);
                 Console.WriteLine(dto.fileName);
-                directoryPath = $"{chosenEquipmentDirectory}\\{dto.fileName}";
+                directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
                 stringResult = uuid;
                 
                 // Saving a new multi-image equipment
                 // TODO: Edit this to check if we are replacing
-                // if (dto.uuid != null) {
-                //     var fileExists = checkIfFileExists(directoryFiles, dto.uuid);
-                //     if (fileExists != "") {
-                //         File.Delete(fileExists);
-                //         directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
-                //         stringResult = dto.uuid;
-                //     }
-                // } 
+                if (dto.uuid != null) {
+                    var fileExists = checkIfFileExists(directoryFiles, dto.uuid);
+                    if (fileExists != "") {
+                        File.Delete(fileExists);
+                        stringResult = dto.uuid;
+                    }
+                } 
             }
             var file = Convert.FromBase64String(dto.fileData);
             File.WriteAllBytes(directoryPath, file);
         } else {
-            stringResult = "";
             // File retrieval for a multi-image equipment
             if (multipleImages.Contains(dto.imageCategory)) {
-                stringResult = Convert.ToBase64String(File.ReadAllBytes($"{chosenEquipmentDirectory}\\{dto.fileName}"));
+                stringResult = Convert.ToBase64String(File.ReadAllBytes($"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}"));
             } 
             else {
                 stringResult = Convert.ToBase64String(File.ReadAllBytes($"{chosenEquipmentDirectory}\\{dto.fileName}"));

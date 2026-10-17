@@ -178,10 +178,10 @@ export default function CharacterPersonalAttributes ()
 
         // Upload and Save File
         if (file !== undefined) {
-            setImageLoading(true);
             var reader = new FileReader();
-            reader.readAsArrayBuffer(file);
             var byteArray : Uint8Array | undefined;
+            setImageLoading(true);
+            reader.readAsArrayBuffer(file);
             reader.onloadend = async (event: ProgressEvent<FileReader>) => {
                 byteArray = new Uint8Array(event.target?.result as ArrayBuffer);
                 var blob = new Blob(
@@ -199,6 +199,8 @@ export default function CharacterPersonalAttributes ()
 
                 setPreviewImg(window.URL.createObjectURL(blob))
 
+                // If the preview for the image is for a non multi-image equipment
+                // Uploads this to the file system
                 var pointerArr = pointer.split("/");
                 if (pointerArr[0] !== "weapon" && pointerArr[1] !== "accessory")
                 {
@@ -216,6 +218,8 @@ export default function CharacterPersonalAttributes ()
         else {
             // Set a loading UI
             var fileName = fileName;
+            console.log(fileName)
+            console.log(accessorySelected[0])
             extractImage(fileName, accessorySelected[0], equipmentType);
         }
     }
@@ -245,8 +249,6 @@ export default function CharacterPersonalAttributes ()
         var hasChanged = equipmentValue[0] !== itemOfInterestName
             || equipmentValue[1] !== itemOfInterestDescription
             || equipmentValue[2] !== itemOfInterestFileName;
-        console.log(equipmentValue)
-        console.log(item)
         if (hasChanged) {
             setSaveButton("w-[10vw]");
         } else {
@@ -272,14 +274,14 @@ export default function CharacterPersonalAttributes ()
         // Save UUID in Redux State
         var uuid = edit ? accessorySelected[0] : crypto.randomUUID();
 
-        var filePath = `${equipmentType}_${accessorySelected[0]}_${equipmentValue[2]}`;
+        // var filePath = `${equipmentType}_${accessorySelected[0]}_${equipmentValue[2]}`;
 
         StoreCharText(
             "/attributes/equipment", 
             edit ? "edit" : uuid, 
             handleEquipmentChange(
                 inventoryText, 
-                [equipmentValue[0], equipmentValue[1], filePath], 
+                [equipmentValue[0], equipmentValue[1], equipmentValue[2]], 
                 edit ? accessorySelected[0] : "none"
             ));        
         
@@ -299,8 +301,6 @@ export default function CharacterPersonalAttributes ()
             } 
 
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
-            tempMap = newMap;
-
             if (deleteImage == true) {
                 console.log(tempMap.get(accessorySelected[0]))
                 console.log(equipmentValue)
@@ -328,7 +328,7 @@ export default function CharacterPersonalAttributes ()
             var request = instance.post(
                 'api/ImageController/GetByteArray',
                 {
-                    fileName: filePath,
+                    fileName: equipmentValue[2],
                     fileData: b64encode,
                     imageCategory: equipmentType,
                     transactionType: "upload",
