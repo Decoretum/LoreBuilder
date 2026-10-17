@@ -4,8 +4,8 @@ import { useState } from "react";
 export function Footer () {
     const [color, setColor] = useState('text-cyan-200')
     return (
-        <div className='mt-3'>
-                <Grid container spacing = {1} sx={{ flexGrow: 1 }}  className='bg-[#454E5A] p-3 rounded-md shadow-lg shadow-cyan-500/50 '> 
+        <div>
+                <Grid container  sx={{ flexGrow: 1 }}  className='bg-[#454E5A] p-3 shadow-lg shadow-cyan-500/50 '> 
                     <Grid className='w-50'>
                         <Typography variant='plain' level="body-sm"> 
                             <span className='text-gray-50 font-PixelFont'>Lore Builder</span>

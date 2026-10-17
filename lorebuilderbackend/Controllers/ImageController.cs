@@ -63,6 +63,7 @@ public class ImageController
                 // TODO: Edit this to check if we are replacing
                 if (dto.uuid != null) {
                     var fileExists = checkIfFileExists(directoryFiles, dto.uuid);
+                    Console.WriteLine(fileExists);
                     if (fileExists != "") {
                         File.Delete(fileExists);
                         stringResult = dto.uuid;

@@ -38,7 +38,7 @@ export default function CharacterPersonalAttributes ()
     const [pointer, setPointer] = useState('general');
     const [inventoryText, setInventoryText] = useState(invText);
     const [alertText, setAlertText] = useState("");
-    const [alert, setAlert] = useState("hidden flex width-full ml-[3vw] mt-[4vh]");
+    const [alert, setAlert] = useState("hidden flex width-full ml-[3vw]");
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
@@ -83,7 +83,7 @@ export default function CharacterPersonalAttributes ()
 ]
 
     function openAlert(alertText: string) {
-        setAlert("flex width-full ml-[3vw] mt-[4vh]");
+        setAlert("flex width-full ml-[3vw]");
         setAlertText(alertText);
     }
 
@@ -444,22 +444,22 @@ export default function CharacterPersonalAttributes ()
                 // Retrieve images from FileSystem and store it within repo FS
                 // var storeData = store.getState().char.attributes.equipment.accessories;
                 setEquipmentValue(["", "", ""]);
-                var testing = true;
+                var testing = false;
+                setPointer("armor/accessory");
+                setInventoryText("Accessory");
+                setEquipmentType("accessories");
+
                 if (testing) {
                     var storeData : any = AccessoryTest();
                     var existingData = store.getState().char.attributes.equipment.accessories;
                     var merged: Map<string, string[]> = new Map([...storeData, ...existingData]);
-                    setPointer("armor/accessory");
-                    setInventoryText("Accessory");
-                    setEquipmentType("accessories");
                     setAccessory(merged);
     
-                    // Right Pane: 
-                    setImg(`./attributes/${img.substring(6)}.png`);
-
-                    previewImage({fileName: storeData[2], equipmentType: "accessories"});
+                    // previewImage({fileName: storeData[2], equipmentType: "accessories"});
                 }
-                break;
+                // Right Pane: 
+                setImg(`./attributes/${img.substring(6)}.png`);
+            break;
             case "weapon/offhand":
             case "weapon/mainhand":
                 setEquipmentValue(["", "", ""]);
@@ -629,16 +629,16 @@ export default function CharacterPersonalAttributes ()
     return (
         <>
             <div className='container-div-personalattributes'>
-                <Box className={`relative flex flex-row h-[100%] ${viewingAccessory || viewingWeapon ? "" : "justify-center items-center gap-[5%]"}`}>
+                <Box className={`relative flex flex-row h-[100%] ${viewingAccessory || viewingWeapon ? "" : "justify-center items-start gap-[15%]"}`}>
                 
                     {/* Left Pane */}
-                    <Box className='h-[70%] relative' hidden = {false}>
+                    <Box className='h-[100%] p-10 relative' hidden = {false}>
                         
                         {/* For Armor */}
                         { pointer.indexOf('armor') != -1 ? 
                         (
                         <>
-                            <Box className='flex flex-col items-center justify-center h-[30vh] gap-[62px]'>
+                            <Box className='flex flex-col items-center justify-center h-[30vh]'>
                                 <Box className='flex flex-row w-[100%] h-[100%] justify-center items-center'>
                                     <Button variant='soft' color='warning' onClick = {goBack} sx= {{outline: 'none !important'}}>
                                         <ArrowBackIcon />
@@ -668,7 +668,7 @@ export default function CharacterPersonalAttributes ()
 
                             {/* Rest of the Inventory */}
 
-                            <Box className='relative mt-5 flex flex-row justify-center'>
+                            <Box className='relative mt-5 ml-4 flex flex-row justify-center'>
                                 
                                 {/* If a gear is selected */}
                                 { pointer.indexOf("armor/") != -1 && pointer.indexOf("armor/accessory") == -1 ?
@@ -713,7 +713,7 @@ export default function CharacterPersonalAttributes ()
                                 <>
                                     {/* Overview of Gears */}
                                     {/* left gauntlet, cape */}
-                                    <Box className='flex flex-col ml-[1vw] mt-[15vh]'>
+                                    <Box className='flex flex-col ml-[1vw] mt-[30%]'>
                                         <img src='./attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leftarm")}} />
                                         <img src='./attributes/backwear.png' width = {80} className='cursor-pointer rounded-md z-10 ml-[0.5vw]' onClick={() => {clickImage("armor/backwear")}} />
                                     </Box>
@@ -723,11 +723,11 @@ export default function CharacterPersonalAttributes ()
                                         <img src='./attributes/helm.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/helm")}} />
                                         <img src='./attributes/chest.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/chest")}} />
                                         <img src='./attributes/leggings.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/leggings")}} />
-                                        <img src='./attributes/boots/37.png' width = {70} className='z-10 ml-[1vw] mt-[1vh] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
+                                        <img src='./attributes/boots/37.png' width = {70} className='z-10 mt-[1vh] translate-x-[30%] cursor-pointer' onClick={() => {clickImage("armor/foot")}} />
                                     </Box>
 
                                     {/* right gauntlet, accessories */}
-                                    <Box className='flex flex-col mt-[15vh] ml-[1vw]'>
+                                    <Box className='flex flex-col mt-[30%] ml-[1vw]'>
                                         <img src='./attributes/glove.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/rightarm")}} />
                                         <img src='./attributes/ring.png' width = {100} className='z-10 cursor-pointer' onClick={() => {clickImage("armor/ring")}} />
                                     </Box>
@@ -887,6 +887,22 @@ export default function CharacterPersonalAttributes ()
                                 </Box>
                             </Box>
                         )}
+
+                        {/* Alert */}
+                        <Box className={`${alert} mt-[8%]`}>
+                            <Alert 
+                                startDecorator={<WarningIcon />}
+                                variant='soft' 
+                                color='danger'
+                                endDecorator={
+                                    <IconButton onClick={() => setAlert("hidden")}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
+                            >
+                                {alertText}
+                            </Alert>
+                        </Box> 
                     </Box>
 
                     {/* Right Pane  */}
@@ -894,16 +910,54 @@ export default function CharacterPersonalAttributes ()
                         ||  pointer == "armor/accessory" 
                         || pointer ==  "weapon/mainhand" 
                         || pointer == "weapon/offhand"  
-                        ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[6vh] mr-[2vw]"}`}
+                        ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[10%] p-8 mr-[2vw]"}`}
                     >
+                            { pointer.split("/")[2] == "edit" && (
+                                <Box className='flex flex-row gap-8 translate-y-[-50%] justify-end'>
+                                    <IconButton 
+                                        variant='soft' 
+                                        color='danger'
+                                        onClick={() => { 
+                                            setModalOpen(true);
+                                            setModalText("Are you sure you want to delete this accessory?");
+                                        }
+                                    }>
+                                        <DeleteIcon />
+                                    </IconButton>
+
+                                { saveButton != "hidden" && (
+                                    <Button 
+                                        variant='soft' 
+                                        color='success' 
+                                        className={saveButton}  
+                                        onClick={() => {
+                                            setModalOpen(true);
+                                            setModalText("Are you sure you want to save these changes?")
+                                        }
+                                    }>
+                                        <Typography sx={{ fontFamily: 'PixelFont', fontSize: 13}}>
+                                            Save Changes
+                                        </Typography>
+                                    </Button>
+                            )}
+                                </Box>
+                            )}             
+
                             { (pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit" ) && (
                                 <Box className="flex flex-col gap-1">
                                     <FormControl>
-                                        <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite' }}>{inventoryText}'s Name</FormLabel>
+                                        <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite', fontFamily: 'PixelFont' }}>{inventoryText}'s Name</FormLabel>
                                             <Input
                                                 value={equipmentValue[0]}
                                                 size="lg"
-                                                sx={{ outline: 'none !important', '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, backgroundColor: 'transparent', color: "black" }}
+                                                sx={{ 
+                                                    outline: 'none !important', 
+                                                    '&.MuiSelected': { outline: 'none !important' }, 
+                                                    minWidth: 350, 
+                                                    backgroundColor: 'transparent', 
+                                                    color: "floralwhite",
+                                                    fontFamily: 'PixelFont'
+                                                }}
                                                 onChange={(event) => {
                                                     setEquipmentValue([event.target.value, equipmentValue[1], equipmentValue[2]]);
                                                     trackAccessoryWeaponChange();
@@ -965,7 +1019,7 @@ export default function CharacterPersonalAttributes ()
                                     />
                                 </FormControl>
 
-                                { pointer.split("/")[2] == "edit" && (
+                                {/* { pointer.split("/")[2] == "edit" && (
                                 <Box className='flex flex-row gap-8'>
                                     <IconButton 
                                         variant='soft' 
@@ -994,7 +1048,7 @@ export default function CharacterPersonalAttributes ()
                                     </Button>
                             )}
                                 </Box>
-                            )}             
+                            )}              */}
                             
                                 <Box
                                     className={`flex flex-row items-start justify-center translate-y-[1vh] ${previewImg === "" ? "border-2 border-dashed rounded-lg text-center max-w-[15vw] p-4" : "max-w-[15vw]"}`}
@@ -1063,22 +1117,6 @@ export default function CharacterPersonalAttributes ()
                 { NavigationValidator(binary, resetBinary) }
                 </Box>
                 
-                {/* Alert */}
-                <Box className={alert}>
-                    <Alert 
-                    startDecorator={<WarningIcon />}
-                    variant='soft' 
-                    color='danger'
-                    endDecorator={
-                        <IconButton onClick={() => setAlert("hidden flex width-full ml-[3vw] mt-[4vh]")}>
-                            <CloseIcon />
-                        </IconButton>
-                    }
-                    >
-                        {alertText}
-                </Alert>
-                </Box> 
-
                 {/* Modal */}
                 <Modal 
                     open={modalOpen} 
