@@ -101,11 +101,9 @@ function Container(props: AccessoryContainerPropsType){
                                 fontSize: 13.5,
                                 overflowWrap: 'break-word'
                                 }}>
-                                {props.name} </Typography>
+                                {props.name} 
+                            </Typography>
                         </Box>
-                    </Box>
-                    <Box>
-                        <Typography>{props.imgPath}</Typography>
                     </Box>
                 </Box>
             </Card>
@@ -125,11 +123,10 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
 
     // }, [props.map, toggled])
         return (
-            <Box className='min-w-[8vw]' data-id={props.id}>
-                <Card variant='soft' color='success' sx={{ }}>
+            <Box className='min-w-[11%]' data-id={props.id}>
+                <Card variant='soft' color='success'>
                     { !toggled ? (
-                        <Box className='font-PixelFont flex flex-row justify-center items-center gap-2'>
-                            <Box><Typography>Add One</Typography></Box>
+                        <Box className='flex flex-row justify-center items-center'>
                             <IconButton  
                             variant="soft"
                             color='success'                             
@@ -207,7 +204,7 @@ export function AccessoryContainer(props : propsType) {
                         id={key} 
                         key={id} 
                         name={value[0]} 
-                        imgPath={value[1]} 
+                        imgPath={value[2]} 
                         pointer={props.pointer} 
                         pointerFunction={props.pointerFunction} 
                     />

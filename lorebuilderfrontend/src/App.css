@@ -4,9 +4,13 @@
 }
 
 #root {
-  margin: 0 auto;
-  padding: 2rem;
+  /* margin: 0 auto;
+  padding: 2rem; */
   text-align: center;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
 }
 
 .logo {
@@ -109,8 +113,8 @@
 
 .container-div{ 
 display: flex;
-height: 80%;
-width: 40%; 
+height: 85%;
+width: 30%; 
 align-items: center;
 justify-content: center;
 }
@@ -164,9 +168,9 @@ justify-content: center;
     .container-div-features{ 
       display: flex;
       position: relative;
-      height: 110vh;
-      width: 90vw; 
-      border-radius: 20px;
+      min-height: 100vh;
+      height: 100%;
+      width: 100%; 
       background-image: url('../forestbackground_upscaled.png');
       background-size: cover;
       background-repeat: no-repeat;
@@ -175,15 +179,16 @@ justify-content: center;
       margin:auto;
     }
 
-      .container-div-personalattributes{ 
-        position: relative;
-        height: 110vh;
-        width: 90vw; 
-        border-radius: 20px;
-        background-image: url('../flowyview.gif');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-        z-index: 2;
-        justify-content: center;
-      }
+    .container-div-personalattributes{ 
+      position: relative;
+      min-height: 100vh;
+      height: 100%;
+      width: 100%; 
+      /* border-radius: 20px; */
+      background-image: url('../flowyview.gif');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 2;
+      justify-content: center;
+    }
