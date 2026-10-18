@@ -1,4 +1,4 @@
-import { Box, Card, IconButton, Modal, Sheet, Typography } from "@mui/joy";
+import { Box, Card, IconButton, Typography } from "@mui/joy";
 import { accessoryType } from "../../Redux/character/charReducer";
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
