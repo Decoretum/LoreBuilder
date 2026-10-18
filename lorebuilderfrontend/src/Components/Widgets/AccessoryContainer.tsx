@@ -124,7 +124,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
     // }, [props.map, toggled])
         return (
             <Box className='min-w-[11%]' data-id={props.id}>
-                <Card variant='soft' color='success'>
+                <Card variant='outlined' color='success' className={toggled ? "" : 'opacity-40'}>
                     { !toggled ? (
                         <Box className='flex flex-row justify-center items-center'>
                             <IconButton  
