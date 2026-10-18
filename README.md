@@ -1,13 +1,14 @@
 # LoreBuilder
 
 ## Overview
-This application is a desktop application written in C# and Typescript.
 
 This application is intended for game developers, game enthusiasts, Table top players, game designers, or even gamers in general to develop the lore and background of
 their characters as much as they want to. The frontend has been emphasized in order to make the application livelier and more engaging with the user.
 
 ## Building and Running the Application
-These will run both the frontend and backend applications for this whole system which includes but isn't limited to:
+The application was written in C#, Electron, and Typescript. The minimum screen specifications for the application is <b>1280 x 800</b>. 
+
+The scripts provided below will run both the frontend and backend applications for this whole system which includes but isn't limited to:
 - Database Preparation
 - Database Abstraction Preparation
 - File System Validation
