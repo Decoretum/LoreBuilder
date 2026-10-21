@@ -18,8 +18,8 @@ var equipment = new string[]
     "backGear",
     "footGear",
     "accessories",
-    "weaponMainHand",
-    "weaponOffHand"
+    "mainHandWeapon",
+    "offHandWeapon"
 
 };
 

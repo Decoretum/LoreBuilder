@@ -11,7 +11,7 @@ export default function StateValidator(nav : NavigateFunction,
     arrFunctions : Array<Function>, arr : stateArr, 
     nextPath : string, 
     endValidation?: number) {
-    let bad = ' ' || null || '';
+    let bad = " " || null || '';
     let state = store.getState();
     console.log(arr)
     console.log(arrFunctions);

@@ -48,7 +48,7 @@ export default function CharacterPersonalAttributes ()
     // Flow: Fetch Image Path from Redux -> Create a Blob URL from image path -> display in frontend
     const [img, setImg] = useState("");
     const [previewImg, setPreviewImg] = useState("");
-    const [imageLoading ,setImageLoading] = useState(false);
+    const [imageLoading, setImageLoading] = useState(false);
     const [imgUInt8bArray, setImgUInt8bArray] = useState(new Uint8Array());
     const [imageDrop, setImageDrop] = useState<File | undefined>(undefined);
 
@@ -86,6 +86,107 @@ export default function CharacterPersonalAttributes ()
         setAlert("flex width-full ml-[3vw]");
         setAlertText(alertText);
     }
+    
+    // Handles 
+
+    // Handles accept confirmation for equipment
+    async function handleOpenModal() {
+        var bool : boolean | null = null; 
+        var isAccessory : boolean = pointer.split("/")[1] == "accessory";
+        var isWeapon : boolean = pointer.split("/")[0] == "weapon"; 
+        var isMainhand : boolean = pointer.split("/")[1] == "mainhand";
+        if (modalText == `Are you sure you want to set your ${inventoryText}?`) {            
+            if (isAccessory) bool = saveAccessory();
+            else if (pointer.split("/")[0] == "weapon") {
+                if (isMainhand) bool = saveNewWeapon("mainhand");
+                else bool = saveNewWeapon("offhand");
+            }
+
+            if (bool) {
+                setToggled(false);
+                handlePointerChange(
+                    isAccessory ? "armor/accessory" : (isMainhand ? "weapon/mainhand" : "weapon/offhand")
+                    );
+            } else {
+                openAlert("One more of the fields have invalid input");
+            }
+        } 
+        else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
+            setToggled(false);
+            setViewingAccessory(false);
+            handlePointerChange("armor");
+        } 
+        else if (modalText == "You still have a weapon in-progress. Go back to Weapon overview?") {
+            setToggled(false);
+            setViewingWeapon(false);
+            handlePointerChange("weapon");
+        }
+        else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
+            setToggled(false);
+            if (inventoryText == "Mainhand Weapon") {
+                handlePointerChange("weapon/mainhand");
+            }
+            else if (inventoryText == "Offhand Weapon") {
+                handlePointerChange("weapon/offhand");
+            }
+            else if (pointer.split("/")[1] == "accessory") {
+                handlePointerChange("armor/accessory");
+            }
+        } 
+        else if (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
+            if (isWeapon) {
+                // Delete Weapon
+            }
+            else {
+                deleteAccessory();
+            }
+            handlePointerChange("armor/accessory");
+            setToggled(false);
+            deleteAccessory();
+        }
+        else if (modalText == "Are you sure you want to remove this image?") {
+            setEquipmentValue((prevArr) => {
+                var newArr = Array.from(prevArr);
+                newArr[newArr.length - 1] = "";
+                return newArr;
+        })
+
+        // Handles confirmation during the editing of accessories and weapons
+        if (pointer.split("/").length == 3 && pointer.split("/")[2] == "edit") 
+        {
+            if (pointer.split("/")[1] == "accessory")
+            {
+                saveAccessory(true, true);
+            }
+
+            else
+            {
+                saveNewWeapon(equipmentType, true, true);
+            }
+
+        }
+
+        setPreviewImg("")
+        StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], ""]))
+    }
+    else {
+        // Saving changes
+        var savingAccessory = pointer.split("/")[0] == "armor";
+        var bool : boolean | null = savingAccessory 
+            ? saveAccessory(true) 
+            : saveNewWeapon(pointer.split("/")[1] == "mainhand" ? "mainhand" : "offhand", true);
+        if (bool) {
+            if (savingAccessory) handlePointerChange("armor/accessory");
+            else {
+                if (pointer.split("/")[1] == "mainhand") handlePointerChange("weapon/mainhand");
+                else handlePointerChange("weapon/offhand");
+            }
+        } else {
+            openAlert("One more of the fields have invalid input");
+        }
+    }
+    setModalOpen(false);    
+    }
 
     function handleDrop(file: File) {
         // Save and Preview Image based on equipment type
@@ -96,8 +197,8 @@ export default function CharacterPersonalAttributes ()
         previewImage({fileName: file?.name, equipmentType: equipmentType}, file);
 
         // Update Redux State
-        if (equipmentType == "mainhand") saveNewWeapon("mainhand");
-        else if (equipmentType == "offhand") saveNewWeapon("offhand");
+        if (equipmentType == "mainHandWeapon"){}
+        else if (equipmentType == "offHandWeapon"){} 
         else { 
             if (equipmentType !== "accessories") 
             {
@@ -138,8 +239,7 @@ export default function CharacterPersonalAttributes ()
     }
 
     function extractImage(fileName: string, uuid: string, imageCategory: string) {
-        console.log(fileName)
-        console.log(uuid)
+        setImageLoading(true);
         var request = instance.post(
             "/api/ImageController/GetByteArray",
             {
@@ -176,6 +276,13 @@ export default function CharacterPersonalAttributes ()
     async function previewImage({fileName, equipmentType} : {fileName: string, equipmentType: string}, file?: File, creating?: boolean) {
         if (fileName == "" || fileName == undefined) return;
 
+        // Update React State
+        setEquipmentValue((oldArr) => {
+            var newArr = Array.from(oldArr);
+            newArr[newArr.length - 1] = fileName;
+            return newArr;
+        });
+
         // Upload and Save File
         if (file !== undefined) {
             var reader = new FileReader();
@@ -190,7 +297,7 @@ export default function CharacterPersonalAttributes ()
                 )
                 setImgUInt8bArray(byteArray);
 
-                // Creating a new accessory
+                // Creating a new multi-image equipment
                 if (creating !== undefined) {
                     setImageLoading(false);
                     setPreviewImg(window.URL.createObjectURL(blob));
@@ -198,6 +305,7 @@ export default function CharacterPersonalAttributes ()
                 } 
 
                 setPreviewImg(window.URL.createObjectURL(blob))
+                setImageLoading(false);
 
                 // If the preview for the image is for a non multi-image equipment
                 // Uploads this to the file system
@@ -218,9 +326,8 @@ export default function CharacterPersonalAttributes ()
         else {
             // Set a loading UI
             var fileName = fileName;
-            console.log(fileName)
-            console.log(accessorySelected[0])
-            extractImage(fileName, accessorySelected[0], equipmentType);
+            var uuid = equipmentType === "accessories" ? accessorySelected[0] : weaponSelected[0];
+            extractImage(fileName, uuid, equipmentType);
         }
     }
 
@@ -250,7 +357,7 @@ export default function CharacterPersonalAttributes ()
             || equipmentValue[1] !== itemOfInterestDescription
             || equipmentValue[2] !== itemOfInterestFileName;
         if (hasChanged) {
-            setSaveButton("w-[10vw]");
+            setSaveButton("max-w-[10%]");
         } else {
             setSaveButton("hidden");
         }
@@ -273,8 +380,6 @@ export default function CharacterPersonalAttributes ()
 
         // Save UUID in Redux State
         var uuid = edit ? accessorySelected[0] : crypto.randomUUID();
-
-        // var filePath = `${equipmentType}_${accessorySelected[0]}_${equipmentValue[2]}`;
 
         StoreCharText(
             "/attributes/equipment", 
@@ -345,11 +450,27 @@ export default function CharacterPersonalAttributes ()
         return true;
     }
 
-    function saveNewWeapon(category: string, edit? : boolean) : boolean {
+    function saveNewWeapon(category: string, edit? : boolean, deleteImage?: boolean) : boolean {
         // Validate weapon data
         var validationResult = validateItem();
         if (!validationResult) return false;
-        StoreCharText("/attributes/equipment", edit ? "edit" : "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1]], edit ? weaponSelected[0] : "none"));        
+
+        // Save UUID in Redux State
+        var uuid = edit ? weaponSelected[0] : crypto.randomUUID().toString();
+
+        StoreCharText(
+            "/attributes/equipment", 
+            edit ? "edit" : uuid, 
+            handleEquipmentChange(
+                inventoryText, 
+                [equipmentValue[0], equipmentValue[1], equipmentValue[2]],
+                 edit ? weaponSelected[0] : "none"
+                )
+            );   
+
+        // Save UUID in DB
+
+        // Set React State
         setWeapon(prevMap => {
             const newMap = new Map(prevMap);
 
@@ -366,7 +487,38 @@ export default function CharacterPersonalAttributes ()
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             return newMap;
         })
-        setEquipmentValue(["", "", ""]);
+
+        // Check if there is a file input
+        if (equipmentValue[2] !== "" && deleteImage == undefined) {
+            // Convert byte array to base 64 string
+            var b64encode = window.btoa(
+                Array.from(imgUInt8bArray, (n: number) => {return String.fromCharCode(n)}).join('')
+            );
+            
+            // Save file to Directory
+            // TODO: Add UI reactive elements to this request
+            var request = instance.post(
+                'api/ImageController/GetByteArray',
+                {
+                    fileName: equipmentValue[2],
+                    fileData: b64encode,
+                    imageCategory: equipmentType,
+                    transactionType: "upload",
+                    uuid: uuid
+                }
+            )
+            
+            request.then((res) => {
+                if (res.status == 200) {
+                }            
+            })    
+        }
+
+        // Deleting an image
+        else if (deleteImage === true) {
+            console.log(pointer)
+            console.log(equipmentValue)
+        }
         return true;
     }
 
@@ -374,6 +526,7 @@ export default function CharacterPersonalAttributes ()
         setPointer(accessoryPointer);
     }
 
+    // Handles Icon clicking events as you navigate the page
     function clickImage (img: string) : void {
         switch(img){
             case "armor/helm":
@@ -463,43 +616,42 @@ export default function CharacterPersonalAttributes ()
             case "weapon/offhand":
             case "weapon/mainhand":
                 setEquipmentValue(["", "", ""]);
-                var testing = true;
-                if (testing) {
-                    var storeData : any = null;
-                    var existingData = null;
-                    if (img == "weapon/mainhand") {
-                        storeData = WeaponTestMainhand();
-                        existingData = store.getState().char.attributes.equipment.weaponMainHand;
-                        setPointer("weapon/mainhand");
-                        setInventoryText("Mainhand Weapon");      
-                        setEquipmentType("weaponMainHand");                                     } 
-                    else {
-                        storeData = WeaponTestOffhand();
-                        existingData = store.getState().char.attributes.equipment.weaponOffHand;
-                        setPointer("weapon/offhand");
-                        setInventoryText("Offhand Weapon") 
-                        setEquipmentType("weaponOffHand");
-                    }
-                    var merged: Map<string, string[]> = new Map([...storeData, ...existingData]);
-                    setWeapon(merged);
-    
-                    // Right Pane: 
-                    setImg(`./attributes/${img.substring(6)}.png`);
+                var storeData : any = null;
+                var existingData = null;
+                if (img == "weapon/mainhand") {
+                    existingData = store.getState().char.attributes.equipment.weaponMainHand;
+                    setPointer("weapon/mainhand");
+                    setInventoryText("Mainhand Weapon");      
+                    setEquipmentType("mainHandWeapon");                                     } 
+                else {
+                    existingData = store.getState().char.attributes.equipment.weaponOffHand;
+                    setPointer("weapon/offhand");
+                    setInventoryText("Offhand Weapon") 
+                    setEquipmentType("offHandWeapon");
                 }
+                var merged: Map<string, string[]> = new Map([...existingData]);
+                setWeapon(merged);
+
+                // Right Pane: 
+                setImg(`./attributes/${img.substring(6)}.png`);
+
                 break;
         }
 
     }
 
     function goBack() {
+        var modalOpened = false;
         if (pointer == "armor") {
             setInventoryText(invText);
             setPointer("general");
+            modalOpened = true;
         }
         else if (pointer.indexOf("armor/") == 0) {
             if ((pointer == "armor/accessory/new" && toggled) || (pointer == "armor/accessory/edit")) {
                 setModalOpen(true);
                 setModalText("You still have an accessory in-progress. Go back to Armor overview?");
+                modalOpened = true;
             } else if (pointer == "armor/accessory") {
                 setViewingAccessory(false);
                 setPointer("armor");
@@ -515,9 +667,8 @@ export default function CharacterPersonalAttributes ()
                 if ((pointer.split("/")[2] == "new" && toggled) || (pointer.split("/")[2] == "edit")) {
                     setModalOpen(true);
                     setModalText("You still have a weapon in-progress. Go back to Weapon overview?");
+                    modalOpened = true;
                 }
-                setViewingWeapon(false);
-                setPointer("weapon");
             }
             else if (pointer == "weapon/mainhand" || pointer == "weapon/offhand") {
                 setViewingWeapon(false);
@@ -528,7 +679,8 @@ export default function CharacterPersonalAttributes ()
         else {
             setPointer("general");
         }
-        setPreviewImg("");
+
+        if (modalOpened === false) setPreviewImg("");
         setImageLoading(false);
     }
 
@@ -604,6 +756,13 @@ export default function CharacterPersonalAttributes ()
         if (weapon.size > 0) {
             var currentWeapon : string[] = weapon.get(weaponSelected[0])!;
             setEquipmentValue([currentWeapon[0], currentWeapon[1], currentWeapon[2]]);
+
+            // Obtain Image and upload it
+            if (currentWeapon[2] !== "") extractImage(currentWeapon[2], weaponSelected[0], equipmentType);
+            else {
+                setImageLoading(false);
+                setPreviewImg("");
+            }
         }
     }, [weaponSelected])
 
@@ -910,10 +1069,10 @@ export default function CharacterPersonalAttributes ()
                         ||  pointer == "armor/accessory" 
                         || pointer ==  "weapon/mainhand" 
                         || pointer == "weapon/offhand"  
-                        ? "hidden" : "container-div flex-col rounded-lg backdrop-blur-sm mt-[10%] p-8 mr-[2vw]"}`}
+                        ? "hidden" : "container-div border flex-col rounded-lg backdrop-blur-sm mt-[2%] p-8 mr-[2vw]"}`}
                     >
-                            { pointer.split("/")[2] == "edit" && (
-                                <Box className='flex flex-row gap-8 translate-y-[-50%] justify-end'>
+                            {/* { pointer.split("/")[2] == "edit" && (
+                                <Box className={`flex flex-row gap-8 translate-y-[-50%] w-[100%] justify-${saveButton !== "hidden" ? "between" : "end"}`}>
                                     <IconButton 
                                         variant='soft' 
                                         color='danger'
@@ -941,12 +1100,44 @@ export default function CharacterPersonalAttributes ()
                                     </Button>
                             )}
                                 </Box>
-                            )}             
+                            )}              */}
 
                             { (pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit" ) && (
                                 <Box className="flex flex-col gap-1">
                                     <FormControl>
-                                        <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite', fontFamily: 'PixelFont' }}>{inventoryText}'s Name</FormLabel>
+                                        <Box className='flex flex-row justify-between'>
+                                            <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite', fontFamily: 'PixelFont' }}>{inventoryText}'s Name</FormLabel>
+                                            { pointer.split("/")[2] == "edit" && (
+                                                <Box className={`flex flex-row items-start gap-4 w-[100%] justify-${saveButton !== "hidden" ? "end" : "end"}`}>
+                                                    { saveButton != "hidden" && (
+                                                        <IconButton 
+                                                            variant='soft' 
+                                                            color='success' 
+                                                            className={saveButton}  
+                                                            onClick={() => {
+                                                                setModalOpen(true);
+                                                                setModalText("Are you sure you want to save these changes?")
+                                                            }
+                                                        }>
+                                                            <CheckCircleIcon />
+                                                        </IconButton>
+                                                    )}
+
+                                                    <IconButton 
+                                                        variant='soft' 
+                                                        color='danger'
+                                                        className="max-h-[20%]"
+                                                        onClick={() => { 
+                                                            setModalOpen(true);
+                                                            setModalText("Are you sure you want to delete this accessory?");
+                                                        }
+                                                    }>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+
+                                                </Box>
+                                            )}             
+                                        </Box>
                                             <Input
                                                 value={equipmentValue[0]}
                                                 size="lg"
@@ -1018,37 +1209,6 @@ export default function CharacterPersonalAttributes ()
                                         }}
                                     />
                                 </FormControl>
-
-                                {/* { pointer.split("/")[2] == "edit" && (
-                                <Box className='flex flex-row gap-8'>
-                                    <IconButton 
-                                        variant='soft' 
-                                        color='danger'
-                                        onClick={() => { 
-                                            setModalOpen(true);
-                                            setModalText("Are you sure you want to delete this accessory?");
-                                        }
-                                    }>
-                                        <DeleteIcon />
-                                    </IconButton>
-
-                                { saveButton != "hidden" && (
-                                    <Button 
-                                        variant='soft' 
-                                        color='success' 
-                                        className={saveButton}  
-                                        onClick={() => {
-                                            setModalOpen(true);
-                                            setModalText("Are you sure you want to save these changes?")
-                                        }
-                                    }>
-                                        <Typography sx={{ fontFamily: 'PixelFont', fontSize: 13}}>
-                                            Save Changes
-                                        </Typography>
-                                    </Button>
-                            )}
-                                </Box>
-                            )}              */}
                             
                                 <Box
                                     className={`flex flex-row items-start justify-center translate-y-[1vh] ${previewImg === "" ? "border-2 border-dashed rounded-lg text-center max-w-[15vw] p-4" : "max-w-[15vw]"}`}
@@ -1064,14 +1224,7 @@ export default function CharacterPersonalAttributes ()
                                         if (!file.type.startsWith('image/')) {
                                             return;
                                         }
-                                        
-                                        // Update React State
-                                        setEquipmentValue((oldArr) => {
-                                            var newArr = Array.from(oldArr);
-                                            newArr[newArr.length - 1] = file.name;
-                                            return newArr;
-                                        });
-                                        
+                                                                                
                                         setImageDrop(file);
                                     }}
                                 >
@@ -1084,10 +1237,10 @@ export default function CharacterPersonalAttributes ()
                                     )}
 
                                     {previewImg && (
-                                    <Box className='flex flex-row gap-2 items-center'>
+                                    <Box className='flex flex-row gap-2 items-center justify-start max-h-[110%]'>
                                         <img 
                                             src={previewImg} 
-                                            className='max-w-[250px] max-h-[250px] w-auto h-auto object-contain' 
+                                            className='max-w-[20vw] max-h-[15vw] w-auto h-auto object-contain' 
                                         />
                                         <IconButton 
                                             className="max-h-[10px]"
@@ -1099,7 +1252,6 @@ export default function CharacterPersonalAttributes ()
                                                 setModalText("Are you sure you want to remove this image?");
                                             }
                                         }
-
                                         >
                                             <DeleteIcon />
                                         </IconButton>
@@ -1128,102 +1280,7 @@ export default function CharacterPersonalAttributes ()
                             <Typography> {modalText} </Typography>
                         </Sheet>
                         <Sheet className='flex flex-row gap-9 justify-center mt-[1vh]' variant='soft'>
-                            <IconButton variant='soft' onClick={async () => {
-                                if (modalText == `Are you sure you want to set your ${inventoryText}?`) {
-                                    var bool : boolean | null = null; 
-                                    var isAccessory : boolean = pointer.split("/")[1] == "accessory"; 
-                                    var isMainhand : boolean = pointer.split("/")[1] == "mainhand";
-                                    
-                                    if (isAccessory) bool = saveAccessory();
-                                    else if (pointer.split("/")[0] == "weapon") {
-                                        if (isMainhand) bool = saveNewWeapon("mainhand");
-                                        else bool = saveNewWeapon("offhand");
-                                    }
-
-                                    if (bool) {
-                                        setToggled(false);
-                                        handlePointerChange(
-                                            isAccessory ? "armor/accessory" : (isMainhand ? "weapon/mainhand" : "weapon/offhand")
-                                            );
-                                    } else {
-                                        openAlert("One more of the fields have invalid input");
-                                    }
-                                } 
-                                else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
-                                    setToggled(false);
-                                    setViewingAccessory(false);
-                                    handlePointerChange("armor");
-                                } 
-                                else if (modalText == "You still have a weapon in-progress. Go back to Weapon overview?") {
-                                    setToggled(false);
-                                    setViewingWeapon(false);
-                                    handlePointerChange("weapon");
-                                }
-                                else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
-                                    setToggled(false);
-                                    if (inventoryText == "Mainhand Weapon") {
-                                        handlePointerChange("weapon/mainhand");
-                                    }
-                                    else if (inventoryText == "Offhand Weapon") {
-                                        handlePointerChange("weapon/offhand");
-                                    }
-                                    else if (pointer.split("/")[1] == "accessory") {
-                                        handlePointerChange("armor/accessory");
-                                    }
-                                } 
-                                else if (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
-                                    handlePointerChange("armor/accessory");
-                                    setToggled(false);
-                                    deleteAccessory();
-                                }
-                                else if (modalText == "Are you sure you want to remove this image?") {
-                                    setEquipmentValue((prevArr) => {
-                                        var newArr = Array.from(prevArr);
-                                        newArr[newArr.length - 1] = "";
-                                        return newArr;
-                                    })
-
-                                    if (pointer.split("/").length == 3 && pointer.split("/")[2] == "edit") 
-                                    {
-                                        if (pointer.split("/")[1] == "accessory")
-                                        {
-                                            console.log("removing image")
-                                            saveAccessory(true, true);
-                                        }
-
-                                        else
-                                        {
-                                            var deleteRequest = await instance.delete(
-                                                `api/ImageController/DeleteImage/${equipmentType}/${equipmentValue[2]}`,
-                                            );
-                                            if (deleteRequest.status == 200) {
-                                                setModalOpen(false);
-                                            }
-                                        }
-
-                                    }
-
-                                    setPreviewImg("")
-                                    StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], ""]))
-                                }
-                                else {
-                                    // Saving changes
-                                    var savingAccessory = pointer.split("/")[0] == "armor";
-                                    var bool : boolean | null = savingAccessory 
-                                        ? saveAccessory(true) 
-                                        : saveNewWeapon(pointer.split("/")[1] == "mainhand" ? "mainhand" : "offhand", true);
-                                    if (bool) {
-                                        if (savingAccessory) handlePointerChange("armor/accessory");
-                                        else {
-                                            if (pointer.split("/")[1] == "mainhand") handlePointerChange("weapon/mainhand");
-                                            else handlePointerChange("weapon/offhand");
-                                        }
-                                    } else {
-                                        openAlert("One more of the fields have invalid input");
-                                    }
-                                }
-                                setModalOpen(false);
-                            }}>
+                            <IconButton variant='soft' onClick={async () => handleOpenModal()}>
                                 <CheckCircleIcon />
                             </IconButton>
                             <IconButton variant='soft' onClick={() => {setModalOpen(false)}}>
