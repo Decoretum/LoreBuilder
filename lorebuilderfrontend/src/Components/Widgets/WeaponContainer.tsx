@@ -57,9 +57,9 @@ function handleClick (
     setWeaponSelected?: Function,
     toggled?: boolean
     ) {
-    console.log(pointer)
-    console.log(id)
-    console.log(toggled)
+    // console.log(pointer)
+    // console.log(id)
+    // console.log(toggled)
     var weaponCategory = pointer.split("/")[1];
 
     if (setClicked != undefined) setClicked(id!);
@@ -83,7 +83,6 @@ function handleClick (
 }
 
 function Container(props: WeaponContainerPropsType){
-    // console.log(props)
     return (
         <Box data-id={props.id}>
             <Card variant='soft' color='success'>
@@ -117,21 +116,17 @@ function Container(props: WeaponContainerPropsType){
 }
 
 function AdditionalBox(props: AdditionalBoxPropsType) {
-    let toggled : boolean = props.toggleArray[0];
-    let setToggled : Function = props.toggleArray[1];
+    let toggled : boolean | Function = props.toggleArray[0] as boolean | Function;
+    let setToggled : boolean | Function = props.toggleArray[1] as boolean | Function;
     let setModalText : Function = props.setModalText;
-    console.log(props)
     useEffect(() => {
 
     }, [props.map, toggled])
         return (
             <Box className='min-w-[8vw]' data-id={props.id}>
-                <Card variant='soft' color='success' sx={{ }}>
+                <Card variant='soft' color='success' className={toggled ? "" : 'opacity-40'}>
                     { !toggled ? (
                         <Box className='font-PixelFont flex flex-row justify-center items-center gap-2'>
-                            <Box>
-                                <Typography>Add One</Typography>
-                            </Box>
                             <IconButton  
                             variant="soft"
                             color='success'                             
@@ -150,7 +145,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                         </Box>
                     ) : (
                         <Box className='flex flex-col gap-2'>
-                            <Box className='font-PixelFont'>
+                            <Box className='font-PixelFont truncate'>
                                 In Progress
                             </Box>
                             <Box className='flex flex-row gap-2 justify-center'>
@@ -191,7 +186,6 @@ export function WeaponContainer(props : propsType) {
     const setModalOpen = props.setModalOpen;
     const modalText = props.modalText;
     const setModalText = props.setModalText;
-    console.log(props)
     useEffect(() => {
 
     });

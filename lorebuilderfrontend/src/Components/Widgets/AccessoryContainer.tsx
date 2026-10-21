@@ -119,9 +119,6 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
 
     let setToggled : Function = props.toggleArray[1];
     let setModalText : Function = props.setModalText;
-    // useEffect(() => {
-
-    // }, [props.map, toggled])
         return (
             <Box className='min-w-[11%]' data-id={props.id}>
                 <Card variant='outlined' color='success' className={toggled ? "" : 'opacity-40'}>
@@ -145,7 +142,7 @@ function AdditionalBox(props: AdditionalBoxPropsType) {
                         </Box>
                     ) : (
                         <Box className='flex flex-col gap-2'>
-                            <Box className='font-PixelFont'>
+                            <Box className='font-PixelFont truncate'>
                                 In Progress
                             </Box>
                             <Box className='flex flex-row gap-2 justify-center'>

@@ -10,7 +10,7 @@ public class ImageController
 {
     private static DirectoryInfo parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory())!;
     private static string userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
-    private static string[] multipleImages = new string[]{ "accessories", "mainhand", "offhand" };
+    private static string[] multipleImages = new string[]{ "accessories", "mainHandWeapon", "offHandWeapon" };
 
     // keyWord = uuid
     public string checkIfFileExists(string[] directoryFiles, string keyWord) {
@@ -32,7 +32,6 @@ public class ImageController
         string stringResult;
         string directoryPath;
 
-        // Check first if current directory has existing file
         var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{dto.imageCategory}\\";
         var directoryFiles = Directory.GetFiles(chosenEquipmentDirectory);
 
@@ -71,8 +70,10 @@ public class ImageController
                 } 
             }
             await writeTask;
+            
         } else {
             // File retrieval for a multi-image equipment
+            // TODO: implement operations before awaiting the Task
             Task<byte[]> fileBytes;
             if (multipleImages.Contains(dto.imageCategory)) {
                 fileBytes = File.ReadAllBytesAsync($"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}");

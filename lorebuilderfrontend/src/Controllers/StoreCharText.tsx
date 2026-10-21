@@ -147,9 +147,7 @@ export default function StoreCharText (textType : string, text : string, equipme
                     : store.getState().char.attributes.equipment.weaponOffHand;
 
                     if (uuid == "none") {
-                        var random = crypto.randomUUID();
-                        uuid = random;
-                        hm.set(uuid, [name, desc, imgPath]);
+                        hm.set(text, [name, desc, imgPath]);
                     } else {
                         // Adding and Editing
                         if (text == "edit")
