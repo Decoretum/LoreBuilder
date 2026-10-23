@@ -80,14 +80,33 @@ export default function CharacterPersonalAttributes ()
         {'class' : 'attributes', 'field' : 'skills'}, 
         {'class' : 'attributes', 'field' : 'strength'}, 
         {'class': 'attributes', 'field' : 'magic'}
-]
+    ]
+
+    var currentlyMakingOrEditing = pointer.split("/")[2] == "new" || pointer.split("/")[2] == "edit";
+
 
     function openAlert(alertText: string) {
         setAlert("flex width-full ml-[3vw]");
         setAlertText(alertText);
     }
     
-    // Handles 
+    // Handles Bottom Arrow Navigation
+    function handleBackArrow() {
+        if (currentlyMakingOrEditing) {
+            setModalText("You are currently handling equipment data. Proceed to go back?");
+            setModalOpen(true);
+        }
+
+        else GoBack('/characters/creation/origins/features', nav);    
+    }
+
+    function handleForwardArrow() {
+        if (currentlyMakingOrEditing) {
+            setModalText("You are currently handling equipment data. Proceed to the next page?");
+            setModalOpen(true);
+        }
+        else StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features');
+    }
 
     // Handles accept confirmation for equipment
     async function handleOpenModal() {
@@ -95,6 +114,8 @@ export default function CharacterPersonalAttributes ()
         var isAccessory : boolean = pointer.split("/")[1] == "accessory";
         var isWeapon : boolean = pointer.split("/")[0] == "weapon"; 
         var isMainhand : boolean = pointer.split("/")[1] == "mainhand";
+
+        // Saving a multi-image equipment
         if (modalText == `Are you sure you want to set your ${inventoryText}?`) {            
             if (isAccessory) bool = saveAccessory();
             else if (pointer.split("/")[0] == "weapon") {
@@ -111,16 +132,19 @@ export default function CharacterPersonalAttributes ()
                 openAlert("One more of the fields have invalid input");
             }
         } 
+        // Editing Accessory
         else if (modalText == "You still have an accessory in-progress. Go back to Armor overview?") {
             setToggled(false);
             setViewingAccessory(false);
             handlePointerChange("armor");
         } 
+        // Editing Weapon
         else if (modalText == "You still have a weapon in-progress. Go back to Weapon overview?") {
             setToggled(false);
             setViewingWeapon(false);
             handlePointerChange("weapon");
         }
+        // Navigating from Edit/New of multi-image equipment to General Overview of weapon/weaponType and armor/accessory
         else if (modalText == `Are you sure you want to discard your ${inventoryText}?`) {
             setToggled(false);
             if (inventoryText == "Mainhand Weapon") {
@@ -133,6 +157,7 @@ export default function CharacterPersonalAttributes ()
                 handlePointerChange("armor/accessory");
             }
         } 
+        // Deleting a Weapon/Accessory
         else if (modalText == `Are you sure you want to delete this ${inventoryText}?`) {
             if (isWeapon) {
                 // Delete Weapon
@@ -144,6 +169,7 @@ export default function CharacterPersonalAttributes ()
             setToggled(false);
             deleteAccessory();
         }
+        // Removing Image
         else if (modalText == "Are you sure you want to remove this image?") {
             setEquipmentValue((prevArr) => {
                 var newArr = Array.from(prevArr);
@@ -151,23 +177,29 @@ export default function CharacterPersonalAttributes ()
                 return newArr;
         })
 
-        // Handles confirmation during the editing of accessories and weapons
-        if (pointer.split("/").length == 3 && pointer.split("/")[2] == "edit") 
-        {
-            if (pointer.split("/")[1] == "accessory")
+            // Handles confirmation of removing image during the editing of accessories and weapons
+            if (pointer.split("/").length == 3 && pointer.split("/")[2] == "edit") 
             {
-                saveAccessory(true, true);
-            }
+                if (pointer.split("/")[1] == "accessory")
+                {
+                    saveAccessory(true, true);
+                }
 
-            else
-            {
-                saveNewWeapon(equipmentType, true, true);
-            }
+                else
+                {
+                    saveNewWeapon(equipmentType, true, true);
+                }
 
-        }
+            }
 
         setPreviewImg("")
         StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], ""]))
+    }
+    else if (modalText == "You are currently handling equipment data. Proceed to go back?") {
+        GoBack('/characters/creation/origins/features', nav);
+    }
+    else if (modalText == "You are currently handling equipment data. Proceed to the next page?") {
+        StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features');
     }
     else {
         // Saving changes
@@ -602,14 +634,11 @@ export default function CharacterPersonalAttributes ()
                 setInventoryText("Accessory");
                 setEquipmentType("accessories");
 
-                if (testing) {
-                    var storeData : any = AccessoryTest();
-                    var existingData = store.getState().char.attributes.equipment.accessories;
-                    var merged: Map<string, string[]> = new Map([...storeData, ...existingData]);
-                    setAccessory(merged);
-    
-                    // previewImage({fileName: storeData[2], equipmentType: "accessories"});
-                }
+                var existingData = store.getState().char.attributes.equipment.accessories;
+                var merged: Map<string, string[]> = new Map([...existingData]);
+                setAccessory(merged);
+                console.log(existingData)
+
                 // Right Pane: 
                 setImg(`./attributes/${img.substring(6)}.png`);
             break;
@@ -669,12 +698,12 @@ export default function CharacterPersonalAttributes ()
                     setModalText("You still have a weapon in-progress. Go back to Weapon overview?");
                     modalOpened = true;
                 }
+                else if (pointer == "weapon/mainhand" || pointer == "weapon/offhand") {
+                    setViewingWeapon(false);
+                    setPointer("weapon");
+                }
             }
-            else if (pointer == "weapon/mainhand" || pointer == "weapon/offhand") {
-                setViewingWeapon(false);
-                setPointer("weapon");
-            }
-            else if (pointer == "weapon") setPointer("general");
+            else setPointer("general");
         }
         else {
             setPointer("general");
@@ -1106,9 +1135,9 @@ export default function CharacterPersonalAttributes ()
                                 <Box className="flex flex-col gap-1">
                                     <FormControl>
                                         <Box className='flex flex-row justify-between'>
-                                            <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite', fontFamily: 'PixelFont' }}>{inventoryText}'s Name</FormLabel>
+                                            <FormLabel sx= {{ fontWeight: 'bold', color: 'antiquewhite', fontFamily: 'PixelFont', width: "40%" }}>{inventoryText}'s Name</FormLabel>
                                             { pointer.split("/")[2] == "edit" && (
-                                                <Box className={`flex flex-row items-start gap-4 w-[100%] justify-${saveButton !== "hidden" ? "end" : "end"}`}>
+                                                <Box className={`flex flex-row items-start gap-4 w-[50%] translate-y-[-15%] justify-${saveButton !== "hidden" ? "end" : "end"}`}>
                                                     { saveButton != "hidden" && (
                                                         <IconButton 
                                                             variant='soft' 
@@ -1293,13 +1322,13 @@ export default function CharacterPersonalAttributes ()
 
                 <div className='absolute w-[100%] bottom-5'>
                     <div className='arrow-container-multibox'>
-                        <Button onClick = {() => GoBack('/characters/creation/origins/features', nav)} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                        <Button onClick = {handleBackArrow} className='' sx={{ outline: 'none !important'}} variant='soft'>
                             <ArrowBackIcon />
                         </Button>
 
                         { NavigationValidator(binary, resetBinary) }
 
-                        <Button onClick={() => StateValidator(nav, [resetBinary, setBinaryChild], storeFields, '/characters/creation/origins/features')} className='' sx={{ outline: 'none !important'}} variant='soft'>
+                        <Button onClick={handleForwardArrow} className='' sx={{ outline: 'none !important'}} variant='soft'>
                             <ArrowForwardIcon />
                         </Button>
                     </div>
