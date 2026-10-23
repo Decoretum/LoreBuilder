@@ -1046,7 +1046,7 @@ export default function CharacterPersonalAttributes ()
                                     </Typography>
                                 </Box>
 
-                                <Box className='flex flex-row w-[40vw] h-[30vh] justify-center'>
+                                <Box className='flex flex-row w-[40vw] h-[30vh] justify-center items-start'>
                                     <Box className='flex flex-col w-[50%] h-full'>
                                         <Box className='h-[50%] flex items-end justify-center'>
                                             <Box className='frame'>
@@ -1069,7 +1069,7 @@ export default function CharacterPersonalAttributes ()
                                             </Box>
                                         </Box>
                                         <Box className='m-auto'>
-                                            <img src='./attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")}  className='-rotate-90 cursor-pointer h-[40px]' />
+                                            <img src='./attributes/weapons/weapon1.png' onClick = {() => setPointer("weapon")}  className='-rotate-90 cursor-pointer h-[35px]' />
                                         </Box>
                                     </Box>
                                 </Box>
