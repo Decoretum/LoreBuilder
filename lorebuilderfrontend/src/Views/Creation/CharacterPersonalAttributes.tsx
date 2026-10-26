@@ -175,22 +175,7 @@ export default function CharacterPersonalAttributes ()
                 var newArr = Array.from(prevArr);
                 newArr[newArr.length - 1] = "";
                 return newArr;
-        })
-
-            // Handles confirmation of removing image during the editing of accessories and weapons
-            if (pointer.split("/").length == 3 && pointer.split("/")[2] == "edit") 
-            {
-                if (pointer.split("/")[1] == "accessory")
-                {
-                    saveAccessory(true, true);
-                }
-
-                else
-                {
-                    saveNewWeapon(equipmentType, true, true);
-                }
-
-            }
+            })
 
         setPreviewImg("")
         StoreCharText("/attributes/equipment", "", handleEquipmentChange(inventoryText, [equipmentValue[0], equipmentValue[1], ""]))
@@ -204,11 +189,31 @@ export default function CharacterPersonalAttributes ()
     else {
         // Saving changes
         var savingAccessory = pointer.split("/")[0] == "armor";
-        var bool : boolean | null = savingAccessory 
-            ? saveAccessory(true) 
-            : saveNewWeapon(pointer.split("/")[1] == "mainhand" ? "mainhand" : "offhand", true);
-        if (bool) {
-            if (savingAccessory) handlePointerChange("armor/accessory");
+
+        // Handles confirmation of removing image during the editing of accessories and weapons
+        function assessChange() : boolean | null {
+            if (savingAccessory) {
+                // Update both ends that the accessory's image will be deleted
+                // Assumes that an image file is already present in accessory
+                if (previewImg === "" && accessory.get(accessorySelected[0])![2] !== "") 
+                {
+                    return saveAccessory(true, true);
+                }
+                return saveAccessory(true);
+            } else {
+                if (previewImg === "" && weapon.get(weaponSelected[0])![2] !== "") 
+                {
+                    return saveNewWeapon(equipmentType, true, true);
+                }
+                return saveNewWeapon(pointer.split("/")[1] == "mainhand" ? "mainhand" : "offhand", true);
+            }
+        }
+        if (assessChange()) {
+            if (savingAccessory) 
+                {
+                    handlePointerChange("armor/accessory");
+                    
+                }
             else {
                 if (pointer.split("/")[1] == "mainhand") handlePointerChange("weapon/mainhand");
                 else handlePointerChange("weapon/offhand");
@@ -439,8 +444,8 @@ export default function CharacterPersonalAttributes ()
 
             newMap.set(uuid, [equipmentValue[0], equipmentValue[1], equipmentValue[2]]);
             if (deleteImage == true) {
-                console.log(tempMap.get(accessorySelected[0]))
-                console.log(equipmentValue)
+                var currentAccessory = prevMap.get(accessorySelected[0])!;
+                var fileName = currentAccessory[2];
                 // var deleteRequest = await instance.delete(
                 //     `api/ImageController/DeleteImage/${equipmentType}/${equipmentValue[2]}`,
                 // );
@@ -452,9 +457,10 @@ export default function CharacterPersonalAttributes ()
             return newMap;
         })
 
+        var imageFilePresent = store.getState().char.attributes.equipment.accessories.get(accessorySelected[0])[2] !== "";
 
         // Check if there is a file input
-        if (equipmentValue[2] !== "" && deleteImage == undefined) {
+        if (equipmentValue[2] !== "" && !imageFilePresent && deleteImage == undefined) {
             // Convert byte array to base 64 string
             var b64encode = window.btoa(
                 Array.from(imgUInt8bArray, (n: number) => {return String.fromCharCode(n)}).join('')
