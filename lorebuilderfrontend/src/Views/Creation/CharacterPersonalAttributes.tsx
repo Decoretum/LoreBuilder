@@ -387,16 +387,24 @@ export default function CharacterPersonalAttributes ()
     function trackAccessoryWeaponChange() : void {
         // Identify presence of change
         var item = pointer.split("/")[1] == "accessory" ? accessory.get(accessorySelected[0]) : weapon.get(weaponSelected[0])
-        var itemOfInterestName = item![0];
-        var itemOfInterestDescription = item![1];
-        var itemOfInterestFileName = item![2];
-        var hasChanged = equipmentValue[0] !== itemOfInterestName
-            || equipmentValue[1] !== itemOfInterestDescription
-            || equipmentValue[2] !== itemOfInterestFileName;
-        if (hasChanged) {
-            setSaveButton("max-w-[10%]");
-        } else {
-            setSaveButton("hidden");
+        var hasChanged = false;
+        var imageChanged = false;
+
+        // Editing an existing multi-image equipment
+        if (item !== undefined)
+        {
+            var itemOfInterestName = item![0];
+            var itemOfInterestDescription = item![1];
+            var itemOfInterestFileName = item![2];
+            imageChanged = equipmentValue[2] !== itemOfInterestFileName;
+            hasChanged = equipmentValue[0] !== itemOfInterestName
+                || equipmentValue[1] !== itemOfInterestDescription
+                || equipmentValue[2] !== itemOfInterestFileName;
+            if (hasChanged) {
+                setSaveButton("max-w-[10%]");
+            } else {
+                setSaveButton("hidden");
+            }
         }
     }
 
@@ -417,7 +425,6 @@ export default function CharacterPersonalAttributes ()
 
         // Save UUID in Redux State
         var uuid = edit ? accessorySelected[0] : crypto.randomUUID();
-
         StoreCharText(
             "/attributes/equipment", 
             edit ? "edit" : uuid, 
@@ -457,10 +464,10 @@ export default function CharacterPersonalAttributes ()
             return newMap;
         })
 
-        var imageFilePresent = store.getState().char.attributes.equipment.accessories.get(accessorySelected[0])[2] !== "";
+        var imageFileDropped = saveButton.split(" ")[saveButton.split(" ").length - 1] == "imageDropped";
 
-        // Check if there is a file input
-        if (equipmentValue[2] !== "" && !imageFilePresent && deleteImage == undefined) {
+        // Check if there is a file input or a file is dropped as an image
+        if (equipmentValue[2] !== "" && imageFileDropped && deleteImage == undefined) {
             // Convert byte array to base 64 string
             var b64encode = window.btoa(
                 Array.from(imgUInt8bArray, (n: number) => {return String.fromCharCode(n)}).join('')
@@ -1259,8 +1266,12 @@ export default function CharacterPersonalAttributes ()
                                         if (!file.type.startsWith('image/')) {
                                             return;
                                         }
-                                                                                
+                                        
+                                        // Handle Drop
                                         setImageDrop(file);
+
+                                        // Register that a drop has been made
+                                        setSaveButton((prevString) => `${prevString} imageDropped`);
                                     }}
                                 >
                                     {previewImg === "" && !imageLoading && (

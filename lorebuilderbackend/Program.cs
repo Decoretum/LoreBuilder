@@ -7,6 +7,9 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
     Directory.CreateDirectory(userEquipmentImageDirectory);
 }
 
+// Add Dependencies
+builder.Services.AddSingleton<IimageHandler, ImageHandler>();
+
 // Equipment
 var equipment = new string[] 
 {
@@ -65,8 +68,3 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseStaticFiles();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

@@ -6,11 +6,17 @@ namespace Controller;
 
 [Route("api/ImageController")]
 [ApiController]
-public class ImageController 
+public class ImageController
 {
     private static DirectoryInfo parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory())!;
     private static string userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
-    private static string[] multipleImages = new string[]{ "accessories", "mainHandWeapon", "offHandWeapon" };
+    private static string[] multipleImages = { "accessories", "mainHandWeapon", "offHandWeapon" };
+    private IimageHandler imageHandler;
+
+    public ImageController(IimageHandler ImageHandler)
+    {
+        imageHandler = ImageHandler;
+    }
 
     // keyWord = uuid
     public string checkIfFileExists(string[] directoryFiles, string keyWord) {
@@ -27,12 +33,12 @@ public class ImageController
     }
 
     [HttpPost("GetByteArray")]
-    async public Task<string> extractFileByteArray([FromBody] ImageDTO dto) 
+    async public Task<string> extractFileByteArray([FromBody] ImageDTO dto, [FromServices] IimageHandler handler) 
     {
         string stringResult;
         string directoryPath;
 
-        var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{dto.imageCategory}\\";
+        var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{dto.imageCategory}";
         var directoryFiles = Directory.GetFiles(chosenEquipmentDirectory);
 
         if (dto.transactionType == "upload") {
@@ -58,6 +64,7 @@ public class ImageController
                 directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
                 writeTask = File.WriteAllBytesAsync(directoryPath, file);
                 stringResult = uuid;
+                Console.WriteLine(directoryPath);
                 
                 // Saving a new multi-image equipment
                 // TODO: Edit this to check if we are replacing
@@ -74,6 +81,7 @@ public class ImageController
         } else {
             // File retrieval for a multi-image equipment
             // TODO: implement operations before awaiting the Task
+            imageHandler.getEquipmentFiles("accessories");
             Task<byte[]> fileBytes;
             if (multipleImages.Contains(dto.imageCategory)) {
                 fileBytes = File.ReadAllBytesAsync($"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}");
@@ -90,7 +98,7 @@ public class ImageController
     public string deleteImage([FromRoute] string imageCategory, string imageFileName) 
     {
         var stringResult = string.Empty;
-        var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{imageCategory}\\";
+        var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{imageCategory}";
         var directoryFilesArray = Directory.GetFiles(chosenEquipmentDirectory)[0].Split("\\");
         var directoryFileName = directoryFilesArray[^1];
 
