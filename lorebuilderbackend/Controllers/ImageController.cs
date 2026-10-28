@@ -1,4 +1,4 @@
-using System.Net;
+using FileSystemHandlers;
 using lorebuilderbackend.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,7 +64,6 @@ public class ImageController
                 directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
                 writeTask = File.WriteAllBytesAsync(directoryPath, file);
                 stringResult = uuid;
-                Console.WriteLine(directoryPath);
                 
                 // Saving a new multi-image equipment
                 // TODO: Edit this to check if we are replacing

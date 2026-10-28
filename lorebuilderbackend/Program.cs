@@ -1,3 +1,5 @@
+using Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add the Directories
@@ -8,7 +10,7 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
 }
 
 // Add Dependencies
-builder.Services.AddSingleton<IimageHandler, ImageHandler>();
+builder.Services.AddCustomServices();
 
 // Equipment
 var equipment = new string[] 

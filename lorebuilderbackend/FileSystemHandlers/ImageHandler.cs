@@ -1,3 +1,5 @@
+namespace FileSystemHandlers;
+
 public class ImageHandler : IimageHandler
 {
     private static string appDirectory = $"{Directory.GetParent(Directory.GetCurrentDirectory()).ToString()}";
