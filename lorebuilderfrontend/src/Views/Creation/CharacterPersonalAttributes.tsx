@@ -18,9 +18,6 @@ import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
 import EquipmentDictionary from "../../Services/EquipmentDictionary.tsx"
-import AccessoryTest from "../../Test/AccessoryTest.tsx"
-import WeaponTestMainhand from "../../Test/WeaponTestMainhand.tsx";
-import WeaponTestOffhand from "../../Test/WeaponTestOffhand.tsx";
 import { instance } from "../../Services/AxiosInstance.tsx";
 import { CircularProgress } from "@mui/material";
 import { AxiosResponse } from "axios";
@@ -572,7 +569,7 @@ export default function CharacterPersonalAttributes ()
     }
 
     // Handles Icon clicking events as you navigate the page
-    function clickImage (img: string) : void {
+    async function clickImage (img: string) : Promise<void> {
         switch(img){
             case "armor/helm":
                 setPointer(img); 
@@ -640,12 +637,21 @@ export default function CharacterPersonalAttributes ()
                 // Special Case
                 // Left Pane: Show Container full of accessories
                 // Retrieve images from FileSystem and store it within repo FS
-                // var storeData = store.getState().char.attributes.equipment.accessories;
+
+                // Get Data from FileSystem
+                var equipmentType = "accessories";
+                var getAccessoryFiles = await instance.get(
+                    `/api/ImageController/GetFiles/${equipmentType}`
+                );
+                console.log(getAccessoryFiles.data);
+
+                // Match this Data from DB
+
+                // Set the States
                 setEquipmentValue(["", "", ""]);
-                var testing = false;
                 setPointer("armor/accessory");
                 setInventoryText("Accessory");
-                setEquipmentType("accessories");
+                setEquipmentType(equipmentType);
 
                 var existingData = store.getState().char.attributes.equipment.accessories;
                 var merged: Map<string, string[]> = new Map([...existingData]);

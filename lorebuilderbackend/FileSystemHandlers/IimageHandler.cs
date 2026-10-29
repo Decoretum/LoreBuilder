@@ -2,5 +2,5 @@ namespace FileSystemHandlers;
 
 public interface IimageHandler
 {
-    Dictionary<string, string> getEquipmentFiles(string equipmentType);
+    Dictionary<string, List<string>> getEquipmentFiles(string equipmentType);
 }

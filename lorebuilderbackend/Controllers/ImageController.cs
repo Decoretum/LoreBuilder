@@ -2,7 +2,7 @@ using FileSystemHandlers;
 using lorebuilderbackend.DTO;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Controller;
+namespace Controllers;
 
 [Route("api/ImageController")]
 [ApiController]
@@ -32,8 +32,15 @@ public class ImageController
         return resultArr;
     }
 
+    [HttpGet("GetFiles/{imageCategory}")]
+    async public Task<Dictionary<string, List<string>>> extractImageFilesHashMap([FromRoute] string imageCategory)
+    {
+        Dictionary<string, List<string>> files = imageHandler.getEquipmentFiles(imageCategory);
+        return files;
+    }
+
     [HttpPost("GetByteArray")]
-    async public Task<string> extractFileByteArray([FromBody] ImageDTO dto, [FromServices] IimageHandler handler) 
+    async public Task<string> extractFileByteArray([FromBody] ImageDTO dto) 
     {
         string stringResult;
         string directoryPath;
@@ -80,7 +87,6 @@ public class ImageController
         } else {
             // File retrieval for a multi-image equipment
             // TODO: implement operations before awaiting the Task
-            imageHandler.getEquipmentFiles("accessories");
             Task<byte[]> fileBytes;
             if (multipleImages.Contains(dto.imageCategory)) {
                 fileBytes = File.ReadAllBytesAsync($"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}");
