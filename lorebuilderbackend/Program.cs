@@ -1,4 +1,8 @@
+using DBContext;
 using Extensions;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.OpenApi.Writers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +13,11 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
     Directory.CreateDirectory(userEquipmentImageDirectory);
 }
 
+// Get User credentials file From txt File
+var connectionString = "";
+
 // Add Dependencies
-builder.Services.AddCustomServices();
+await builder.Services.AddCustomServices(builder);
 
 // Equipment
 var equipment = new string[] 
@@ -50,13 +57,24 @@ builder.Services.AddCors(options => {
             builder.AllowAnyOrigin()
             .AllowAnyHeader()
             .AllowAnyMethod();
-            Console.WriteLine("App: Enabled CORS from .NET to React-Electron");
+            Console.WriteLine("C#: Enabled CORS from .NET to React-Electron");
         }
     );
 
 });
 var app = builder.Build();
 
+// Generate DB Tables
+using (var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    var context = service.GetService<AppDbContext>();
+    var databaseCreator = (RelationalDatabaseCreator) context!.Database.GetService<IDatabaseCreator>();
+    databaseCreator.CreateTables();
+    Console.WriteLine("C#: DB Tables have been created!");
+}
+
+// Enable CORS Policy
 app.UseCors(crossApplicationUsagePolicy);
 
 // Configure the HTTP request pipeline.

@@ -4,15 +4,15 @@ const fs = require("fs");
 
 function createWindow() {
     const win = new BrowserWindow({
-            width: 1280,
-            minWidth: 1280,
-            height: 800,
-            minHeight: 800,
-            webPreferences: {
-                preload: path.join(__dirname, "preload.cjs"),
-                contextIsolation: true,
-                nodeIntegration: false
-            },
+        width: 1280,
+        minWidth: 1280,
+        height: 800,
+        minHeight: 800,
+        webPreferences: {
+            preload: path.join(__dirname, "preload.cjs"),
+            contextIsolation: true,
+            nodeIntegration: false
+        },
         icon: path.join(__dirname, "../public/assets/wizard.ico")
     });
 
