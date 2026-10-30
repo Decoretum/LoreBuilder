@@ -4,5 +4,7 @@ lorebuilderfrontend/dist
 lorebuilderbackend/bin
 lorebuilderbackend/obj
 lorebuilderbackend/obj/debug
+lorebuilderbackend/Migrations
+lorebuilderbackend/credentials
 
 
