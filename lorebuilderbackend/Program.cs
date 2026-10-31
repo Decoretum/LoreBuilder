@@ -2,7 +2,7 @@ using DBContext;
 using Extensions;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.OpenApi.Writers;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,10 +14,15 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
 }
 
 // Get User credentials file From txt File
-var connectionString = "";
+// Initialize the PostgreSQL DB Connection
+var connectionString = builder.Configuration.GetConnectionString("Default")!;
+var proxyConnectionString = builder.Configuration.GetConnectionString("Proxy")!;
+
+await using var conn = new NpgsqlConnection(proxyConnectionString);
+Task openConnection = conn.OpenAsync();
 
 // Add Dependencies
-await builder.Services.AddCustomServices(builder);
+await builder.Services.AddCustomServices(builder, connectionString, proxyConnectionString, conn, openConnection);
 
 // Equipment
 var equipment = new string[] 
@@ -65,14 +70,36 @@ builder.Services.AddCors(options => {
 var app = builder.Build();
 
 // Generate DB Tables
-using (var scope = app.Services.CreateScope())
+/** 
+Select * 
+	from information_schema.tables
+ 	WHERE table_schema='public'
+ 	AND table_catalog='lorebuilder'
+	AND table_type='BASE TABLE';
+**/
+var hasRows = false;
+await using var loreBuilderConn = new NpgsqlConnection(connectionString);
+await loreBuilderConn.OpenAsync();
+await using (var cmd = new NpgsqlCommand("Select table_name FROM information_schema.tables WHERE table_schema='public' AND table_catalog='lorebuilder'AND table_type='BASE TABLE'", loreBuilderConn))
+await using (var reader = await cmd.ExecuteReaderAsync())
 {
-    var service = scope.ServiceProvider;
-    var context = service.GetService<AppDbContext>();
-    var databaseCreator = (RelationalDatabaseCreator) context!.Database.GetService<IDatabaseCreator>();
-    databaseCreator.CreateTables();
-    Console.WriteLine("C#: DB Tables have been created!");
+    hasRows = reader.HasRows;
 }
+
+if (!hasRows)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var service = scope.ServiceProvider;
+        var context = service.GetService<AppDbContext>();
+        var databaseCreator = (RelationalDatabaseCreator) context!.Database.GetService<IDatabaseCreator>();
+        databaseCreator.CreateTables();
+        Console.WriteLine("C#: DB Tables have been created!");
+    }
+}
+
+await conn.CloseAsync();
+await loreBuilderConn.CloseAsync();
 
 // Enable CORS Policy
 app.UseCors(crossApplicationUsagePolicy);

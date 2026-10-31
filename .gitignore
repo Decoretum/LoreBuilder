@@ -1,5 +1,6 @@
 node_modules
 equipment
+proxy.txt
 lorebuilderfrontend/dist
 lorebuilderbackend/bin
 lorebuilderbackend/obj

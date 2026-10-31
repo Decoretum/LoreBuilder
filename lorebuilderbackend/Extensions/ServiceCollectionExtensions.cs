@@ -18,16 +18,17 @@ public static class ServiceCollectionExtensions
     }
     async public static Task<IServiceCollection> AddCustomServices(
         this IServiceCollection services,
-        WebApplicationBuilder builder
+        WebApplicationBuilder builder,
+        string connectionString,
+        string proxyConnectionString,
+        NpgsqlConnection conn,
+        Task connection
     )
     {
-        var connectionString = builder.Configuration.GetConnectionString("Default");
-        var proxyConnectionString = builder.Configuration.GetConnectionString("Proxy");
         var dbExists = false;
         
         // Creating and opening a database connection
-        await using var conn = new NpgsqlConnection(proxyConnectionString);
-        await conn.OpenAsync();
+        await connection;
 
         await using (var cmd = new NpgsqlCommand("SELECT * FROM pg_database WHERE datname = 'lorebuilder'", conn))
         await using (var reader = await cmd.ExecuteReaderAsync())
@@ -38,9 +39,14 @@ public static class ServiceCollectionExtensions
                 while (await reader.ReadAsync())
                 {
                     var dbName = reader.GetString(1);
-                    if (dbName != "lorebuilder")
+                    Console.WriteLine(dbName);
+                    if (!dbName.Equals("lorebuilder"))
                     {
                         await createDB(conn);
+                    }
+                    else
+                    {
+                        dbExists = true;
                     }
                 }
             }
@@ -48,11 +54,10 @@ public static class ServiceCollectionExtensions
             {
                 dbExists = false;
             }
-            await conn.CloseAsync();
         }
 
-        if (!dbExists) {
-            await conn.OpenAsync();
+        if (!dbExists) 
+        {
             await createDB(conn);
         };
 
