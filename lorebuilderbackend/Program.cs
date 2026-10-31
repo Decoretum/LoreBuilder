@@ -14,7 +14,7 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
 }
 
 // Get User credentials file From txt File
-// - ReadToEnd() interprets a logical newline as 1 non-identifiable data, aside from the classic \n
+// - ReadToEnd() interprets a logical newline as 1 non-identifiable data that looks like an empty char just before 1 classic \n
 // Initialize the PostgreSQL DB Connection
 var connectionString = builder.Configuration.GetConnectionString("Default")!;
 var proxyConnectionString = builder.Configuration.GetConnectionString("Proxy")!;
@@ -29,7 +29,6 @@ if (File.Exists(credentialsPath))
         var contentOne = streamResult.Substring(0, newlineIndex - 1);
         var contentTwo = streamResult.Substring(newlineIndex).Replace("\n", string.Empty);
         var contentArr = new string[] { contentOne, contentTwo };
-        Console.WriteLine(contentOne);
 
         // Parse the strings
         var hashmapStrings = new Dictionary<string, string>()
