@@ -47,6 +47,7 @@ public static class ServiceCollectionExtensions
                     else
                     {
                         dbExists = true;
+                        Console.WriteLine("C#: Database 'lorebuilder' exists in the target machine");
                     }
                 }
             }

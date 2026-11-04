@@ -130,6 +130,8 @@ if (!hasRows)
         databaseCreator.CreateTables();
         Console.WriteLine("C#: DB Tables have been created!");
     }
+} else {
+    Console.WriteLine("C#: lorebuilder DB Tables are already present in the target machine");
 }
 
 await conn.CloseAsync();
