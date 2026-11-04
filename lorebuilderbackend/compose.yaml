@@ -15,9 +15,11 @@ services:
     ports:
       - 8080:8080
     environment:
-      - LOREBUILDER_DATA_DIR=/app/data
+      - LOREBUILDER_DATA_DIR=/app/equipment
     volumes:
-      - "C:/LoreBuilder:/app/data"
+      - type: bind
+        source: "../equipment"
+        target: "/app/equipment"
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the

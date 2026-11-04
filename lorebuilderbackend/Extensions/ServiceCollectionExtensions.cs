@@ -1,7 +1,6 @@
 using DBContext;
 using FileSystemHandlers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Npgsql;
 
 namespace Extensions;
@@ -11,10 +10,7 @@ public static class ServiceCollectionExtensions
     async public static Task createDB(NpgsqlConnection conn)
     {
         await using (var cmd2 = new NpgsqlCommand("CREATE DATABASE lorebuilder", conn))
-        await using (var reader2 = await cmd2.ExecuteReaderAsync())
-        {
-            if (reader2.Rows == 1) Console.WriteLine("Database \"lorebuilder\" has been created!");
-        }
+        await cmd2.ExecuteReaderAsync();
     }
     async public static Task<IServiceCollection> AddCustomServices(
         this IServiceCollection services,

@@ -7,8 +7,9 @@ using Npgsql;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add the Directories
-var parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
-var userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
+var parentDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") 
+    ?? Directory.GetParent(Directory.GetCurrentDirectory())!.ToString();
+var userEquipmentImageDirectory = Path.Combine(parentDirectory + "equipment");
 if (!Directory.Exists(userEquipmentImageDirectory)) {
     Directory.CreateDirectory(userEquipmentImageDirectory);
 }
@@ -19,7 +20,7 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
 var connectionString = builder.Configuration.GetConnectionString("Default")!;
 var proxyConnectionString = builder.Configuration.GetConnectionString("Proxy")!;
 
-var credentialsPath = $"{Directory.GetCurrentDirectory()}\\credentials\\dbcreds.txt";
+var credentialsPath = Path.Combine(Directory.GetCurrentDirectory(), "credentials", "dbcreds.txt");
 if (File.Exists(credentialsPath))
 {
     using (StreamReader sr = new StreamReader(credentialsPath))
