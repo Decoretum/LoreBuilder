@@ -18,11 +18,11 @@ The scripts provided below will run both the frontend and backend applications f
 ### Running the Development Environment
 In the root directory, `/LoreBuilder`, and follow the following instructions:
 
-### Mac Users
-Run `./app_ex.sh`. You can also run this bash script on Windows if you have Git Bash.
+### Mac and Linux OS
+Run `./app_ex.sh`
 
-### Windows Users
-Run `./app_ex.ps1`.
+### Windows OS
+Install Git Bash, and run `./app_ex.ps1`
 
 ## Assets
 The art used in this application is mostly outsourced from `PixilArt` and `Vecteezy`. The art I developed is contained in `Lorebuilder/lorebuilderfrontend/public/assets/gaelmade`.
