@@ -8,8 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add the Directories
 var parentDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") 
-    ?? Directory.GetParent(Directory.GetCurrentDirectory())!.ToString();
-var userEquipmentImageDirectory = Path.Combine(parentDirectory + "equipment");
+    ?? Directory.GetParent(Directory.GetCurrentDirectory().ToString())!.ToString();
+var userEquipmentImageDirectory = Path.Combine(parentDirectory, "equipment");
 if (!Directory.Exists(userEquipmentImageDirectory)) {
     Directory.CreateDirectory(userEquipmentImageDirectory);
 }
@@ -76,8 +76,8 @@ var equipment = new string[]
 };
 
 foreach (var e in equipment) {
-    if (!Directory.Exists($"{userEquipmentImageDirectory}\\{e}")) {
-        Directory.CreateDirectory($"{userEquipmentImageDirectory}\\{e}");
+    if (!Directory.Exists(Path.Combine(userEquipmentImageDirectory, "/" + e))) {
+        Directory.CreateDirectory(Path.Combine(userEquipmentImageDirectory, e));
     }
 }
 
