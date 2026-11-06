@@ -4,7 +4,7 @@ public class ImageHandler : IimageHandler
 {
     private readonly static string appDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") 
         ?? Directory.GetParent(Directory.GetCurrentDirectory().ToString())!.ToString();
-    private readonly string equipmentDirectory = Path.Combine(appDirectory, "equipment");
+    private readonly string equipmentDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") ?? Path.Combine(appDirectory, "equipment");
     public Dictionary<string, List<string>> getEquipmentFiles(string equipmentType) 
     {
         Console.WriteLine(equipmentDirectory);

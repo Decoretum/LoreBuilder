@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add the Directories
 var parentDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") 
     ?? Directory.GetParent(Directory.GetCurrentDirectory().ToString())!.ToString();
-var userEquipmentImageDirectory = Path.Combine(parentDirectory, "equipment");
+var userEquipmentImageDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") ?? Path.Combine(parentDirectory, "equipment");
 if (!Directory.Exists(userEquipmentImageDirectory)) {
     Directory.CreateDirectory(userEquipmentImageDirectory);
 }
