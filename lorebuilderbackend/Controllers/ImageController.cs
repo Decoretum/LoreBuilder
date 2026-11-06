@@ -8,8 +8,10 @@ namespace Controllers;
 [ApiController]
 public class ImageController
 {
-    private static DirectoryInfo parentDirectory = Directory.GetParent(Directory.GetCurrentDirectory())!;
-    private static string userEquipmentImageDirectory = parentDirectory + "\\equipment\\";
+    public static readonly string parentDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") != null 
+        ? Directory.GetCurrentDirectory()
+        : Directory.GetParent(Directory.GetCurrentDirectory().ToString())!.ToString();
+    private static string userEquipmentImageDirectory = Path.Combine(parentDirectory, "equipment");
     private static string[] multipleImages = { "accessories", "mainHandWeapon", "offHandWeapon" };
     private IimageHandler imageHandler;
 
@@ -45,7 +47,7 @@ public class ImageController
         string stringResult;
         string directoryPath;
 
-        var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{dto.imageCategory}";
+        var chosenEquipmentDirectory = Path.Combine(userEquipmentImageDirectory, dto.imageCategory);
         var directoryFiles = Directory.GetFiles(chosenEquipmentDirectory);
 
         if (dto.transactionType == "upload") {
@@ -55,7 +57,7 @@ public class ImageController
 
             // There is an existing file for non-multi image equipment
             if (!multipleImages.Contains(dto.imageCategory)) {
-                directoryPath = $"{chosenEquipmentDirectory}\\{dto.fileName}";
+                directoryPath = Path.Combine(chosenEquipmentDirectory, dto.fileName);
                 writeTask = File.WriteAllBytesAsync(directoryPath, file);
                 if (directoryFiles.Length == 1)
                 {
@@ -68,7 +70,7 @@ public class ImageController
             // Upload for multi-image equipment 
             else {
                 var uuid = Guid.NewGuid().ToString();
-                directoryPath = $"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}";
+                directoryPath = Path.Combine(chosenEquipmentDirectory, dto.imageCategory + "_", dto.uuid + "_", dto.fileName);
                 writeTask = File.WriteAllBytesAsync(directoryPath, file);
                 stringResult = uuid;
                 
@@ -89,10 +91,10 @@ public class ImageController
             // TODO: implement operations before awaiting the Task
             Task<byte[]> fileBytes;
             if (multipleImages.Contains(dto.imageCategory)) {
-                fileBytes = File.ReadAllBytesAsync($"{chosenEquipmentDirectory}\\{dto.imageCategory}_{dto.uuid}_{dto.fileName}");
+                fileBytes = File.ReadAllBytesAsync(Path.Combine(chosenEquipmentDirectory, dto.imageCategory + "_", dto.uuid + "_", dto.fileName));
             } 
             else {
-                fileBytes = File.ReadAllBytesAsync($"{chosenEquipmentDirectory}\\{dto.fileName}");
+                fileBytes = File.ReadAllBytesAsync(Path.Combine(chosenEquipmentDirectory, dto.fileName));
             }
             stringResult = Convert.ToBase64String(await fileBytes);
         }
@@ -103,14 +105,14 @@ public class ImageController
     public string deleteImage([FromRoute] string imageCategory, string imageFileName) 
     {
         var stringResult = string.Empty;
-        var chosenEquipmentDirectory = $"{userEquipmentImageDirectory}\\{imageCategory}";
+        var chosenEquipmentDirectory = Path.Combine(userEquipmentImageDirectory, imageCategory);
         var directoryFilesArray = Directory.GetFiles(chosenEquipmentDirectory)[0].Split("\\");
         var directoryFileName = directoryFilesArray[^1];
 
         // Validate image
         var isCorrectFile = directoryFileName == imageFileName;
         if (isCorrectFile) {
-            File.Delete($"{chosenEquipmentDirectory}\\{imageFileName}");
+            File.Delete(Path.Combine(chosenEquipmentDirectory, imageFileName));
         }
 
         return stringResult;

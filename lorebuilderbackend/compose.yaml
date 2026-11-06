@@ -16,7 +16,6 @@ services:
       - 8080:8080
     environment:
       - LOREBUILDER_DATA_DIR=/app/equipment
-      # - LOREBUILDER_BACKEND_DIR=/app/lorebuilderbackend
     volumes:
       - type: bind
         source: "../equipment"
