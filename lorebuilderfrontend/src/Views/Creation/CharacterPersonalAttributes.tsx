@@ -34,11 +34,13 @@ export default function CharacterPersonalAttributes ()
     const [binary, setBinary] = useState(0);
     const [pointer, setPointer] = useState('general');
     const [inventoryText, setInventoryText] = useState(invText);
-    const [alertText, setAlertText] = useState("");
-    const [alert, setAlert] = useState("hidden flex width-full ml-[3vw]");
     const [rightPaneHidden, setRightPaneHidden] = useState(true);
     const [toggled, setToggled] = useState(false);
     const [equipmentType, setEquipmentType] = useState("");
+
+    // Alert States
+    const [alertText, setAlertText] = useState("");
+    const [alert, setAlert] = useState("hidden flex width-full ml-[3vw]");
     
     // Image Files
     // TODO: Populate these when loading the database and state
@@ -83,6 +85,8 @@ export default function CharacterPersonalAttributes ()
 
 
     function openAlert(alertText: string) {
+        const alert = document.getElementById("alertfade");
+        alert!.classList.toggle("fadeOutAlt");
         setAlert("flex width-full ml-[3vw]");
         setAlertText(alertText);
     }
@@ -1099,9 +1103,12 @@ export default function CharacterPersonalAttributes ()
                         {/* Alert */}
                         <Box className={`${alert} mt-[8%]`}>
                             <Alert 
+                                id="alertfade"
                                 startDecorator={<WarningIcon />}
                                 variant='soft' 
                                 color='danger'
+                                className='alert fadeOut'
+                                onAnimationEnd={() => setAlert("hidden")}
                                 endDecorator={
                                     <IconButton onClick={() => setAlert("hidden")}>
                                         <CloseIcon />

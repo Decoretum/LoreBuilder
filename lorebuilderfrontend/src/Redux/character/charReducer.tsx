@@ -55,7 +55,6 @@ let initialState = {
         magic: '',
         skills: '',
         strength: '',
-        personality: '',
         equipment: {
             weaponMainHand: new Map<string, Array<string>>(),
             weaponOffHand: new Map<string, Array<string>>(),
@@ -68,16 +67,18 @@ let initialState = {
             leggingGear: ['', '', ''],
             footGear: ['', '', '']
         },
-        physicalInfo: '',
 
+        // Character Creation
+        title: '',
+        subtitle: "",
+        name: '',
+        age: 0,
+        personality: '',
+        physicalInfo: '',
         hobbies: '',
         interests: '',
         occupation: ["", ""],
         images: [''],
-
-        title: '',
-        subtitle: "",
-        name: ''
     }
 }
 
@@ -115,8 +116,6 @@ export default function charReducer(
         }
 
         case 'char/editAttributes': {
-            console.log(action.payload.attributes);
-            console.log(state)
             let { images } = action.payload;
             let newImageArr = state.attributes.images;
             var isEquipmentPayload = action.payload.attributes.equipment.hasOwnProperty("equipmentObject");

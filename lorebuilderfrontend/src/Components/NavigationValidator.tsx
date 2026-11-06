@@ -20,6 +20,7 @@ export default function NavigationValidator(binary : Number, resetBinary : Funct
             hidden = {hide}
             color = 'warning'
             sx = {{ width: '50%', position: 'absolute', right: '20%'}}
+            className='alert'
             endDecorator= {
                 <IconButton variant='soft' onClick = {() => {
                     setHide(true);

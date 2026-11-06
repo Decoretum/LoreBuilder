@@ -50,6 +50,45 @@
   align-items: center;
 } */
 
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    25% { opacity: 1; }
+    50% { opacity: 1; }
+    75% { opacity: 0.25; }
+    100% { opacity: 0; }
+}
+
+@keyframes fadeOutAlt {
+    0% { opacity: 1; }
+    25% { opacity: 1; }
+    50% { opacity: 1; }
+    75% { opacity: 0.25; }
+    100% { opacity: 0; }
+}
+
+.fadeOut {
+  animation-name: fadeOut;
+}
+
+.fadeOutAlt {
+  animation-name: fadeOutAlt;
+}
+
+.alert {
+  animation-duration: 3.5s;
+  animation-fill-mode: both;
+}
+
 .arrow-container {
   position: relative;
   display: flex;
