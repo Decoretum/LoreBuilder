@@ -40,10 +40,12 @@ if (File.Exists(credentialsPath))
 
         // Inject Parsed strings to connection strings
         var connectionStringArr = connectionString.Split(";");
+        connectionStringArr[0] = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") == null ? "Host=localhost" : "Host=db";
         connectionStringArr[2] = connectionStringArr[2] + hashmapStrings["Default"];
         connectionString = string.Join(";", connectionStringArr);
 
         var proxyConnectionStringArr = proxyConnectionString.Split(";");
+        proxyConnectionStringArr[0] = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") == null ? "Host=localhost" : "Host=db";
         proxyConnectionStringArr[2] = proxyConnectionStringArr[2] + hashmapStrings["Proxy"];
         proxyConnectionString = string.Join(";", proxyConnectionStringArr);
     }
@@ -60,7 +62,7 @@ Task openConnection = conn.OpenAsync();
 await builder.Services.AddCustomServices(builder, connectionString, proxyConnectionString, conn, openConnection);
 
 // Equipment
-var equipment = new string[] 
+var equipment = new string[]    
 {
     "headGear",
     "rightArmGear",

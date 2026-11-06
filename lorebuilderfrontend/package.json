@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "containerDev": "cross-env VITE_API_BASE_URL=http://localhost:8080 concurrently -k \"vite\" \"wait-on http://localhost:5173 && electron .\"",
     "electron:build": "vite build && electron-builder"
   },
   "build": {
@@ -50,6 +51,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
     "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
     "electron-builder": "^26.15.3",
     "eslint": "^9.21.0",
     "eslint-plugin-react-hooks": "^5.0.0",

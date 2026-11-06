@@ -755,6 +755,7 @@ export default function CharacterPersonalAttributes ()
 
         // if (storeMagic !== '' || null)
         // setMagic(storeMagic);
+        console.log(instance);
     }, [])
 
     useEffect(() => {
