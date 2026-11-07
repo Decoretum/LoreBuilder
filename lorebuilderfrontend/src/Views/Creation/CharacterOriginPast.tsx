@@ -65,7 +65,7 @@ export default function CharacterOriginPast () {
                             gap: 2,
                             marginRight: '2vw',
                         }}>
-                            <Typography level='h3' className=''> What is your story? </Typography>
+                            <Typography level='h3' className='' sx={{ color: `${background !== "../backgrounds/Ocean_6/5.png" ? "#0000" : "antiquewhite"}` }}> What is your story? </Typography>
 
                             <Textarea
                             placeholder="Type in here…"
@@ -101,7 +101,7 @@ export default function CharacterOriginPast () {
                             gap: 2,
                             marginRight: '2vw',
                         }}>
-                            <Typography level='h3' className=''> What makes you, You? </Typography>
+                            <Typography level='h3' className='' sx={{ color: `${background !== "../backgrounds/Ocean_6/5.png" ? "#0000" : "antiquewhite"}` }}> What makes you, You? </Typography>
 
                             <Textarea
                             placeholder="Type in here…"

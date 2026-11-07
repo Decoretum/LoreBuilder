@@ -62,7 +62,7 @@ export default function CharacterOrigin () {
                             gap: 2,
                             marginRight: '2vw',
                         }}>
-                            <Typography level='h3' className=''> What are you at the present? </Typography>
+                            <Typography level='h3' className='' sx={{ color: `${background !== "../backgrounds/Ocean_6/5.png" ? "#0000" : "antiquewhite"}` }}> What are you at the present? </Typography>
 
                             <Textarea
                             placeholder="Type in here…"
@@ -98,7 +98,7 @@ export default function CharacterOrigin () {
                             gap: 2,
                             marginRight: '2vw',
                         }}>
-                        <Typography level='h3' className=''> Describe your physical self </Typography>
+                        <Typography level='h3' className='' sx={{ color: `${background !== "../backgrounds/Ocean_6/5.png" ? "#0000" : "antiquewhite"}` }}> Describe your physical self </Typography>
 
                         <Textarea
                         placeholder="Type in here…"
