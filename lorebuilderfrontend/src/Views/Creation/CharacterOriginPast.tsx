@@ -9,6 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import NavigationValidator from "../../Components/NavigationValidator.tsx";
 import GoBack from "../../Controllers/GoBack.tsx";
 import StateValidator from "../../Controllers/StateValidator.tsx";
+import PickBackground from "../Recurring/BackgroundPicker.tsx";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -22,6 +23,7 @@ export default function CharacterOriginPast () {
     const [binary, setBinary] = useState(0);
     const nav = useNavigate();
     const storeFields : stateArr  = [{'class' : 'attributes', 'field' : 'personality'}, {'class' : 'origins', 'field' : 'past'}]
+    const [background, setBackground] = useState("");
 
     function resetBinary() {
         setBinary(0);
@@ -41,13 +43,15 @@ export default function CharacterOriginPast () {
 
         if (storePersonality !== '' || null)
         setPersonality(storePersonality);
+
+        setBackground(PickBackground()!);
     }, [])
 
 
 
     return (
         <>
-            <Box className='container-div-past'>
+            <Box className={`container-div-past`} style={{ backgroundImage: `url(${background})` }}>
                     {/* The images and textareas */}
                     <Box className='flex flex-row items-center p-8'>
                         <img src='./past2gif.gif' width={400} height={200} className='m-auto mr-8 grid rounded-md' />                

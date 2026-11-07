@@ -14,6 +14,7 @@ import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import TabPanel from '@mui/joy/TabPanel';
+import PickBackground from "../Recurring/BackgroundPicker.tsx";
 
 type comp  = {
     class: 'attributes' | 'origins',
@@ -26,6 +27,8 @@ export default function CharacterOriginFeatures () {
     const [strength, setStrength] = useState('');
     const [magic, setMagic] = useState('');
     const [binary, setBinary] = useState(0);
+    const [background, setBackground] = useState("");
+
 
     // Image settings
     const [img, setImg] = useState('./skills.png')
@@ -94,13 +97,15 @@ export default function CharacterOriginFeatures () {
         if (storeMagic !== '' || undefined)
         setMagic(storeMagic);
         else setMagic("");
+
+        setBackground(PickBackground());
     }, [])
 
 
 
     return (
         <>
-            <Box className='container-div-features justify-center'>
+            <Box className={`container-div-features justify-center`} style= {{ backgroundImage: `url(${background})` }}>
                     {/* The images and textareas */}
                     <Box className='flex flex-row p-8 items-center justify-center' sx = {{ minHeight: 600 }}>
                         <Box className='ml-20' sx = {{ width: 400 }}>

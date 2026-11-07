@@ -27,7 +27,7 @@ export function Sidebar () {
             >
                 <Box role="presentation" className='p-5' sx = {{ flexGrow: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#4A5C4D' }}>
                     <List>
-                        {[{text: 'Home', art: './assets/gaelmade/pixil-house.png'}, {text: 'Create Character'}, {text:'Send email'}, {text: 'Drafts'}].map((obj) => (
+                        {[{text: 'Home', art: './assets/gaelmade/pixil-house.png'}, {text: 'Create Character', art: './assets/gaelmade/pixil-firstman.png'}, {text:'Send email'}, {text: 'Drafts'}].map((obj) => (
                             
                         <Link 
                             to={obj.text === 'Create Character' ? 'characters/creation/origins' : 
@@ -53,14 +53,6 @@ export function Sidebar () {
                     </List>
 
                 <Divider />
-
-                    {/* <List>
-                        {['All mail', 'Trash', 'Spam'].map((text) => (
-                        <ListItem key={text}>
-                            <ListItemButton>{text}</ListItemButton>
-                        </ListItem>
-                        ))}
-                    </List> */}
                 </Box>
             </Drawer>
         </>
