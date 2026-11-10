@@ -12,10 +12,17 @@ export function Home () {
 
 	const handleOpenChange = useCallback(
     (event: React.SyntheticEvent | null, isOpen: boolean) => {
+		let img = undefined;
+		//@ts-expect-error: currentSrc is a string property of the event target
+		if (event?.target.currentSrc !== undefined)
+		img = (event?.target.currentSrc as string).split("/")[(event?.target.currentSrc as string).split("/").length - 1];
+
     	setOpen(isOpen);
 		setElRef(event?.target);
-		setButtonText(event?.target.dataset.id);
-    },
+
+		if (img === undefined) setButtonText(event?.target.dataset.id);
+		else setButtonText(img);
+	},
     [],
   );
 
@@ -38,13 +45,13 @@ export function Home () {
 				>
 					<ToggleButtonGroup>
 						<Dropdown 
-							open={open && buttonText == "chars"} 
+							open={open && (buttonText == "news" || buttonText == "pixil-envelope_small.png")} 
 							onOpenChange={handleOpenChange} 					
 						>	
 							<Stack direction={'row'}>
 								<MenuButton
 									aria-controls={'composition-menu'}
-									data-id="chars"
+									data-id="news"
 									variant="soft"
 									// endDecorator={
 									// 	<img 
@@ -108,9 +115,9 @@ export function Home () {
 						</Dropdown>
 					</ToggleButtonGroup>
 					<ToggleButtonGroup>
-						<Dropdown open={open && buttonText == "news"} onOpenChange={handleOpenChange}>
+						<Dropdown open={open && buttonText == "account"} onOpenChange={handleOpenChange}>
 							<MenuButton
-								data-id="news"
+								data-id="account"
 								variant="soft"
 								sx={{ 
 									borderRadius: '1px',
