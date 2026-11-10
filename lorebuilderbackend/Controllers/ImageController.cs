@@ -11,9 +11,9 @@ public class ImageController
     public static readonly string parentDirectory = Environment.GetEnvironmentVariable("LOREBUILDER_DATA_DIR") != null 
         ? Directory.GetCurrentDirectory()
         : Directory.GetParent(Directory.GetCurrentDirectory().ToString())!.ToString();
-    private static string userEquipmentImageDirectory = Path.Combine(parentDirectory, "equipment");
-    private static string[] multipleImages = { "accessories", "mainHandWeapon", "offHandWeapon" };
-    private IimageHandler imageHandler;
+    private static readonly string userEquipmentImageDirectory = Path.Combine(parentDirectory, "equipment");
+    private static readonly string[] multipleImages = { "accessories", "mainHandWeapon", "offHandWeapon" };
+    private readonly IimageHandler imageHandler;
 
     public ImageController(IimageHandler ImageHandler)
     {
@@ -67,7 +67,7 @@ public class ImageController
                 }
             } 
             
-            // Upload for multi-image equipment 
+            // Upload for multi-image equipment
             else {
                 var uuid = Guid.NewGuid().ToString();
                 directoryPath = Path.Combine(chosenEquipmentDirectory, dto.imageCategory + "_", dto.uuid + "_", dto.fileName);
