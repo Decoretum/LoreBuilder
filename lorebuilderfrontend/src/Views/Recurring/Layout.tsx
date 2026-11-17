@@ -22,7 +22,7 @@ export function Layout({ children } : LayoutProps) : JSX.Element {
         { menuBlock() }
         <TimeDisplay />
         { children }
-        <Footer />
+        { Footer() }
       </main>
     </div>
   );

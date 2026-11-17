@@ -126,6 +126,8 @@
   display: block;
 }
 
+/* Home Page - Body Block */
+
 .alert {
   animation-duration: 3.5s;
   animation-fill-mode: both;
