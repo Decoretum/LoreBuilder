@@ -57,7 +57,7 @@ export function Home () {
 									borderRadius: '1px',
 									outline: 'none !important',
 									width: 'fit-content',
-									border: '1px solid',
+									borderRight: '1px solid',
 									height: '6vh',
 									fontFamily: 'PixelFont'
 								}}
@@ -78,7 +78,7 @@ export function Home () {
 										borderRadius: '1px',
 										outline: 'none !important',
 										width: 'fit-content',
-										border: '1px solid',
+										borderRight: '1px solid',
 										height: '6vh',
 										fontFamily: 'PixelFont'
 									}}
@@ -107,24 +107,23 @@ export function Home () {
 										borderRadius: '1px',
 										outline: 'none !important',
 										width: 'fit-content',
-										border: '1px solid',
+										borderRight: '1px solid',
 										height: '6vh',
-										fontFamily: 'PixelFont'
+										fontFamily: 'PixelFont',
 									}}
 								>
-									Characters
+									<Typography sx={{fontFamily: 'PixelFont', marginLeft: '8%'}} level="inherit">Characters</Typography>
 									<img 
 										onClick={() => handleOpenChange}
 										src='../assets/gaelmade/pixil-firstman.png'
-										className='max-h-[70%] max-w-[90%] ml-[8%]'
+										className='max-h-[70%] max-w-[90%] ml-[2%]'
 									/>								
 								</Button>	
 								<div className='dropdown-content bg-[#FFF6DA]'
 									id="character-menu"
 									>
 									<Link to={'/'}>New</Link>
-									<Link to={'/'}>Account</Link>
-									<Link to={'/'}>Logout</Link>
+									<Link to={'/'}>Browse</Link>
 								</div>
 							</Stack>
 							<Stack className='dropdown'>
@@ -136,7 +135,6 @@ export function Home () {
 										borderRadius: '1px',
 										outline: 'none !important',
 										width: 'fit-content',
-										border: '1px solid',
 										height: '6vh',
 										fontFamily: 'PixelFont'
 									}}
@@ -151,109 +149,11 @@ export function Home () {
 								<div className='dropdown-content bg-[#FFF6DA]'
 									id="character-menu"
 									>
-									<Link to={'/'}>New</Link>
-									<Link to={'/'}>Account</Link>
+									<Link to={'/'}>Settings & Information</Link>
 									<Link to={'/'}>Logout</Link>
 								</div>
 							</Stack>
 						</Stack>
-						
-						{/* <Dropdown 
-							open={open && (buttonText == "news" || buttonText == "pixil-envelope_small.png")} 
-							onOpenChange={handleOpenChange} 					
-						>	
-							<Stack direction={'row'}>
-								<MenuButton
-									aria-controls={'composition-menu'}
-									data-id="news"
-									variant="soft"
-									sx={{ 
-										borderRadius: '1px',
-										outline: 'none !important',
-										width: 'fit-content',
-										border: '1px solid',
-										height: '6vh',
-										fontFamily: 'PixelFont'
-									}}
-								>
-									News
-									<img 
-										onClick={() => handleOpenChange}
-										src='../assets/gaelmade/pixil-envelope_small.png'
-										className='max-h-[60%] max-w-[80%] ml-[12%]'
-									/>								
-								</MenuButton>
-								<Menu
-									id="composition-menu"
-									sx={{fontFamily: 'PixelFont', fontStyle: 'normal'}}
-									>
-									<MenuItem>New</MenuItem>
-									<MenuItem>My account</MenuItem>
-									<MenuItem>Logout</MenuItem>
-								</Menu>
-							</Stack>
-						</Dropdown>
-					</ToggleButtonGroup>
-					<ToggleButtonGroup>
-						<Dropdown 
-							open={open && (buttonText == "chars" || buttonText == "pixil-firstman.png")} 
-							onOpenChange={handleOpenChange} 					
-						>
-							<Stack direction={'row'}>
-								<MenuButton
-									aria-controls={'character-menu'}
-									data-id="chars"
-									variant="soft"
-									sx={{ 
-										borderRadius: '1px',
-										maxWidth: 'fit-content',
-										outline: 'none !important',
-										border: '1px solid',
-										height: '6vh',
-										fontFamily: 'PixelFont'
-									}}
-								>
-										Characters
-										<img onClick={() => handleOpenChange} src='../assets/gaelmade/pixil-firstman.png'/>
-								</MenuButton>
-								<Menu
-									id="character-menu"
-									sx={{fontFamily: 'PixelFont', fontStyle: 'normal'}}
-									>
-										<Link to='/characters'>
-											<MenuItem>
-												New
-											</MenuItem>
-										</Link>
-									<MenuItem>Browse Characters</MenuItem>
-								</Menu>
-							</Stack>
-						</Dropdown>
-					</ToggleButtonGroup>
-					<ToggleButtonGroup>
-						<Dropdown open={open && buttonText == "account"} onOpenChange={handleOpenChange}>
-							<MenuButton
-								data-id="account"
-								variant="soft"
-								sx={{ 
-									borderRadius: '1px',
-									maxWidth: 'fit-content',
-									outline: 'none !important' ,
-									border: '1px solid',
-									height: '6vh',
-									fontFamily: 'PixelFont'
-								}}
-								>
-									Account
-							</MenuButton>
-							<Menu
-								sx={{fontFamily: 'PixelFont', fontStyle: 'normal'}}
-								>
-								<MenuItem>Profile</MenuItem>
-								<MenuItem>My account</MenuItem>
-								<MenuItem>Logout</MenuItem>
-							</Menu>
-						</Dropdown> */}
 					</ToggleButtonGroup> 
 				</Stack>
             </>
