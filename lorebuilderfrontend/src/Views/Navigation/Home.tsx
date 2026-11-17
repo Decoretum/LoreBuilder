@@ -2,6 +2,7 @@ import { Box, Button, Divider, Dropdown, Menu, MenuButton, MenuItem, Stack, Togg
 import { ClickAwayListener } from "@mui/material";
 import React, { useCallback } from "react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
 
 export function Home () {
@@ -48,7 +49,7 @@ export function Home () {
 					className='justify-center items-start'
 				>
 					<ToggleButtonGroup>
-						<Stack direction={'row'} spacing={2}>
+						<Stack direction={'row'}>
 							<Button
 								data-id="home"
 								variant="soft"
@@ -68,8 +69,96 @@ export function Home () {
 									className='max-h-[100%] max-w-[100%]'
 								/>								
 							</Button>
+							<Stack className='dropdown'>
+								<Button
+									aria-controls={'composition-menu'}
+									data-id="news"
+									variant="soft"
+									sx={{ 
+										borderRadius: '1px',
+										outline: 'none !important',
+										width: 'fit-content',
+										border: '1px solid',
+										height: '6vh',
+										fontFamily: 'PixelFont'
+									}}
+								>
+									News
+									<img 
+										onClick={() => handleOpenChange}
+										src='../assets/gaelmade/pixil-envelope_small.png'
+										className='max-h-[60%] max-w-[80%] ml-[12%]'
+									/>								
+								</Button>	
+								<div className='dropdown-content bg-[#FFF6DA]'
+									id="composition-menu"
+									>
+									<Link to={'/'}>New</Link>
+									<Link to={'/'}>Account</Link>
+									<Link to={'/'}>Logout</Link>
+								</div>
+							</Stack>
+							<Stack className='dropdown'>
+								<Button
+									aria-controls={'composition-menu'}
+									data-id="news"
+									variant="soft"
+									sx={{ 
+										borderRadius: '1px',
+										outline: 'none !important',
+										width: 'fit-content',
+										border: '1px solid',
+										height: '6vh',
+										fontFamily: 'PixelFont'
+									}}
+								>
+									Characters
+									<img 
+										onClick={() => handleOpenChange}
+										src='../assets/gaelmade/pixil-firstman.png'
+										className='max-h-[70%] max-w-[90%] ml-[8%]'
+									/>								
+								</Button>	
+								<div className='dropdown-content bg-[#FFF6DA]'
+									id="character-menu"
+									>
+									<Link to={'/'}>New</Link>
+									<Link to={'/'}>Account</Link>
+									<Link to={'/'}>Logout</Link>
+								</div>
+							</Stack>
+							<Stack className='dropdown'>
+								<Button
+									aria-controls={'composition-menu'}
+									data-id="news"
+									variant="soft"
+									sx={{ 
+										borderRadius: '1px',
+										outline: 'none !important',
+										width: 'fit-content',
+										border: '1px solid',
+										height: '6vh',
+										fontFamily: 'PixelFont'
+									}}
+								>
+									Account
+									<img 
+										onClick={() => handleOpenChange}
+										src='../assets/gaelmade/pixil-firstman.png'
+										className='max-h-[70%] max-w-[90%] ml-[8%]'
+									/>								
+								</Button>	
+								<div className='dropdown-content bg-[#FFF6DA]'
+									id="character-menu"
+									>
+									<Link to={'/'}>New</Link>
+									<Link to={'/'}>Account</Link>
+									<Link to={'/'}>Logout</Link>
+								</div>
+							</Stack>
 						</Stack>
-						<Dropdown 
+						
+						{/* <Dropdown 
 							open={open && (buttonText == "news" || buttonText == "pixil-envelope_small.png")} 
 							onOpenChange={handleOpenChange} 					
 						>	
@@ -96,6 +185,7 @@ export function Home () {
 								</MenuButton>
 								<Menu
 									id="composition-menu"
+									sx={{fontFamily: 'PixelFont', fontStyle: 'normal'}}
 									>
 									<MenuItem>New</MenuItem>
 									<MenuItem>My account</MenuItem>
@@ -128,8 +218,13 @@ export function Home () {
 								</MenuButton>
 								<Menu
 									id="character-menu"
+									sx={{fontFamily: 'PixelFont', fontStyle: 'normal'}}
 									>
-									<MenuItem>New</MenuItem>
+										<Link to='/characters'>
+											<MenuItem>
+												New
+											</MenuItem>
+										</Link>
 									<MenuItem>Browse Characters</MenuItem>
 								</Menu>
 							</Stack>
@@ -151,13 +246,15 @@ export function Home () {
 								>
 									Account
 							</MenuButton>
-							<Menu>
+							<Menu
+								sx={{fontFamily: 'PixelFont', fontStyle: 'normal'}}
+								>
 								<MenuItem>Profile</MenuItem>
 								<MenuItem>My account</MenuItem>
 								<MenuItem>Logout</MenuItem>
 							</Menu>
-						</Dropdown>
-					</ToggleButtonGroup>
+						</Dropdown> */}
+					</ToggleButtonGroup> 
 				</Stack>
             </>
         )

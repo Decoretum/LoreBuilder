@@ -42,7 +42,8 @@ export default function CharacterOrigin () {
 
         if (storePhysical !== '' && storePresent !== null)
         setPhysical(storePhysical);
-    
+        
+        console.log(PickBackground())
         setBackground(PickBackground());
     }, [])
 

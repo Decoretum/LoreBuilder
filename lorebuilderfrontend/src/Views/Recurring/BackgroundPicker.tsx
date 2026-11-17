@@ -1,20 +1,20 @@
 export default function PickBackground() : string
 {
     const timeDateOptions : object = { hour: "2-digit", minute: "2-digit" };
-    var time = new Intl.DateTimeFormat("en-US", timeDateOptions).format(Date.now());
-    var timeData = new Date().getHours()
+    const time = new Intl.DateTimeFormat("en-US", timeDateOptions).format(Date.now());
+    const timeData = new Date().getHours()
 
     return chooseBackground(timeData);
 }
 
 function chooseBackground(timeData: number) : string
 {
-    var isMorning = timeData >= 7 && timeData <= 12;
-    var isEarlyAfternoon = timeData >= 13 && timeData <= 16;
-    var isMidAfternoon = timeData == 17;
-    var isLateAfternoon = timeData >= 18;
-    var isNight = timeData >= 19 || timeData <= 3;
-    var isEarlyMorning = timeData >= 4 && timeData <= 6;
+    const isMorning = timeData >= 7 && timeData <= 12;
+    const isEarlyAfternoon = timeData >= 13 && timeData <= 16;
+    const isMidAfternoon = timeData == 17;
+    const isLateAfternoon = timeData == 18 && timeData < 19;
+    const isNight = timeData >= 19 || timeData <= 3;
+    const isEarlyMorning = timeData >= 4 && timeData <= 6;
 
     if (isMorning) return "../backgrounds/Ocean_4/5.png"
     if (isEarlyAfternoon) return "../backgrounds/Ocean_7/6.png"
