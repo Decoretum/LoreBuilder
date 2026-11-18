@@ -44,6 +44,17 @@ export type stateTypeAttributes = {
 }
 
 let initialState = {
+    // Account
+    // DOB is date on DB
+    account: {
+        id: '',
+        userName: '',
+        password: '',
+        dateOfBirth: ''
+    },
+
+    // Character
+    accountId: '',
     origins: {
         past: '',
         present: '',
@@ -51,6 +62,7 @@ let initialState = {
         gender: '',
         images: ['']
     },
+
     attributes: {
         magic: '',
         skills: '',
@@ -69,15 +81,14 @@ let initialState = {
         },
 
         // Character Creation
+        name: '',
         title: '',
         subtitle: "",
-        name: '',
-        age: 0,
+        hobbies: '',
         personality: '',
         physicalInfo: '',
-        hobbies: '',
         interests: '',
-        occupation: ["", ""],
+        occupation: [["", ""]],
         images: [''],
     }
 }

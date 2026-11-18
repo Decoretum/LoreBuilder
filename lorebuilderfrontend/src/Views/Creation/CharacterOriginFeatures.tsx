@@ -146,7 +146,7 @@ export default function CharacterOriginFeatures () {
                                         {skills?.length} character(s)
                                         </Typography>
                                     }
-                                    sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white' }}
+                                    sx={{ '&.MuiSelected': { outline: 'none !important' }, minWidth: 350, height: 280, backgroundColor: 'transparent', color: 'white', fontFamily: 'PixelFont' }}
                                     />
                             </TabPanel>
                         
@@ -171,7 +171,7 @@ export default function CharacterOriginFeatures () {
                                         {strength?.length} character(s)
                                         </Typography>
                                     }
-                                    sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
+                                    sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white', fontFamily: 'PixelFont' }}
                                 />
                             </TabPanel>
 
@@ -196,7 +196,7 @@ export default function CharacterOriginFeatures () {
                                     {magic?.length} character(s)
                                     </Typography>
                                 }
-                                sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white' }}
+                                sx={{ minWidth: 200, minHeight: 280, backgroundColor: 'transparent', color: 'white', fontFamily: 'PixelFont' }}
                                 />
                             </TabPanel>
                         </Tabs>

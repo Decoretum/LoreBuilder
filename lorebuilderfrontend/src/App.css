@@ -84,6 +84,50 @@
   animation-name: fadeOutAlt;
 }
 
+.dropdown {
+  position: relative;
+}
+
+/* Dropdown content */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  max-width: 100%;
+  min-width: 100%;
+  top: 100%;
+}
+
+/* <Link> inside dropdown content */
+.dropdown-content a {
+  border-top: solid #EFBFA5;
+  border-left: solid #EFBFA5;
+  border-right: solid #EFBFA5;
+  font-size: 13px;
+  color: black;
+  padding: 12px 16px;
+  border-width: thin;
+  text-decoration: none;
+  display: flex;
+  font-family: 'PixelFont';
+  justify-content: center;
+}
+
+.dropdown-content a:last-child {
+  border-bottom: solid #EFBFA5; 
+  border-width: thin;
+}
+
+.dropdown-content a:hover {
+  background-color: #D88F84;
+}
+
+/* Show the dropdown content on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Home Page - Body Block */
+
 .alert {
   animation-duration: 3.5s;
   animation-fill-mode: both;
