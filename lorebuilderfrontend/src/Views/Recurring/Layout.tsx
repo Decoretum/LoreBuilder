@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export function Layout({ children } : LayoutProps) : JSX.Element {
   const path = useLocation().pathname;
-  function menuBlock()
+  function SideBlock()
   {
     if (path === "/") return <></>;
     else return <Sidebar />;
@@ -19,10 +19,10 @@ export function Layout({ children } : LayoutProps) : JSX.Element {
   return (
     <div>
       <main>
-        { menuBlock() }
+        < SideBlock />
         <TimeDisplay />
         { children }
-        { Footer() }
+        <Footer />
       </main>
     </div>
   );

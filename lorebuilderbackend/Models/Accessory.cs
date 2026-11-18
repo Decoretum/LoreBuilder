@@ -6,6 +6,8 @@ public class Accessory
     [Key]
     public int id { get; set; }
 
+    public Character character { get; set; }
+
     [Column(TypeName ="varchar(20)")]
     public string name { get; set; }
 

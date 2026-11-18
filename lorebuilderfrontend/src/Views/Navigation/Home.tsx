@@ -9,8 +9,6 @@ export function Home () {
 	const [elRef, setElRef] = useState<React.ReactHTMLElement<HTMLElement> | null>(null);
 	const [buttonText, setButtonText] = useState("");
 	const [open, setOpen] = useState(false);
-	const [color, setColor] = useState('#C2441C')
-
 	const handleOpenChange = useCallback(
     (event: React.SyntheticEvent | null, isOpen: boolean) => {
 		type target = {
@@ -30,21 +28,9 @@ export function Home () {
 		console.log(isOpen)
 	},[]);
 
-// 	const handleListKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-//     if (event.key === 'Tab') {
-//       setOpen(false);
-//     } else if (event.key === 'Escape') {
-//       buttonRef.current!.focus();
-//       setOpen(false);
-//     }
-//   };
-
-
-
     // From DB, if user is not "logout", then login this user
     function MenuBlock(props) : JSX.Element {
-		console.log(props)
-
+		console.log("Rendering MenuBlock() with props: " + props)
 		return (
             <>
 				<Stack	
@@ -125,8 +111,8 @@ export function Home () {
 								<div className='dropdown-content bg-[#FFF6DA]'
 									id="character-menu"
 									>
-									<Link to={'/'}>New</Link>
-									<Link to={'/'}>Browse</Link>
+									<Link to={'/characters/creation/origins'}>New</Link>
+									<Link to={'/characters'}>Browse</Link>
 								</div>
 							</Stack>
 							<Stack className='dropdown'>
@@ -164,6 +150,8 @@ export function Home () {
     }
 
 	function BodyBlock() : JSX.Element {
+		console.log("Rendering BodyBlock()");
+		const [color, setColor] = useState('#C2441C')
 		return (
 			<Stack direction={'column'} className='flex overflow-y-auto border mt-[5%] p-8 bg-[#fae5ac] max-h-80 gap-8'>
 				<Box className='flex justify-start'>
@@ -225,8 +213,8 @@ export function Home () {
                             <Typography level='h1' sx = {{ backdropFilter: 'blur(3px)', width: '16vw', fontFamily: 'PixelFont' }}> LoreBuilder </Typography>
                         </Box>
                     </Box>
-                    { MenuBlock ({A: 1, B: "test"}) }
-					{ BodyBlock() }
+                    <MenuBlock props = {{A: 1, B: "test"}} />
+					<BodyBlock />
                 </Box>
             </div>	
         </>
