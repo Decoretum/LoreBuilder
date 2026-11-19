@@ -15,4 +15,6 @@ public class Account
     public string password { get; set; }
 
     public DateTime dateOfBirth { get; set; }
+
+    public DateTime lastLoggedIn { get; set; }
 }
