@@ -17,4 +17,5 @@ public class Account
     public DateTime dateOfBirth { get; set; }
 
     public DateTime lastLoggedIn { get; set; }
+    public bool loggedIn { get; set; }
 }

@@ -16,10 +16,17 @@ echo -e "\n\nStarting Frontend and Backend Applications"
 
 echo -e "\n\nInstalling Frontend Dependencies and Electron Binaries\n\n"
 
-cd lorebuilderfrontend && npm install && npx install-electron --no
+npm install --save-dev wait-on &&
+cd lorebuilderfrontend &&
+npm install &&
+npx install-electron --no
+cd .. &&
+
+echo -e "\n\nFrontend and root npm dependencies installed"
+echo -e "\n\nInitializing backend application and Database Startup\n\n"
 
 npx concurrently \
     --kill-others \
     --success first \
-    "npm run dev" \
-    "cd .. && cd lorebuilderbackend && dotnet run"
+    "cd lorebuilderbackend && dotnet run" \
+    "wait-on tcp:5200 && cd lorebuilderfrontend && npm run dev"

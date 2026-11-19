@@ -19,6 +19,7 @@ if (!Directory.Exists(userEquipmentImageDirectory)) {
 // Initialize the PostgreSQL DB Connection
 var connectionString = builder.Configuration.GetConnectionString("Default")!;
 var proxyConnectionString = builder.Configuration.GetConnectionString("Proxy")!;
+var configurationBuilder = new ConfigurationBuilder();
 
 var credentialsPath = Path.Combine(Directory.GetCurrentDirectory(), "credentials", "dbcreds.txt");
 if (File.Exists(credentialsPath))
@@ -52,14 +53,25 @@ if (File.Exists(credentialsPath))
 }
 else
 {
-    Console.WriteLine("\nC# Error: File under the path of 'LoreBuilder/credentials/dbcreds.txt' does not exist. Please create this file by following the instructions on the Github Repository's README\n");
+    Console.WriteLine("\nC# Error: File under the path of 'LoreBuilder/lorebuilderbackend/credentials/dbcreds.txt' does not exist. Please create this file by following the instructions on the Github Repository's README\n");
 }
+
+configurationBuilder.AddInMemoryCollection(
+    new Dictionary<string, string?>
+    {
+        ["proxyConnectionString"] = proxyConnectionString,
+        ["connectionString"] = connectionString
+    }
+);
+
+var config = configurationBuilder.Build();
 
 await using var conn = new NpgsqlConnection(proxyConnectionString);
 Task openConnection = conn.OpenAsync();
 
 // Add Dependencies
 await builder.Services.AddCustomServices(builder, connectionString, proxyConnectionString, conn, openConnection);
+builder.Services.AddSingleton<IConfigurationRoot>(config);
 
 // Equipment
 var equipment = new string[]    

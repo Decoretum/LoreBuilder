@@ -4,29 +4,47 @@ import React, { useCallback, useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
+import { instance } from "../../Services/AxiosInstance";
+
+type UserType = {
+	username: string,
+	password: string,
+	lastLoggedIn: Date,
+	loggedIn: boolean
+}
 
 export function Home () {
-	const [elRef, setElRef] = useState<React.ReactHTMLElement<HTMLElement> | null>(null);
-	const [buttonText, setButtonText] = useState("");
-	const [open, setOpen] = useState(false);
-	const handleOpenChange = useCallback(
-    (event: React.SyntheticEvent | null, isOpen: boolean) => {
-		type target = {
-			currentSrc : string | undefined,
-			dataset : { id: string }
-		}
-		const target : target = event?.target;
-		let img = undefined;
-		if (target.currentSrc !== undefined)
-		img = (target.currentSrc as string).split("/")[(target.currentSrc as string).split("/").length - 1];
+	const [user, setUser] = useState<UserType>();
+	// const handleOpenChange = useCallback(
+    // (event: React.SyntheticEvent | null, isOpen: boolean) => {
+	// 	type target = {
+	// 		currentSrc : string | undefined,
+	// 		dataset : { id: string }
+	// 	}
+	// 	const target : target = event?.target;
+	// 	let img = undefined;
+	// 	if (target.currentSrc !== undefined)
+	// 	img = (target.currentSrc as string).split("/")[(target.currentSrc as string).split("/").length - 1];
 
-		if (img === undefined) setButtonText(target.dataset.id);
-		else setButtonText(img);
+	// 	if (img === undefined) setButtonText(target.dataset.id);
+	// 	else setButtonText(img);
 
-		setOpen(isOpen);
-		setElRef(target);
-		console.log(isOpen)
-	},[]);
+	// 	setOpen(isOpen);
+	// 	setElRef(target);
+	// 	console.log(isOpen)
+	// },[]);
+
+	useEffect(() => {
+		// Obtain logged-in user
+		const request = instance.get(
+			"/api/AccountController/RetrieveAccount"
+		);
+		console.log(request)
+
+		// request.then((data) => {
+		// 	console.log(data);
+		// })
+	}, []);
 
     // From DB, if user is not "logout", then login this user
     function MenuBlock(props) : JSX.Element {
@@ -74,7 +92,6 @@ export function Home () {
 								>
 									News
 									<img
-										onClick={() => handleOpenChange}
 										src='../assets/gaelmade/pixil-envelope_small.png'
 										className='max-h-[60%] max-w-[80%] ml-[12%]'
 									/>								
@@ -103,7 +120,6 @@ export function Home () {
 								>
 									<Typography sx={{fontFamily: 'PixelFont', marginLeft: '8%'}} level="inherit">Characters</Typography>
 									<img 
-										onClick={() => handleOpenChange}
 										src='../assets/gaelmade/pixil-firstman.png'
 										className='max-h-[70%] max-w-[90%] ml-[2%]'
 									/>								
@@ -130,7 +146,6 @@ export function Home () {
 								>
 									Account
 									<img 
-										onClick={() => handleOpenChange}
 										src='../gear.png'
 										className='max-h-[70%] max-w-[90%] ml-[8%]'
 									/>								
