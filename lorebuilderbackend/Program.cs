@@ -88,6 +88,7 @@ foreach (var e in equipment) {
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();  
+// builder.Services.AddTransient<IStartupFilter, DBTest>();
 
 // Adding CORS Policy
 var crossApplicationUsagePolicy = "_crossApplicationUsagePolicy";
