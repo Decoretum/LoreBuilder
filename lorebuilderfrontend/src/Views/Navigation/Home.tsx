@@ -1,6 +1,6 @@
 import { Box, Button, Stack, ToggleButtonGroup, Typography } from "@mui/joy";
 import { ClickAwayListener } from "@mui/material";
-import React, { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
@@ -40,14 +40,10 @@ export function Home () {
 			"/api/AccountController/RetrieveAccount"
 		);
 		console.log(request)
-
-		// request.then((data) => {
-		// 	console.log(data);
-		// })
 	}, []);
 
     // From DB, if user is not "logout", then login this user
-    function MenuBlock(props) : JSX.Element {
+    function MenuBlock(props : any) : JSX.Element {
 		console.log("Rendering MenuBlock() with props: " + props)
 		return (
             <>

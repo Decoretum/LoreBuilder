@@ -1,3 +1,7 @@
 {
-    "dotnet.defaultSolution": "lorebuilderbackend.sln"
+    "dotnet.defaultSolution": "lorebuilderbackend.sln",
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "f:\\gael\\codespace\\lorebuilder\\lorebuilderbackend\\lorebuilderbackend.sln",
+        "f:\\gael\\codespace\\lorebuilder\\lorebuilderbackend\\lorebuilderbackend.csproj"
+    ]
 }

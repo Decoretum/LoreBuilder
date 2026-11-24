@@ -1,5 +1,7 @@
 
+using DBContext;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
 namespace Controllers;
@@ -9,26 +11,25 @@ namespace Controllers;
 public class AccountController
 {
     private readonly IConfigurationRoot config;
+    private readonly AppDbContext context;
 
-    public AccountController(IConfigurationRoot config)
+    public AccountController(IConfigurationRoot config, AppDbContext context)
     {
         this.config = config;
+        this.context = context;
     }
 
     [HttpGet("RetrieveAccount")]
-    async public void RetrieveAccount()
+    async public Task<Account> RetrieveAccount()
     {
-        Console.WriteLine(config["connectionString"]);
-        await using var conn = new NpgsqlConnection(config["connectionString"]);
-        await conn.OpenAsync();
-
-        await using (var cmd = new NpgsqlCommand("SELECT * FROM \"Accounts\" WHERE \"loggedIn\" = TRUE", conn))
-        await using (var reader = await cmd.ExecuteReaderAsync())
+        Account acc = new Account();
+        acc.username = null;
+        var data = context.Database.SqlQueryRaw<Account>($"SELECT * FROM \"Accounts\" WHERE \"loggedIn\" = TRUE").ToList();
+        if (data.Count == 0)
         {
-            var hasRows = reader.HasRows;
-            if (!hasRows) Console.WriteLine("No Account has logged in!");
+                Console.WriteLine("No Account has logged in!");
         }
-        await conn.CloseAsync();
+        return acc;
     }
 }
 
