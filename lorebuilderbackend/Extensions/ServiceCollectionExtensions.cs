@@ -59,7 +59,7 @@ public static class ServiceCollectionExtensions
         };
 
         services.AddSingleton<IimageHandler, ImageHandler>();
-        services.AddDbContextPool<AppDbContext>(options => 
+        services.AddDbContext<AppDbContext>(options => 
             options.UseNpgsql (
                 connectionString
             )

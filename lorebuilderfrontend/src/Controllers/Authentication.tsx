@@ -1,15 +1,18 @@
 import axios from "axios";
+import { instance } from "../Services/AxiosInstance";
 
-export function authentication (user: string, password: string) {
-    const baseUrl = 'http://localhost:8000/backend';
-    const login = () => {
-        axios({
-            method: 'post',
-            url: baseUrl + '/login',
-            data: {userName: user, password: password},
-        })
-        .then((res) => console.log(res.data));
+export function authentication (username: string, password: string) {
+    const login = async () => {
+        let request = instance.post(
+            `/api/AccountController/Login`,
+            {
+                username: username,
+                password: password
+            }
+        )
+            .then((res) => console.log(res.data));
     }
+    
 
     const getUserData = () => {
         console.log(document.cookie);

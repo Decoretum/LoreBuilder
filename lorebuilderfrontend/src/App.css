@@ -133,6 +133,17 @@
   animation-fill-mode: both;
 }
 
+/* Login Page */
+.betterlink {
+  cursor: pointer;
+  color: #CE5004;
+}
+
+.betterlink:hover {
+  color: #FC8C03
+}
+
+
 .arrow-container {
   position: relative;
   display: flex;
@@ -194,7 +205,7 @@
   align-items: center;
 }
 
-.container-div{ 
+.container-div { 
 display: flex;
 height: 80%;
 width: 30%; 
@@ -202,7 +213,7 @@ align-items: center;
 justify-content: center;
 }
 
-.container-div-background{ 
+.container-div-background {
   margin: auto;
   display: flex;
   min-height: 100vh;
@@ -216,6 +227,12 @@ justify-content: center;
   background-repeat: no-repeat;
   background-position: center;
   z-index: 1;
+
+  div {
+      div {
+        font-family: 'PixelFont';
+      }
+    }
   }
 
   .container-div-characters{ 

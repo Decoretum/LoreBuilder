@@ -24,11 +24,20 @@ public class AccountController
     {
         Account acc = new Account();
         acc.username = null;
-        var data = context.Database.SqlQueryRaw<Account>($"SELECT * FROM \"Accounts\" WHERE \"loggedIn\" = TRUE").ToList();
+        var data = await context.Database.SqlQueryRaw<Account>($"SELECT * FROM \"Accounts\" WHERE \"loggedIn\" = TRUE").ToListAsync();
         if (data.Count == 0)
         {
                 Console.WriteLine("No Account has logged in!");
         }
+        else acc = data.First();
+        return acc;
+    }
+
+    [HttpPost("Login")]
+    async public Task<Account> Login([FromBody] LoginDTO dto)
+    {
+        Account acc = new Account();
+        acc.username = null;
         return acc;
     }
 }

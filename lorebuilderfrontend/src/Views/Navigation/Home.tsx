@@ -5,16 +5,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { JSX } from "react/jsx-runtime";
 import { instance } from "../../Services/AxiosInstance";
+import { AccountHome } from "../../Types/HomeTypes";
 
-type UserType = {
-	username: string,
-	password: string,
-	lastLoggedIn: Date,
-	loggedIn: boolean
-}
 
 export function Home () {
-	const [user, setUser] = useState<UserType>();
+	const [user, setUser] = useState<AccountHome>();
 	// const handleOpenChange = useCallback(
     // (event: React.SyntheticEvent | null, isOpen: boolean) => {
 	// 	type target = {
@@ -36,10 +31,15 @@ export function Home () {
 
 	useEffect(() => {
 		// Obtain logged-in user
+		let acc : AccountHome;
 		const request = instance.get(
 			"/api/AccountController/RetrieveAccount"
 		);
-		console.log(request)
+		request.then((data) => {
+			acc = data.data;
+			setUser(acc);
+			console.log(acc)
+		});
 	}, []);
 
     // From DB, if user is not "logout", then login this user
@@ -150,7 +150,7 @@ export function Home () {
 									id="character-menu"
 									>
 									<Link to={'/'}>Settings & Information</Link>
-									<Link to={'/'}>Register / Login</Link>
+									<Link to={'/login'}>{ user?.username == null ? "Register / Login" : "Profile" }</Link>
 								</div>
 							</Stack>
 						</Stack>
