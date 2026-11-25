@@ -68,16 +68,17 @@ public class AccountController
         // var dateOfBirth = DateTime.Parse(dto.dateOfBirth, CultureInfo.CreateSpecificCulture("en-US"));
         var loggedIn = false;
 
-        // Validation for username and password
+        // Validation for username
         /*
             Start of string must:
-            - not start with: any characters + characters that aren't letters and one space
+            - not start with: any characters + 3 consecutive characters that aren't letters, one space, and one underline
             
             string must
             - not have any characters + 2 consecutive space literals
+            - not have any characters + 2 consecutive underscore literals
             - have at least 4 letter characters
         */
-        var regexNoWordChar = "^(?!.*[^a-zA-Z ]{3})(?!.* {2})[a-zA-Z]{4}.*$";
+        var regexNoWordChar = "/^(?!.*[^a-zA-Z _]{3})(?!.* {2})(?!.*_{2})[a-zA-Z]{4}.*$/gm";
         var onlyNumbersAndSpecialCharacters = !Regex.Match(dto.username, regexNoWordChar).Success || !Regex.Match(dto.password, regexNoWordChar).Success;
         var isEmptyString = dto.username.Trim() == string.Empty || dto.password.Trim() == string.Empty;
 
