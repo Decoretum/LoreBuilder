@@ -374,7 +374,7 @@ export default function CharacterPersonalAttributes ()
         if (equipmentValue[0] == undefined || equipmentValue[1] == undefined) {
             return false;
         }
-        const regexNoWordChar = /([a-zA-Z])+/;
+        const regexNoWordChar = /([a-zA-Z]){4}/;
         const isEmptyString = equipmentValue[0].trim() == "" || equipmentValue[1].trim() == "";
         const onlyNumbersAndSpecialCharacters = regexNoWordChar.test(equipmentValue[0].trim()) == false
         || regexNoWordChar.test(equipmentValue[1].trim()) == false;

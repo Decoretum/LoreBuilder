@@ -1,4 +1,6 @@
 
+using System.Globalization;
+using System.Text.RegularExpressions;
 using DBContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,11 +36,51 @@ public class AccountController
     }
 
     [HttpPost("Login")]
-    async public Task<Account> Login([FromBody] LoginDTO dto)
+    async public Task<Dictionary<string, Account>> Login([FromBody] LoginDTO dto)
     {
-        Account acc = new Account();
+        var acc = new Account();
+        var hashmap = new Dictionary<string, Account>();
+        string result;
         acc.username = null;
-        return acc;
+        var data = await context.Database.SqlQueryRaw<Account>($"""
+            SELECT *
+            FROM "Accounts"
+            WHERE 
+                "username" = '{dto.username}'
+                AND "password" = '{dto.password}'
+        """).ToListAsync();
+
+        if (data.Count == 0)
+        {
+            result = $"Account \"{dto.username}\" does not exist";
+        } else result = "Success";
+        
+        hashmap.Add(result, acc);
+        return hashmap;
+    }
+
+    // Date Properties are converted from string to DateTime
+    // DateTime string must be formatted to: { mm/dd/yyyy h:mm AM/PM }
+    [HttpPost("Register")]
+    async public Task Register([FromBody] RegisterDTO dto)
+    {
+        // Convert DateTime properties to DateTime
+        // var dateOfBirth = DateTime.Parse(dto.dateOfBirth, CultureInfo.CreateSpecificCulture("en-US"));
+        var loggedIn = false;
+
+        // Validation for username and password
+        /*
+            Start of string must:
+            - not start with: any characters + characters that aren't letters and one space
+            
+            string must
+            - not have any characters + 2 consecutive space literals
+            - have at least 4 letter characters
+        */
+        var regexNoWordChar = "^(?!.*[^a-zA-Z ]{3})(?!.* {2})[a-zA-Z]{4}.*$";
+        var onlyNumbersAndSpecialCharacters = !Regex.Match(dto.username, regexNoWordChar).Success || !Regex.Match(dto.password, regexNoWordChar).Success;
+        var isEmptyString = dto.username.Trim() == string.Empty || dto.password.Trim() == string.Empty;
+
     }
 }
 

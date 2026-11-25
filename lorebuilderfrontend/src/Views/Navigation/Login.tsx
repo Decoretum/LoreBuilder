@@ -43,9 +43,10 @@ export function Login () {
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ isLogin, setIsLogin ] = useState(true);
-    const { login, getUserData } = authentication(username, password);
+    const { register, login, getUserData } = authentication(username, password);
     const onSubmit = () => {
-        login();
+        // login();
+        register()
     }
 
     useEffect(() => {}, []);
