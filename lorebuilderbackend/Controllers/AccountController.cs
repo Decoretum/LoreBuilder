@@ -53,7 +53,10 @@ public class AccountController
         if (data.Count == 0)
         {
             result = $"Account \"{dto.username}\" does not exist";
-        } else result = "Success";
+        } else {
+            result = "Success";
+            acc = data.First();
+        }
         
         hashmap.Add(result, acc);
         return hashmap;
@@ -62,26 +65,57 @@ public class AccountController
     // Date Properties are converted from string to DateTime
     // DateTime string must be formatted to: { mm/dd/yyyy h:mm AM/PM }
     [HttpPost("Register")]
-    async public Task Register([FromBody] RegisterDTO dto)
+    async public Task<Dictionary<string, Account>> Register([FromBody] RegisterDTO dto)
     {
-        // Convert DateTime properties to DateTime
-        // var dateOfBirth = DateTime.Parse(dto.dateOfBirth, CultureInfo.CreateSpecificCulture("en-US"));
+        var stringValue = string.Empty;
+        var acc = new Account();
+        var hashmap = new Dictionary<string, Account>();
         var loggedIn = false;
+        var hasError = false;
+
+        // Convert DateTime properties to DateTime
+        var dateOfBirth = DateTime.Parse(dto.dateOfBirth, CultureInfo.CreateSpecificCulture("en-US")).ToUniversalTime();
 
         // Validation for username
         /*
             Start of string must:
-            - not start with: any characters + 3 consecutive characters that aren't letters, one space, and one underline
+            - not start with: any characters + 3 consecutive characters that aren't letters, spaces, or underline
             
             string must
             - not have any characters + 2 consecutive space literals
             - not have any characters + 2 consecutive underscore literals
             - have at least 4 letter characters
         */
-        var regexNoWordChar = "/^(?!.*[^a-zA-Z _]{3})(?!.* {2})(?!.*_{2})[a-zA-Z]{4}.*$/gm";
-        var onlyNumbersAndSpecialCharacters = !Regex.Match(dto.username, regexNoWordChar).Success || !Regex.Match(dto.password, regexNoWordChar).Success;
+        var regexNoWordChar = "^(?!.*_{2})(?:[^ ]* ){0,3}(?!.* {2})([a-zA-Z]{3})[^ ]*$";
+        var validUsername = Regex.IsMatch(dto.username, regexNoWordChar, RegexOptions.CultureInvariant);
         var isEmptyString = dto.username.Trim() == string.Empty || dto.password.Trim() == string.Empty;
+        if (!validUsername || isEmptyString)
+        {
+            stringValue = "The username chosen does not follow this app's conventions";
+            hasError = true;
+        }
 
+        if (!hasError)
+        {
+            // Query the Database
+            var data = context.Accounts.Where(a => a.username == dto.username).ToList();
+
+            if (data.Count >= 1)
+            {
+                stringValue = "An account already has this existing username";
+            } else {
+                stringValue = "Success";
+                acc.username = dto.username;
+                acc.password = dto.password;
+                acc.dateOfBirth = dateOfBirth;
+                acc.loggedIn = loggedIn;
+                await context.Accounts.AddAsync(acc);
+                await context.SaveChangesAsync();
+            }
+        }
+        
+        hashmap.Add(stringValue, acc);
+        return hashmap;
     }
 }
 

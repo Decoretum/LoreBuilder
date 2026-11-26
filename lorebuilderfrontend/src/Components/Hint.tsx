@@ -2,6 +2,17 @@ import { Button, Tooltip } from "@mui/joy";
 type propType = {
     props: string
 }
+/* 
+            Start of string must:
+            - not start with: any characters + 3 consecutive characters that aren't letters, one space, and one underline
+            
+            string must
+            - not have any characters + 2 consecutive space literals
+            - not have any characters + 2 consecutive underscore literals
+            - have at least 4 letter characters
+
+
+*/
 export default function Hint (props : propType) {
     let val = '';
     switch (props.props)
@@ -30,10 +41,19 @@ export default function Hint (props : propType) {
         case 'gear':
             val = 'Describe your gear'
             break;
+        case 'register':
+            { 
+                const start = 'The start of the username must:\n\n -not have 3 consecutive characters that aren\'t letters, spaces, or underlines\n';
+                const str1 = '- not have any characters + 2 consecutive space literals\n';
+                const str2 = '- not have any characters + 2 consecutive underscore literals\n';
+                const str3 = '- have at least 4 letter characters'
+                val = start + str1 + str2 + str3;
+                break;
+            }
     }
 
     return (
-        <Tooltip title = {val} variant='soft' sx = {{ fontFamily: 'PixelFont' }}>
+        <Tooltip title = {val} variant='soft' sx = {{ fontFamily: 'PixelFont', whiteSpace: 'pre', fontSize: 14 }}>
             <Button variant="soft" color="neutral" sx={{ ml: 'auto' }}>
             ?
             </Button>
